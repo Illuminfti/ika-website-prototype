@@ -6,170 +6,169 @@
 <title>Ika — The MPC Network</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- Three.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+<!-- GSAP + ScrollTrigger -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#05050C;--bg2:#0A0A16;--bg3:#10101E;
-  --coral:#EE2B5B;--coral-d:rgba(238,43,91,.12);--coral-g:rgba(238,43,91,.25);
-  --text:#F2F2FA;--t2:rgba(242,242,250,.55);--t3:rgba(242,242,250,.22);--t4:rgba(242,242,250,.08);
-  --bdr:rgba(242,242,250,.06);--bdr2:rgba(242,242,250,.12);
+  --bg:#04040A;--bg2:#08081A;--bg3:#0E0E22;
+  --coral:#EE2B5B;--coral-50:rgba(238,43,91,.5);--coral-20:rgba(238,43,91,.2);--coral-10:rgba(238,43,91,.1);--coral-05:rgba(238,43,91,.05);
+  --text:#F2F2FA;--t2:rgba(242,242,250,.55);--t3:rgba(242,242,250,.2);--t4:rgba(242,242,250,.08);
+  --bdr:rgba(242,242,250,.06);--bdr2:rgba(242,242,250,.1);
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 .mono{font-family:'JetBrains Mono',monospace}
+::selection{background:var(--coral-20);color:var(--text)}
 
 /* ───── NAV ───── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2.5rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,12,.7);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid var(--bdr)}
-.nav-logo{display:flex;align-items:center;gap:.5rem;text-decoration:none}
-.nav-logo svg{height:28px;width:auto}
-.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
-.nav-links a{font-size:.8125rem;font-weight:500;color:var(--t2);text-decoration:none;transition:color .2s;letter-spacing:.01em}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.875rem 2.5rem;display:flex;align-items:center;justify-content:space-between;background:rgba(4,4,10,.65);backdrop-filter:blur(30px) saturate(1.3);-webkit-backdrop-filter:blur(30px) saturate(1.3);border-bottom:1px solid var(--bdr);transition:all .3s}
+.nav-logo svg{height:26px;width:auto;display:block}
+.nav-links{display:flex;align-items:center;gap:2.25rem;list-style:none}
+.nav-links a{font-size:.8125rem;font-weight:500;color:var(--t2);text-decoration:none;transition:color .25s;letter-spacing:.005em}
 .nav-links a:hover{color:var(--text)}
-.nav-cta{background:var(--coral);color:#fff;font-size:.8125rem;font-weight:600;padding:.5rem 1.25rem;border-radius:7px;text-decoration:none;transition:opacity .2s;cursor:pointer;letter-spacing:-.01em}
-.nav-cta:hover{opacity:.82}
+.nav-cta{background:var(--coral);color:#fff;font-size:.8125rem;font-weight:600;padding:.5rem 1.35rem;border-radius:8px;text-decoration:none;transition:all .25s;cursor:pointer;letter-spacing:-.005em;border:none}
+.nav-cta:hover{filter:brightness(1.15);transform:translateY(-1px)}
 
 /* ───── HERO ───── */
-#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.hero-content{position:relative;z-index:2;text-align:center;max-width:900px;padding:0 2rem}
-.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.625rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--coral);margin-bottom:2rem;display:inline-flex;align-items:center;gap:.75rem;background:var(--coral-d);padding:.5rem 1.25rem;border-radius:100px;border:1px solid rgba(238,43,91,.18)}
-h1.hero-h{font-size:clamp(4rem,10vw,9rem);font-weight:700;line-height:.9;letter-spacing:-.055em;margin-bottom:1.75rem}
+#hero{height:100vh;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#hero-canvas{position:absolute;inset:0;z-index:1}
+.hero-overlay{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse 70% 60% at 50% 45%,transparent 0%,var(--bg) 100%);pointer-events:none}
+.hero-content{position:relative;z-index:3;text-align:center;max-width:860px;padding:0 2rem}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.25em;text-transform:uppercase;color:var(--coral);margin-bottom:2.5rem;display:inline-flex;align-items:center;gap:.75rem;background:var(--coral-10);padding:.45rem 1.2rem;border-radius:100px;border:1px solid var(--coral-20);opacity:0}
+.hero-eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--coral);animation:dotPulse 2s ease-in-out infinite}
+@keyframes dotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+h1.hero-h{font-size:clamp(4.5rem,11vw,10rem);font-weight:700;line-height:.88;letter-spacing:-.06em;margin-bottom:2rem;opacity:0}
+h1.hero-h .line{display:block;overflow:hidden}
+h1.hero-h .line span{display:inline-block}
 h1.hero-h .dim{color:var(--t3)}
 h1.hero-h .coral{color:var(--coral)}
-.hero-sub{font-size:1.125rem;font-weight:400;color:var(--t2);line-height:1.7;max-width:520px;margin:0 auto 2.75rem}
-.hero-actions{display:flex;gap:.875rem;justify-content:center;flex-wrap:wrap}
-.btn-p{background:var(--coral);color:#fff;font-size:.9375rem;font-weight:600;padding:.9rem 2rem;border-radius:8px;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;transition:all .22s;letter-spacing:-.01em;border:none}
-.btn-p:hover{opacity:.82;transform:translateY(-1px)}
-.btn-g{background:transparent;color:var(--t2);font-size:.9375rem;font-weight:500;padding:.9rem 2rem;border-radius:8px;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--bdr2);transition:all .22s}
-.btn-g:hover{color:var(--text);border-color:rgba(242,242,250,.28);transform:translateY(-1px)}
-.chain-row{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center;margin-top:3.5rem}
-.chain-pill{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:400;letter-spacing:.08em;padding:.35rem .8rem;border-radius:100px;border:1px solid var(--bdr);color:var(--t3);background:transparent;text-transform:uppercase}
-
-/* Hero bg layers */
-.hero-grid{position:absolute;inset:0;overflow:hidden}
-.hero-grid canvas{width:100%;height:100%}
-.hero-radial{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(238,43,91,.065) 0%,transparent 65%);pointer-events:none;border-radius:50%}
-.hero-radial-2{position:absolute;top:20%;right:10%;width:500px;height:500px;background:radial-gradient(circle,rgba(238,43,91,.035) 0%,transparent 70%);pointer-events:none;border-radius:50%}
-
-/* Eye motif */
-.hero-eye{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:420px;height:420px;opacity:.08;pointer-events:none}
-.eye-ring{position:absolute;inset:0;border:1px solid var(--coral);border-radius:50%;animation:eyeP 8s ease-in-out infinite}
-.eye-ring:nth-child(2){inset:30px;animation-delay:-2s;border-color:rgba(238,43,91,.5)}
-.eye-ring:nth-child(3){inset:60px;animation-delay:-4s;border-color:rgba(238,43,91,.3)}
-.eye-ring:nth-child(4){inset:90px;animation-delay:-6s;border-color:rgba(238,43,91,.15)}
-.eye-core{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:60px;border-radius:50%;background:var(--coral);opacity:.6;animation:eyeP 8s ease-in-out infinite reverse}
-@keyframes eyeP{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:.7}}
-
-/* Scroll indicator */
-.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:.3}
-.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--coral),transparent);animation:scrollP 2s ease-in-out infinite}
-@keyframes scrollP{0%{opacity:.6;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.3)}100%{opacity:.6;transform:scaleY(1)}}
+.hero-sub{font-size:1.0625rem;font-weight:400;color:var(--t2);line-height:1.75;max-width:480px;margin:0 auto 2.75rem;opacity:0}
+.hero-actions{display:flex;gap:.875rem;justify-content:center;flex-wrap:wrap;opacity:0}
+.btn-p{background:var(--coral);color:#fff;font-size:.875rem;font-weight:600;padding:.875rem 1.75rem;border-radius:8px;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;transition:all .25s;letter-spacing:-.01em;border:none;position:relative;overflow:hidden}
+.btn-p::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 60%);opacity:0;transition:opacity .25s}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(238,43,91,.25)}.btn-p:hover::after{opacity:1}
+.btn-g{background:rgba(255,255,255,.03);color:var(--t2);font-size:.875rem;font-weight:500;padding:.875rem 1.75rem;border-radius:8px;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--bdr2);transition:all .25s}
+.btn-g:hover{color:var(--text);border-color:rgba(242,242,250,.25);background:rgba(255,255,255,.05);transform:translateY(-2px)}
+.chain-row{display:flex;gap:.35rem;flex-wrap:wrap;justify-content:center;margin-top:3.5rem;opacity:0}
+.chain-pill{font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:400;letter-spacing:.1em;padding:.3rem .7rem;border-radius:100px;border:1px solid var(--bdr);color:var(--t3);text-transform:uppercase;transition:all .3s}
+.chain-pill:hover{border-color:var(--coral-20);color:var(--coral-50)}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:3;opacity:0}
+.scroll-line{width:1px;height:50px;margin:0 auto;overflow:hidden;position:relative}
+.scroll-line::after{content:'';position:absolute;top:-50px;left:0;width:1px;height:50px;background:linear-gradient(to bottom,transparent,var(--coral));animation:scrollDrop 2.5s ease-in-out infinite}
+@keyframes scrollDrop{0%{top:-50px}100%{top:100%}}
 
 /* ───── STATS ───── */
-#stats{border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);background:var(--bg2)}
-.stats-grid{max-width:1440px;margin:0 auto;padding:3rem 2.5rem;display:grid;grid-template-columns:repeat(4,1fr)}
+#stats{border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);background:var(--bg2);position:relative;overflow:hidden}
+.stats-glow{position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:200px;background:radial-gradient(ellipse,var(--coral-05),transparent 70%);pointer-events:none}
+.stats-grid{max-width:1440px;margin:0 auto;padding:3.5rem 2.5rem;display:grid;grid-template-columns:repeat(4,1fr)}
 .stat{padding:0 2.5rem;border-left:1px solid var(--bdr)}
 .stat:first-child{border-left:none;padding-left:0}
-.stat-n{font-family:'JetBrains Mono',monospace;font-size:clamp(2rem,3.5vw,3.25rem);font-weight:500;letter-spacing:-.04em;color:var(--coral)}
-.stat-l{font-size:.8125rem;color:var(--t2);line-height:1.4;margin-top:.3rem}
+.stat-n{font-family:'JetBrains Mono',monospace;font-size:clamp(2rem,3.5vw,3.5rem);font-weight:500;letter-spacing:-.04em;color:var(--coral)}
+.stat-l{font-size:.75rem;color:var(--t2);line-height:1.5;margin-top:.35rem;letter-spacing:.01em}
 
 /* ───── SECTIONS ───── */
-.sec{padding:7rem 2.5rem}
+.sec{padding:8rem 2.5rem}
 .sec-inner{max-width:1200px;margin:0 auto}
-.tag{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--t3);margin-bottom:1rem}
-h2.sh{font-size:clamp(2.5rem,5vw,4.5rem);font-weight:700;line-height:.98;letter-spacing:-.04em;margin-bottom:1.25rem}
+.tag{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--t3);margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem}
+.tag::before{content:'';width:16px;height:1px;background:var(--coral-50)}
+h2.sh{font-size:clamp(2.75rem,5.5vw,5rem);font-weight:700;line-height:.95;letter-spacing:-.045em;margin-bottom:1.5rem}
 .sep{height:1px;background:var(--bdr)}
 
 /* ───── PROBLEM ───── */
-.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;margin-top:3rem}
-.prob-card{background:var(--bg3);border:1px solid var(--bdr);border-radius:16px;overflow:hidden}
-.prob-r{display:flex;align-items:flex-start;gap:1rem;padding:1.375rem 1.5rem;border-bottom:1px solid var(--bdr);transition:background .2s}
-.prob-r:last-child{border-bottom:none}
-.prob-r:hover{background:rgba(255,255,255,.015)}
-.prob-ic{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.prob-ic.bad{background:rgba(239,68,68,.08)}
-.prob-ic.bad svg{stroke:#F87171}
-.prob-ic.good{background:var(--coral-d)}
-.prob-ic.good svg{stroke:var(--coral)}
-.prob-t{font-size:.9375rem;font-weight:600;margin-bottom:.2rem}
-.prob-d{font-size:.8125rem;color:var(--t2);line-height:1.55}
+.problem-layout{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start;margin-top:3.5rem}
+.prob-text p{font-size:1.0625rem;color:var(--t2);line-height:1.75;max-width:420px}
+.prob-stack{display:flex;flex-direction:column;gap:1px;background:var(--bdr);border-radius:16px;overflow:hidden;border:1px solid var(--bdr)}
+.prob-row{display:flex;align-items:flex-start;gap:1rem;padding:1.375rem 1.5rem;background:var(--bg2);transition:background .2s}
+.prob-row:hover{background:var(--bg3)}
+.prob-row.solution{background:var(--coral-05)}
+.prob-row.solution:hover{background:var(--coral-10)}
+.prob-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.prob-ic.bad{background:rgba(248,113,113,.06)}.prob-ic.bad svg{stroke:#F87171}
+.prob-ic.good{background:var(--coral-10)}.prob-ic.good svg{stroke:var(--coral)}
+.prob-t{font-size:.875rem;font-weight:600;margin-bottom:.15rem}
+.prob-d{font-size:.75rem;color:var(--t2);line-height:1.6}
 
-/* ───── FEATURE GRID ───── */
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border-radius:18px;overflow:hidden;margin-top:3.5rem;border:1px solid var(--bdr)}
-.feat-cell{background:var(--bg2);padding:2.5rem;transition:background .3s}
-.feat-cell:hover{background:var(--bg3)}
-.feat-cell .feat-icon{width:44px;height:44px;border-radius:10px;background:var(--coral-d);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem}
-.feat-cell .feat-icon svg{stroke:var(--coral);width:20px;height:20px}
-.feat-cell h3{font-size:1.125rem;font-weight:600;margin-bottom:.5rem;letter-spacing:-.02em}
-.feat-cell p{font-size:.8125rem;color:var(--t2);line-height:1.6}
+/* ───── FEATURES ───── */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border-radius:20px;overflow:hidden;margin-top:4rem;border:1px solid var(--bdr)}
+.feat-cell{background:var(--bg2);padding:2.75rem 2.25rem;transition:all .35s;position:relative;overflow:hidden}
+.feat-cell::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--coral-20),transparent);opacity:0;transition:opacity .35s}
+.feat-cell:hover{background:var(--bg3)}.feat-cell:hover::before{opacity:1}
+.feat-num{font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.15em;color:var(--t3);margin-bottom:1.5rem;text-transform:uppercase}
+.feat-cell h3{font-size:1.125rem;font-weight:600;margin-bottom:.6rem;letter-spacing:-.02em}
+.feat-cell p{font-size:.8125rem;color:var(--t2);line-height:1.65}
 
-/* ───── BENTO USE CASES ───── */
-.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;background:var(--bdr);border-radius:18px;overflow:hidden;margin-top:3.5rem;border:1px solid var(--bdr)}
-.bento-card{background:var(--bg2);padding:2.5rem;position:relative;overflow:hidden;transition:background .3s}
+/* ───── BENTO ───── */
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;background:var(--bdr);border-radius:20px;overflow:hidden;margin-top:4rem;border:1px solid var(--bdr)}
+.bento-card{background:var(--bg2);padding:2.75rem 2.25rem;position:relative;overflow:hidden;transition:all .35s}
 .bento-card:hover{background:var(--bg3)}
-.bento-card.b-wide{grid-column:span 7}
-.bento-card.b-narrow{grid-column:span 5}
-.bento-card.b-third{grid-column:span 4}
-.bento-tag{font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);margin-bottom:.875rem;display:inline-block;background:var(--coral-d);padding:.3rem .7rem;border-radius:4px}
-.bento-card h3{font-size:1.375rem;font-weight:700;letter-spacing:-.03em;margin-bottom:.5rem}
-.bento-card p{font-size:.8125rem;color:var(--t2);line-height:1.6;max-width:380px}
-.bento-glow{position:absolute;bottom:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(238,43,91,.06) 0%,transparent 70%);pointer-events:none;border-radius:50%}
+.bento-card.b-7{grid-column:span 7}.bento-card.b-5{grid-column:span 5}.bento-card.b-4{grid-column:span 4}
+.bento-tag{font-family:'JetBrains Mono',monospace;font-size:.4375rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--coral);margin-bottom:1rem;display:inline-block;background:var(--coral-10);padding:.3rem .7rem;border-radius:4px}
+.bento-card h3{font-size:1.25rem;font-weight:700;letter-spacing:-.03em;margin-bottom:.5rem}
+.bento-card p{font-size:.8125rem;color:var(--t2);line-height:1.65;max-width:360px}
+.bento-glow{position:absolute;bottom:-80px;right:-80px;width:200px;height:200px;background:radial-gradient(circle,var(--coral-05),transparent 70%);pointer-events:none;border-radius:50%}
 
 /* ───── COMPARISON ───── */
-.cmp{width:100%;border-collapse:collapse;border-radius:16px;overflow:hidden;border:1px solid var(--bdr);margin-top:3rem}
-.cmp th{padding:1.125rem 1.5rem;font-size:.75rem;font-weight:600;text-align:left;background:var(--bg3);color:var(--t2);letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid var(--bdr)}
+.cmp-wrap{margin-top:3.5rem;border-radius:16px;overflow:hidden;border:1px solid var(--bdr)}
+table.cmp{width:100%;border-collapse:collapse}
+.cmp th{padding:1rem 1.5rem;font-size:.6875rem;font-weight:600;text-align:left;background:var(--bg3);color:var(--t3);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--bdr)}
 .cmp th.ik{color:var(--coral)}
-.cmp td{padding:1rem 1.5rem;font-size:.875rem;border-bottom:1px solid var(--bdr);color:var(--t2)}
+.cmp td{padding:.9rem 1.5rem;font-size:.8125rem;border-bottom:1px solid var(--bdr);color:var(--t2)}
 .cmp tr:last-child td{border-bottom:none}
 .cmp td.ik{color:var(--text);font-weight:600}
-.cmp tr:hover td{background:rgba(255,255,255,.01)}
-.chk{color:#4ADE80}.crs{color:rgba(239,68,68,.6)}
+.cmp tr{transition:background .2s}.cmp tbody tr:hover{background:rgba(255,255,255,.01)}
+.chk{color:#4ADE80;font-weight:700}.crs{color:rgba(248,113,113,.6)}
 
 /* ───── BACKERS ───── */
-.backer-sec{background:var(--bg2);padding:5rem 2.5rem;text-align:center}
-.backer-label{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--t3);margin-bottom:2.5rem}
-.backer-grid{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2.5rem 3.5rem}
-.backer-grid img{height:22px;opacity:.4;transition:opacity .3s;filter:brightness(0) invert(1)}
-.backer-grid img:hover{opacity:.75}
+.backer-sec{background:var(--bg2);padding:5.5rem 2.5rem;text-align:center;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.backer-label{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--t3);margin-bottom:3rem}
+.backer-grid{max-width:1000px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2rem 3rem}
+.backer-grid img{height:20px;opacity:.35;transition:all .3s;filter:brightness(0) invert(1)}
+.backer-grid img:hover{opacity:.7;transform:scale(1.05)}
 
 /* ───── CTA ───── */
-#cta{position:relative;overflow:hidden;padding:9rem 2.5rem;text-align:center}
-.cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(238,43,91,.06) 0%,transparent 70%);pointer-events:none}
-.cta-inner{position:relative;z-index:1;max-width:600px;margin:0 auto}
+#cta{position:relative;overflow:hidden;padding:10rem 2.5rem;text-align:center}
+.cta-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.cta-ring{position:absolute;border:1px solid var(--bdr);border-radius:50%;opacity:.6}
+.cta-ring:nth-child(1){width:300px;height:300px}.cta-ring:nth-child(2){width:500px;height:500px;border-color:var(--coral-05)}.cta-ring:nth-child(3){width:700px;height:700px}
+.cta-inner{position:relative;z-index:1;max-width:560px;margin:0 auto}
 
 /* ───── FOOTER ───── */
 footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg)}
 .foot-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
 .foot-links{display:flex;gap:1.75rem;list-style:none}
-.foot-links a{font-size:.75rem;color:var(--t3);text-decoration:none;transition:color .2s}
+.foot-links a{font-size:.6875rem;color:var(--t3);text-decoration:none;transition:color .25s;letter-spacing:.01em}
 .foot-links a:hover{color:var(--t2)}
 .foot-c{font-family:'JetBrains Mono',monospace;font-size:.5625rem;color:var(--t3)}
 
-/* ───── REVEAL ───── */
-.rv{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
-.rv.in{opacity:1;transform:translateY(0)}
-.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
-
 /* ───── RESPONSIVE ───── */
 @media(max-width:1024px){
-  .problem-grid{grid-template-columns:1fr;gap:2.5rem}
-  .feat-grid{grid-template-columns:1fr}
-  .bento-card.b-wide,.bento-card.b-narrow,.bento-card.b-third{grid-column:span 12}
+  .problem-layout,.feat-grid{display:block}
+  .feat-grid{display:grid;grid-template-columns:1fr}
+  .bento-card.b-7,.bento-card.b-5,.bento-card.b-4{grid-column:span 12}
   .stats-grid{grid-template-columns:repeat(2,1fr);gap:2rem}
+  .problem-layout{display:flex;flex-direction:column;gap:3rem}
 }
 @media(max-width:640px){
   .nav-links{display:none}
   nav{padding:.875rem 1.25rem}
-  h1.hero-h{font-size:clamp(3rem,12vw,4.5rem)}
+  h1.hero-h{font-size:clamp(3.25rem,14vw,5rem)}
   .stats-grid{grid-template-columns:1fr 1fr}
-  .backer-grid{gap:1.5rem 2.5rem}
-  .backer-grid img{height:18px}
+  .backer-grid{gap:1.5rem 2rem}
+  .backer-grid img{height:16px}
+  .sec{padding:5rem 1.25rem}
 }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
-<nav>
+<nav id="main-nav">
   <a href="#" class="nav-logo">
     <svg viewBox="0 0 96 48" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M29.4847 28.9053V19.0107C29.4847 13.5461 25.0548 9.11621 19.5902 9.11621C14.1256 9.11621 9.69568 13.5461 9.69568 19.0107V28.9053" stroke="#EE2B5B" stroke-width="3.904"/>
@@ -185,41 +184,26 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
     <li><a href="#use-cases">Use Cases</a></li>
     <li><a href="#compare">Compare</a></li>
     <li><a href="https://docs.ika.xyz" target="_blank">Docs</a></li>
-    <li><a href="#">Blog</a></li>
   </ul>
-  <a href="https://docs.ika.xyz" class="nav-cta">Start Building</a>
+  <a href="https://docs.ika.xyz" class="nav-cta">Start Building →</a>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-grid"><canvas id="grid-c"></canvas></div>
-  <div class="hero-radial"></div>
-  <div class="hero-radial-2"></div>
-
-  <!-- Eye motif rings behind headline -->
-  <div class="hero-eye">
-    <div class="eye-ring"></div>
-    <div class="eye-ring"></div>
-    <div class="eye-ring"></div>
-    <div class="eye-ring"></div>
-    <div class="eye-core"></div>
-  </div>
-
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-overlay"></div>
   <div class="hero-content">
-    <div class="hero-eyebrow">Now live on Solana & Sui</div>
+    <div class="hero-eyebrow"><span class="dot"></span>Now live on Solana & Sui</div>
     <h1 class="hero-h">
-      Sign<br>
-      <span class="coral">anything.</span><br>
-      <span class="dim">Any chain.</span>
+      <span class="line"><span>Sign</span></span>
+      <span class="line"><span class="coral">anything.</span></span>
+      <span class="line"><span class="dim">Any chain.</span></span>
     </h1>
     <p class="hero-sub">
-      The massively decentralised MPC network that gives your Solana programs the power to sign transactions on Bitcoin, Ethereum, and every other chain. Sub-second. Zero trust required.
+      The massively decentralised MPC network. Your Solana program signs transactions on Bitcoin, Ethereum, and every chain. Sub-second. Zero trust.
     </p>
     <div class="hero-actions">
-      <a href="https://docs.ika.xyz" class="btn-p">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        Start Building
-      </a>
+      <a href="https://docs.ika.xyz" class="btn-p">Start Building</a>
       <a href="#" class="btn-g">Read Whitepaper</a>
     </div>
     <div class="chain-row">
@@ -227,56 +211,51 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
       <span class="chain-pill">Ethereum</span>
       <span class="chain-pill">Solana</span>
       <span class="chain-pill">Sui</span>
-      <span class="chain-pill">EVM Chains</span>
-      <span class="chain-pill">+ Any ECDSA Chain</span>
+      <span class="chain-pill">EVM L2s</span>
+      <span class="chain-pill">+ Any ECDSA</span>
     </div>
   </div>
-
-  <div class="scroll-hint">
-    <div class="scroll-line"></div>
-    <span class="mono" style="font-size:.5rem;color:var(--t3);letter-spacing:.15em;">SCROLL</span>
-  </div>
+  <div class="scroll-hint"><div class="scroll-line"></div></div>
 </section>
 
 <!-- STATS -->
-<div id="stats">
+<section id="stats">
+  <div class="stats-glow"></div>
   <div class="stats-grid">
-    <div class="stat"><div class="stat-n"><span data-count="10000" data-suffix="x">0x</span></div><div class="stat-l">Higher throughput than legacy MPC</div></div>
-    <div class="stat"><div class="stat-n" style="color:var(--text)">&lt;<span style="color:var(--coral)">1</span>s</div><div class="stat-l">Signature latency end-to-end</div></div>
-    <div class="stat"><div class="stat-n"><span data-count="1000" data-suffix="+">0+</span></div><div class="stat-l">Signer nodes, non-collusive</div></div>
-    <div class="stat"><div class="stat-n" style="color:var(--text)">0</div><div class="stat-l">Trust assumptions required</div></div>
+    <div class="stat"><div class="stat-n"><span class="counter" data-to="10000">0</span>x</div><div class="stat-l">Higher throughput<br>than legacy MPC</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--text)">&lt;<span style="color:var(--coral)">1</span>s</div><div class="stat-l">Signature latency<br>end-to-end</div></div>
+    <div class="stat"><div class="stat-n"><span class="counter" data-to="1000">0</span>+</div><div class="stat-l">Non-collusive<br>signer nodes</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--text)">0</div><div class="stat-l">Trust assumptions<br>required</div></div>
   </div>
-</div>
+</section>
 
 <!-- PROBLEM -->
-<section class="sec" id="problem" style="background:var(--bg)">
+<section class="sec" id="problem">
   <div class="sec-inner">
-    <div class="problem-grid">
-      <div class="rv">
+    <div class="problem-layout">
+      <div>
         <div class="tag">The problem</div>
         <h2 class="sh">Cross-chain<br>is <span style="color:rgba(248,113,113,.85)">broken.</span></h2>
-        <p style="font-size:1rem;color:var(--t2);line-height:1.72;max-width:440px;margin-top:1rem">
-          Bridges get hacked. Legacy MPC is slow and centralised. Wrapping loses composability. Your builders deserve better infrastructure.
+        <p class="prob-text" style="font-size:1.0625rem;color:var(--t2);line-height:1.75;max-width:420px;margin-top:1.25rem">
+          Bridges get hacked. Legacy MPC is slow and centralised. Wrapping loses composability. Builders deserve better infrastructure.
         </p>
       </div>
-      <div class="rv d2">
-        <div class="prob-card">
-          <div class="prob-r">
-            <div class="prob-ic bad"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
-            <div><div class="prob-t">Bridges: $2.8B stolen and counting</div><div class="prob-d">Wrapped assets, custodial risk, repeated catastrophic exploits.</div></div>
-          </div>
-          <div class="prob-r">
-            <div class="prob-ic bad"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
-            <div><div class="prob-t">Legacy MPC: 30s latency, 4-8 nodes</div><div class="prob-d">Colluding threshold signers. Unusable for real-time DeFi.</div></div>
-          </div>
-          <div class="prob-r">
-            <div class="prob-ic bad"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
-            <div><div class="prob-t">Centralised custody: back to trusting companies</div><div class="prob-d">Defeats the premise of decentralised finance entirely.</div></div>
-          </div>
-          <div class="prob-r" style="border-top:1px solid rgba(238,43,91,.12);background:var(--coral-d)">
-            <div class="prob-ic good"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
-            <div><div class="prob-t" style="color:var(--coral)">Ika: sub-second · 1,000s of nodes · zero trust</div><div class="prob-d">2PC-MPC eliminates collusion. Built for Solana speed from day one.</div></div>
-          </div>
+      <div class="prob-stack">
+        <div class="prob-row">
+          <div class="prob-ic bad"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+          <div><div class="prob-t">Bridges</div><div class="prob-d">$2.8B stolen. Wrapped assets, custodial risk, catastrophic exploits.</div></div>
+        </div>
+        <div class="prob-row">
+          <div class="prob-ic bad"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+          <div><div class="prob-t">Legacy MPC</div><div class="prob-d">30s latency. 4-8 colluding nodes. Unusable for real-time DeFi.</div></div>
+        </div>
+        <div class="prob-row">
+          <div class="prob-ic bad"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+          <div><div class="prob-t">Centralised Custody</div><div class="prob-d">Back to trusting companies. Defeats decentralised finance entirely.</div></div>
+        </div>
+        <div class="prob-row solution">
+          <div class="prob-ic good"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div><div class="prob-t" style="color:var(--coral)">Ika</div><div class="prob-d">Sub-second. 1,000+ nodes. Non-collusive 2PC-MPC. Built for Solana speed.</div></div>
         </div>
       </div>
     </div>
@@ -288,44 +267,18 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
 <!-- HOW IT WORKS -->
 <section class="sec" id="how" style="background:var(--bg2)">
   <div class="sec-inner">
-    <div class="rv">
-      <div class="tag">How it works</div>
-      <h2 class="sh">Your Solana program.<br><span style="color:var(--coral)">Any chain's key.</span></h2>
-      <p style="font-size:1rem;color:var(--t2);line-height:1.72;max-width:560px;margin-top:.5rem">
-        Ika gives your smart contract a programmable MPC wallet that can sign on any chain. No bridges. No wrapping. No trust. Just sub-second cryptographic signing across 1,000+ non-collusive nodes.
-      </p>
-    </div>
-    <div class="feat-grid rv d1">
-      <div class="feat-cell">
-        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-        <h3>Massively Decentralised</h3>
-        <p>Scale to hundreds and thousands of signer nodes without performance degradation. No more 4-8 node ceilings.</p>
-      </div>
-      <div class="feat-cell">
-        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-        <h3>Sub-Second Latency</h3>
-        <p>While legacy networks lag 30+ seconds, Ika operates at sub-second speeds. Real-time signing for real-time DeFi.</p>
-      </div>
-      <div class="feat-cell">
-        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-        <h3>Zero-Trust Security</h3>
-        <p>2PC-MPC ensures no subset of validators can collude. Your assets stay secure even in worst-case scenarios.</p>
-      </div>
-      <div class="feat-cell">
-        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-        <h3>Native Multi-Chain</h3>
-        <p>Sign on Bitcoin, Ethereum, Solana, Sui, and any ECDSA chain. No bridges. No wrapped assets. True native interop.</p>
-      </div>
-      <div class="feat-cell">
-        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-        <h3>10,000x Throughput</h3>
-        <p>Parallel signing architecture delivers throughput orders of magnitude beyond any existing MPC network.</p>
-      </div>
-      <div class="feat-cell">
-        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>
-        <h3>Programmable Custody</h3>
-        <p>Account recovery, spending limits, multi-party approval — all enforced by your Solana smart contract, not a vendor.</p>
-      </div>
+    <div class="tag">How it works</div>
+    <h2 class="sh">Your Solana program.<br><span style="color:var(--coral)">Any chain's key.</span></h2>
+    <p style="font-size:1.0625rem;color:var(--t2);line-height:1.75;max-width:540px;margin-top:.5rem">
+      Ika gives your smart contract a programmable MPC wallet that signs on any chain. No bridges. No wrapping. Sub-second cryptographic signing across 1,000+ non-collusive nodes.
+    </p>
+    <div class="feat-grid">
+      <div class="feat-cell"><div class="feat-num">01 — Decentralisation</div><h3>Massively Decentralised</h3><p>Scale to thousands of signer nodes without performance loss. No more 4-8 node ceilings.</p></div>
+      <div class="feat-cell"><div class="feat-num">02 — Speed</div><h3>Sub-Second Latency</h3><p>While legacy networks lag 30+ seconds, Ika operates at sub-second speeds. Real-time DeFi.</p></div>
+      <div class="feat-cell"><div class="feat-num">03 — Security</div><h3>Zero-Trust</h3><p>2PC-MPC ensures no subset of validators can collude. Secure in worst-case scenarios.</p></div>
+      <div class="feat-cell"><div class="feat-num">04 — Interop</div><h3>Native Multi-Chain</h3><p>Sign on Bitcoin, Ethereum, Solana, Sui, any ECDSA chain. No bridges. No wrapped assets.</p></div>
+      <div class="feat-cell"><div class="feat-num">05 — Throughput</div><h3>10,000x</h3><p>Parallel signing architecture delivers orders of magnitude beyond any existing MPC network.</p></div>
+      <div class="feat-cell"><div class="feat-num">06 — Control</div><h3>Programmable Custody</h3><p>Recovery, spending limits, multi-party approval — enforced by your smart contract, not a vendor.</p></div>
     </div>
   </div>
 </section>
@@ -335,50 +288,16 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
 <!-- USE CASES -->
 <section class="sec" id="use-cases">
   <div class="sec-inner">
-    <div class="rv">
-      <div class="tag">What you can build</div>
-      <h2 class="sh">New primitives.<br><span style="color:var(--t3)">New design space.</span></h2>
-    </div>
-    <div class="bento rv d1">
-      <div class="bento-card b-wide">
-        <div class="bento-tag">Faster &amp; Cheaper</div>
-        <h3>Near Intents, rebuilt</h3>
-        <p>Cross-chain intent execution at Solana speed. Users express intent, Ika handles signing across chains. Sub-second settlement, fraction of the cost.</p>
-        <div class="bento-glow"></div>
-      </div>
-      <div class="bento-card b-narrow">
-        <div class="bento-tag">Institutional</div>
-        <h3>On-chain Fireblocks</h3>
-        <p>MPC custody controlled by your Solana program. No vendor. No custodian. Institutional-grade security, fully programmable.</p>
-        <div class="bento-glow"></div>
-      </div>
-      <div class="bento-card b-narrow">
-        <div class="bento-tag">Native BTC</div>
-        <h3>Lend against real Bitcoin</h3>
-        <p>Use native BTC, Zcash, and other UTXO assets as collateral in Solana DeFi. No wrapping. Full ownership.</p>
-        <div class="bento-glow"></div>
-      </div>
-      <div class="bento-card b-wide">
-        <div class="bento-tag">Identity</div>
-        <h3>On-chain Privy</h3>
-        <p>Programmable auth and key management directly from Solana smart contracts. Social login, key rotation, and recovery flows without a centralised provider.</p>
-        <div class="bento-glow"></div>
-      </div>
-      <div class="bento-card b-third">
-        <div class="bento-tag">Multi-chain</div>
-        <h3>Solana multisig, any asset</h3>
-        <p>One Solana program as the controlling signer for assets on every other chain.</p>
-      </div>
-      <div class="bento-card b-third">
-        <div class="bento-tag">AI Safety</div>
-        <h3>AI agent guardrails</h3>
-        <p>Enforce spending limits and approval flows for autonomous AI agents managing real assets.</p>
-      </div>
-      <div class="bento-card b-third">
-        <div class="bento-tag">Staking</div>
-        <h3>Cross-chain staking</h3>
-        <p>Stake any asset to secure any protocol. Fast and secure across multiple networks.</p>
-      </div>
+    <div class="tag">What you can build</div>
+    <h2 class="sh">New primitives.<br><span style="color:var(--t3)">New design space.</span></h2>
+    <div class="bento">
+      <div class="bento-card b-7"><div class="bento-tag">Cross-chain</div><h3>Near Intents, rebuilt</h3><p>Cross-chain intent execution at Solana speed. Users express intent, Ika handles signing. Sub-second settlement.</p><div class="bento-glow"></div></div>
+      <div class="bento-card b-5"><div class="bento-tag">Institutional</div><h3>On-chain Fireblocks</h3><p>MPC custody controlled by your Solana program. No vendor. Institutional-grade, fully programmable.</p><div class="bento-glow"></div></div>
+      <div class="bento-card b-5"><div class="bento-tag">Native BTC</div><h3>Lend against real Bitcoin</h3><p>Use native BTC and UTXO assets as collateral in Solana DeFi. No wrapping. Full ownership.</p><div class="bento-glow"></div></div>
+      <div class="bento-card b-7"><div class="bento-tag">Identity</div><h3>On-chain Privy</h3><p>Programmable auth and key management from Solana smart contracts. Social login, key rotation, recovery without a centralised provider.</p><div class="bento-glow"></div></div>
+      <div class="bento-card b-4"><div class="bento-tag">Multi-chain</div><h3>Universal multisig</h3><p>One Solana program as the signer for assets on every chain.</p></div>
+      <div class="bento-card b-4"><div class="bento-tag">AI Safety</div><h3>Agent guardrails</h3><p>Enforce spending limits and approvals for autonomous AI agents.</p></div>
+      <div class="bento-card b-4"><div class="bento-tag">Staking</div><h3>Cross-chain staking</h3><p>Stake any asset to secure any protocol. Fast and secure.</p></div>
     </div>
   </div>
 </section>
@@ -388,22 +307,22 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
 <!-- COMPARISON -->
 <section class="sec" id="compare" style="background:var(--bg2)">
   <div class="sec-inner">
-    <div class="rv">
-      <div class="tag">How we compare</div>
-      <h2 class="sh">Not all MPC<br>is <span style="color:var(--coral)">equal.</span></h2>
+    <div class="tag">How we compare</div>
+    <h2 class="sh">Not all MPC<br>is <span style="color:var(--coral)">equal.</span></h2>
+    <div class="cmp-wrap">
+      <table class="cmp">
+        <thead><tr><th>Capability</th><th class="ik">Ika</th><th>Legacy MPC</th><th>Bridges</th></tr></thead>
+        <tbody>
+          <tr><td>Latency</td><td class="ik">&lt;1 second</td><td>30–120s</td><td>Minutes–hours</td></tr>
+          <tr><td>Throughput</td><td class="ik">10,000 TPS</td><td>~1 TPS</td><td>Low</td></tr>
+          <tr><td>Node count</td><td class="ik">1,000+</td><td>4–8</td><td>Centralised</td></tr>
+          <tr><td>Zero-trust</td><td class="ik"><span class="chk">✓</span> Non-collusive</td><td><span class="crs">✗</span></td><td><span class="crs">✗</span></td></tr>
+          <tr><td>Solana native</td><td class="ik"><span class="chk">✓</span></td><td><span class="crs">✗</span></td><td>Partial</td></tr>
+          <tr><td>Wrapping</td><td class="ik">Never</td><td>Sometimes</td><td>Always</td></tr>
+          <tr><td>Programmable</td><td class="ik"><span class="chk">✓</span> Smart contract</td><td>Limited</td><td><span class="crs">✗</span></td></tr>
+        </tbody>
+      </table>
     </div>
-    <table class="cmp rv d1">
-      <thead><tr><th>Capability</th><th class="ik">Ika</th><th>Legacy MPC</th><th>Bridges</th></tr></thead>
-      <tbody>
-        <tr><td>Latency</td><td class="ik">&lt;1 second</td><td>30–120 seconds</td><td>Minutes to hours</td></tr>
-        <tr><td>Throughput</td><td class="ik">10,000 TPS</td><td>~1 TPS</td><td>Low</td></tr>
-        <tr><td>Node count</td><td class="ik">1,000+</td><td>4–8</td><td>Centralised</td></tr>
-        <tr><td>Zero-trust</td><td class="ik"><span class="chk">✓</span> Non-collusive</td><td><span class="crs">✗</span></td><td><span class="crs">✗</span></td></tr>
-        <tr><td>Solana native</td><td class="ik"><span class="chk">✓</span></td><td><span class="crs">✗</span></td><td>Partial</td></tr>
-        <tr><td>Asset wrapping</td><td class="ik">Never</td><td>Sometimes</td><td>Always</td></tr>
-        <tr><td>Programmable</td><td class="ik"><span class="chk">✓</span> Smart contract</td><td>Limited</td><td><span class="crs">✗</span></td></tr>
-      </tbody>
-    </table>
   </div>
 </section>
 
@@ -427,19 +346,14 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
 
 <!-- CTA -->
 <section id="cta">
-  <div class="cta-glow"></div>
-  <div class="cta-inner rv">
-    <div class="tag" style="display:block;margin-bottom:1.5rem">Build the future</div>
+  <div class="cta-bg"><div class="cta-ring"></div><div class="cta-ring"></div><div class="cta-ring"></div></div>
+  <div class="cta-inner">
+    <div class="tag" style="justify-content:center">Build the future</div>
     <h2 class="sh" style="margin-bottom:1.25rem">Ready to build<br>on Ika?</h2>
-    <p style="font-size:1rem;color:var(--t2);line-height:1.72;margin-bottom:2.75rem;max-width:440px;margin-left:auto;margin-right:auto">
-      Read the docs, join our builder Telegram, or start building cross-chain apps today.
-    </p>
+    <p style="font-size:1rem;color:var(--t2);line-height:1.75;margin-bottom:3rem;max-width:400px;margin-left:auto;margin-right:auto">Read the docs, join our builder Telegram, or start building cross-chain apps today.</p>
     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-      <a href="https://docs.ika.xyz" class="btn-p" style="font-size:1rem;padding:1rem 2.25rem">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        Read the Docs
-      </a>
-      <a href="#" class="btn-g" style="font-size:1rem;padding:1rem 2.25rem">Join Builders TG</a>
+      <a href="https://docs.ika.xyz" class="btn-p" style="font-size:.9375rem;padding:1rem 2rem">Read the Docs</a>
+      <a href="#" class="btn-g" style="font-size:.9375rem;padding:1rem 2rem">Join Builders TG</a>
     </div>
   </div>
 </section>
@@ -448,59 +362,454 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
 <footer>
   <div class="foot-inner">
     <a href="#" class="nav-logo">
-      <svg height="22" viewBox="0 0 96 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M29.4847 28.9053V19.0107C29.4847 13.5461 25.0548 9.11621 19.5902 9.11621C14.1256 9.11621 9.69568 13.5461 9.69568 19.0107V28.9053" stroke="#EE2B5B" stroke-width="3.904"/>
-        <path d="M29.485 25.6067L29.485 29.4546C29.485 31.5797 31.2078 33.3025 33.3329 33.3025C35.458 33.3025 37.1808 31.5797 37.1808 29.4546L37.1808 25.6068" stroke="#EE2B5B" stroke-width="3.904"/>
-        <path d="M23.6494 38.8841L23.6494 33.0207C23.6494 30.7788 21.832 28.9614 19.5901 28.9614C17.3482 28.9614 15.5308 30.7788 15.5308 33.0207L15.5308 38.8841" stroke="#EE2B5B" stroke-width="3.904"/>
-        <path d="M1.99994 25.6067L1.99994 29.4546C1.99994 31.5797 3.72269 33.3025 5.84781 33.3025C7.97293 33.3025 9.69568 31.5797 9.69568 29.4546L9.69568 25.6068" stroke="#EE2B5B" stroke-width="3.904"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M19.5903 23.4076C21.4118 23.4076 22.8884 21.931 22.8884 20.1095C22.8884 18.2879 21.4118 16.8113 19.5903 16.8113C17.7687 16.8113 16.2921 18.2879 16.2921 20.1095C16.2921 20.4474 16.3429 20.7735 16.4374 21.0806C16.6959 20.5079 17.272 20.1094 17.9411 20.1094C18.8519 20.1094 19.5902 20.8477 19.5902 21.7585C19.5902 22.4276 19.1916 23.0037 18.6189 23.2623C18.926 23.3568 19.2522 23.4076 19.5903 23.4076Z" fill="#EE2B5B"/>
-        <path d="M44.997 39V11.2762H49.6369V39H44.997ZM55.3654 39L55.404 11.2762H60.1016V28.2185L67.7064 18.2072H73.5014L65.4346 28.6036L74.1945 39H68.0529L60.1016 28.9886V39H55.3654ZM81.9374 39.5776C80.4357 39.5776 79.165 39.2952 78.1253 38.7305C77.0857 38.1529 76.2963 37.3892 75.7573 36.4394C75.231 35.4896 74.9679 34.4435 74.9679 33.3012C74.9679 32.3001 75.1348 31.4016 75.4685 30.6059C75.8022 29.7973 76.3156 29.1042 77.0087 28.5266C77.7018 27.9362 78.6002 27.4548 79.7041 27.0826C80.5383 26.8131 81.5138 26.5692 82.6305 26.351C83.7599 26.1328 84.9793 25.9339 86.2885 25.7542C87.6105 25.5617 88.9902 25.3563 90.4278 25.1381L88.772 26.0815C88.7849 24.644 88.464 23.5851 87.8094 22.9048C87.1548 22.2246 86.051 21.8844 84.498 21.8844C83.561 21.8844 82.6561 22.1026 81.7833 22.539C80.9106 22.9754 80.3009 23.7263 79.9543 24.7916L75.7188 23.4631C76.2322 21.7047 77.2076 20.2929 78.6452 19.2276C80.0955 18.1623 82.0465 17.6296 84.498 17.6296C86.3462 17.6296 87.9698 17.9312 89.3689 18.5345C90.7807 19.1377 91.8268 20.126 92.507 21.4994C92.8793 22.231 93.1039 22.9818 93.1809 23.7519C93.2579 24.5092 93.2964 25.3371 93.2964 26.2355V39H89.2341V34.4949L89.9079 35.2265C88.971 36.7282 87.8736 37.832 86.6157 38.5379C85.3707 39.231 83.8113 39.5776 81.9374 39.5776ZM82.8615 35.8811C83.914 35.8811 84.8124 35.695 85.5569 35.3228C86.3013 34.9505 86.8917 34.4494 87.3281 33.9558C87.7773 33.4167 88.0789 32.9098 88.233 32.4349C88.4768 31.8444 88.6116 31.1706 88.6373 30.4133C88.6758 29.6432 88.695 29.0207 88.695 28.5458L90.1197 28.9694C88.7207 29.1876 87.5206 29.3801 86.5195 29.547C85.5183 29.7138 84.6584 29.8743 83.9396 30.0283C83.2209 30.1695 82.5855 30.3299 82.0336 30.5096C81.4946 30.7021 81.0389 30.9267 80.6667 31.1834C80.2945 31.4401 80.0057 31.7353 79.8003 32.0691C79.6078 32.4028 79.5115 32.7942 79.5115 33.2435C79.5115 33.7569 79.6399 34.2125 79.8966 34.6104C80.1533 34.9955 80.5255 35.3035 81.0132 35.5345C81.5138 35.7656 82.1299 35.8811 82.8615 35.8811Z" fill="#EE2B5B"/>
-      </svg>
+      <svg height="20" viewBox="0 0 96 48" fill="none"><path d="M29.4847 28.9053V19.0107C29.4847 13.5461 25.0548 9.11621 19.5902 9.11621C14.1256 9.11621 9.69568 13.5461 9.69568 19.0107V28.9053" stroke="#EE2B5B" stroke-width="3.904"/><path d="M29.485 25.6067L29.485 29.4546C29.485 31.5797 31.2078 33.3025 33.3329 33.3025C35.458 33.3025 37.1808 31.5797 37.1808 29.4546L37.1808 25.6068" stroke="#EE2B5B" stroke-width="3.904"/><path d="M23.6494 38.8841L23.6494 33.0207C23.6494 30.7788 21.832 28.9614 19.5901 28.9614C17.3482 28.9614 15.5308 30.7788 15.5308 33.0207L15.5308 38.8841" stroke="#EE2B5B" stroke-width="3.904"/><path d="M1.99994 25.6067L1.99994 29.4546C1.99994 31.5797 3.72269 33.3025 5.84781 33.3025C7.97293 33.3025 9.69568 31.5797 9.69568 29.4546L9.69568 25.6068" stroke="#EE2B5B" stroke-width="3.904"/><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5903 23.4076C21.4118 23.4076 22.8884 21.931 22.8884 20.1095C22.8884 18.2879 21.4118 16.8113 19.5903 16.8113C17.7687 16.8113 16.2921 18.2879 16.2921 20.1095C16.2921 20.4474 16.3429 20.7735 16.4374 21.0806C16.6959 20.5079 17.272 20.1094 17.9411 20.1094C18.8519 20.1094 19.5902 20.8477 19.5902 21.7585C19.5902 22.4276 19.1916 23.0037 18.6189 23.2623C18.926 23.3568 19.2522 23.4076 19.5903 23.4076Z" fill="#EE2B5B"/><path d="M44.997 39V11.2762H49.6369V39H44.997ZM55.3654 39L55.404 11.2762H60.1016V28.2185L67.7064 18.2072H73.5014L65.4346 28.6036L74.1945 39H68.0529L60.1016 28.9886V39H55.3654ZM81.9374 39.5776C80.4357 39.5776 79.165 39.2952 78.1253 38.7305C77.0857 38.1529 76.2963 37.3892 75.7573 36.4394C75.231 35.4896 74.9679 34.4435 74.9679 33.3012C74.9679 32.3001 75.1348 31.4016 75.4685 30.6059C75.8022 29.7973 76.3156 29.1042 77.0087 28.5266C77.7018 27.9362 78.6002 27.4548 79.7041 27.0826C80.5383 26.8131 81.5138 26.5692 82.6305 26.351C83.7599 26.1328 84.9793 25.9339 86.2885 25.7542C87.6105 25.5617 88.9902 25.3563 90.4278 25.1381L88.772 26.0815C88.7849 24.644 88.464 23.5851 87.8094 22.9048C87.1548 22.2246 86.051 21.8844 84.498 21.8844C83.561 21.8844 82.6561 22.1026 81.7833 22.539C80.9106 22.9754 80.3009 23.7263 79.9543 24.7916L75.7188 23.4631C76.2322 21.7047 77.2076 20.2929 78.6452 19.2276C80.0955 18.1623 82.0465 17.6296 84.498 17.6296C86.3462 17.6296 87.9698 17.9312 89.3689 18.5345C90.7807 19.1377 91.8268 20.126 92.507 21.4994C92.8793 22.231 93.1039 22.9818 93.1809 23.7519C93.2579 24.5092 93.2964 25.3371 93.2964 26.2355V39H89.2341V34.4949L89.9079 35.2265C88.971 36.7282 87.8736 37.832 86.6157 38.5379C85.3707 39.231 83.8113 39.5776 81.9374 39.5776ZM82.8615 35.8811C83.914 35.8811 84.8124 35.695 85.5569 35.3228C86.3013 34.9505 86.8917 34.4494 87.3281 33.9558C87.7773 33.4167 88.0789 32.9098 88.233 32.4349C88.4768 31.8444 88.6116 31.1706 88.6373 30.4133C88.6758 29.6432 88.695 29.0207 88.695 28.5458L90.1197 28.9694C88.7207 29.1876 87.5206 29.3801 86.5195 29.547C85.5183 29.7138 84.6584 29.8743 83.9396 30.0283C83.2209 30.1695 82.5855 30.3299 82.0336 30.5096C81.4946 30.7021 81.0389 30.9267 80.6667 31.1834C80.2945 31.4401 80.0057 31.7353 79.8003 32.0691C79.6078 32.4028 79.5115 32.7942 79.5115 33.2435C79.5115 33.7569 79.6399 34.2125 79.8966 34.6104C80.1533 34.9955 80.5255 35.3035 81.0132 35.5345C81.5138 35.7656 82.1299 35.8811 82.8615 35.8811Z" fill="#EE2B5B"/></svg>
     </a>
-    <ul class="foot-links">
-      <li><a href="https://docs.ika.xyz">Docs</a></li>
-      <li><a href="#">Blog</a></li>
-      <li><a href="#">GitHub</a></li>
-      <li><a href="#">Twitter</a></li>
-      <li><a href="#">Telegram</a></li>
-    </ul>
+    <ul class="foot-links"><li><a href="https://docs.ika.xyz">Docs</a></li><li><a href="#">Blog</a></li><li><a href="#">GitHub</a></li><li><a href="#">Twitter</a></li><li><a href="#">Telegram</a></li></ul>
     <div class="foot-c">© 2026 Ika Network</div>
   </div>
 </footer>
 
+<!-- ═══════════════════════════════════════════════ -->
+<!-- THREE.JS HERO — ORGANIC TENTACLE CREATURE      -->
+<!-- ═══════════════════════════════════════════════ -->
 <script>
-// Scroll reveal
-const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('in');obs.unobserve(el.target)}})},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+(function(){
+  // ─── Three.js Setup ───
+  const canvas = document.getElementById('hero-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.2;
 
-// Animated counters
-function runC(el){const t=parseInt(el.dataset.count),s=el.dataset.suffix||'',d=2000,t0=performance.now();const tick=n=>{const p=Math.min((n-t0)/d,1),e=1-Math.pow(1-p,4);el.textContent=Math.round(e*t).toLocaleString()+s;if(p<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)}
-const sO=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.querySelectorAll('[data-count]').forEach(runC);sO.unobserve(el.target)}})},{threshold:.5});
-const sE=document.getElementById('stats');if(sE)sO.observe(sE);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100);
+  camera.position.set(0, 0, 4.5);
 
-// Hero grid canvas — sophisticated node network
-const c=document.getElementById('grid-c');
-if(c){const ctx=c.getContext('2d');let W,H,nodes=[],mouse={x:-1000,y:-1000};
-function resize(){const r=window.devicePixelRatio||1;W=c.offsetWidth;H=c.offsetHeight;c.width=W*r;c.height=H*r;ctx.setTransform(r,0,0,r,0,0);init()}
-function init(){nodes=[];const n=Math.max(25,Math.floor((W*H)/12000));for(let i=0;i<n;i++){nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,r:Math.random()*2+.8,p:Math.random()*Math.PI*2,speed:.008+Math.random()*.012})}}
-function draw(){ctx.clearRect(0,0,W,H);
-// Connection lines
-for(let i=0;i<nodes.length;i++){for(let j=i+1;j<nodes.length;j++){const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<160){const a=(1-d/160)*.15;ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.strokeStyle=`rgba(238,43,91,${a})`;ctx.lineWidth=.5;ctx.stroke()}}}
-// Nodes
-nodes.forEach(n=>{n.p+=n.speed;const g=(Math.sin(n.p)+1)/2;
-// Outer glow
-ctx.beginPath();ctx.arc(n.x,n.y,n.r+4,0,Math.PI*2);ctx.fillStyle=`rgba(238,43,91,${.03+g*.04})`;ctx.fill();
-// Core
-ctx.beginPath();ctx.arc(n.x,n.y,n.r+g*.6,0,Math.PI*2);ctx.fillStyle=`rgba(238,43,91,${.3+g*.5})`;ctx.fill();
-n.x+=n.vx;n.y+=n.vy;
-if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1});
-// Mouse interaction
-const mx=mouse.x,my=mouse.y;
-nodes.forEach(n=>{const dx=n.x-mx,dy=n.y-my,d=Math.sqrt(dx*dx+dy*dy);if(d<200&&d>1){const a=(1-d/200)*.08;ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(mx,my);ctx.strokeStyle=`rgba(238,43,91,${a})`;ctx.lineWidth=.3;ctx.stroke()}});
-requestAnimationFrame(draw)}
-resize();draw();
-window.addEventListener('resize',resize);
-document.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top})}
+  // Mouse tracking
+  const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+  window.addEventListener('mousemove', e => {
+    mouse.tx = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouse.ty = -(e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  // ─── Custom Shader Material — Organic Creature ───
+  const vertShader = `
+    uniform float uTime;
+    uniform vec2 uMouse;
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+    varying float vDisplacement;
+    varying vec2 vUv;
+
+    // Simplex noise functions
+    vec3 mod289(vec3 x) { return x - floor(x * (1.0/289.0)) * 289.0; }
+    vec4 mod289(vec4 x) { return x - floor(x * (1.0/289.0)) * 289.0; }
+    vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+    vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+    float snoise(vec3 v) {
+      const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+      const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+      vec3 i  = floor(v + dot(v, C.yyy));
+      vec3 x0 = v - i + dot(i, C.xxx);
+      vec3 g = step(x0.yzx, x0.xyz);
+      vec3 l = 1.0 - g;
+      vec3 i1 = min(g.xyz, l.zxy);
+      vec3 i2 = max(g.xyz, l.zxy);
+      vec3 x1 = x0 - i1 + C.xxx;
+      vec3 x2 = x0 - i2 + C.yyy;
+      vec3 x3 = x0 - D.yyy;
+      i = mod289(i);
+      vec4 p = permute(permute(permute(
+        i.z + vec4(0.0, i1.z, i2.z, 1.0))
+        + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+        + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+      float n_ = 0.142857142857;
+      vec3 ns = n_ * D.wyz - D.xzx;
+      vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+      vec4 x_ = floor(j * ns.z);
+      vec4 y_ = floor(j - 7.0 * x_);
+      vec4 x = x_ *ns.x + ns.yyyy;
+      vec4 y = y_ *ns.x + ns.yyyy;
+      vec4 h = 1.0 - abs(x) - abs(y);
+      vec4 b0 = vec4(x.xy, y.xy);
+      vec4 b1 = vec4(x.zw, y.zw);
+      vec4 s0 = floor(b0)*2.0 + 1.0;
+      vec4 s1 = floor(b1)*2.0 + 1.0;
+      vec4 sh = -step(h, vec4(0.0));
+      vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+      vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+      vec3 p0 = vec3(a0.xy,h.x);
+      vec3 p1 = vec3(a0.zw,h.y);
+      vec3 p2 = vec3(a1.xy,h.z);
+      vec3 p3 = vec3(a1.zw,h.w);
+      vec4 norm = taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+      p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
+      vec4 m = max(0.6 - vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)), 0.0);
+      m = m * m;
+      return 42.0 * dot(m*m, vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+    }
+
+    void main() {
+      vUv = uv;
+      vec3 pos = position;
+
+      // Multiple octaves of noise for organic displacement
+      float t = uTime * 0.3;
+      float n1 = snoise(pos * 1.5 + t) * 0.35;
+      float n2 = snoise(pos * 3.0 + t * 1.3) * 0.15;
+      float n3 = snoise(pos * 6.0 + t * 0.7) * 0.08;
+      float displacement = n1 + n2 + n3;
+
+      // Tentacle-like protrusions — directional bias
+      vec3 dir = normalize(pos);
+      // Create 8 tentacle directions
+      float tentacle = 0.0;
+      for(int i = 0; i < 8; i++) {
+        float angle = float(i) * 0.785398; // pi/4
+        float elevation = sin(float(i) * 1.2) * 0.6;
+        vec3 tDir = normalize(vec3(cos(angle), elevation, sin(angle)));
+        float alignment = max(0.0, dot(dir, tDir));
+        alignment = pow(alignment, 4.0);
+        float wave = sin(alignment * 6.2832 * 2.0 + t * (1.0 + float(i) * 0.15)) * 0.5 + 0.5;
+        tentacle += alignment * wave * 0.35;
+      }
+
+      displacement += tentacle;
+
+      // Mouse influence — creature reaches toward cursor
+      vec3 mouseDir = normalize(vec3(uMouse.x, uMouse.y, 0.3));
+      float mouseAlign = max(0.0, dot(dir, mouseDir));
+      displacement += pow(mouseAlign, 3.0) * 0.2;
+
+      pos += normal * displacement;
+      vDisplacement = displacement;
+      vNormal = normalMatrix * normal;
+      vPosition = (modelViewMatrix * vec4(pos, 1.0)).xyz;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+    }
+  `;
+
+  const fragShader = `
+    uniform float uTime;
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+    varying float vDisplacement;
+    varying vec2 vUv;
+
+    void main() {
+      // Fresnel — edge glow effect (subsurface scattering vibe)
+      vec3 viewDir = normalize(-vPosition);
+      float fresnel = 1.0 - max(0.0, dot(viewDir, normalize(vNormal)));
+      fresnel = pow(fresnel, 2.5);
+
+      // Base coral color with depth
+      vec3 coralDeep = vec3(0.45, 0.04, 0.12);   // Dark coral
+      vec3 coralBright = vec3(0.93, 0.17, 0.36);  // #EE2B5B
+      vec3 coralHot = vec3(1.0, 0.55, 0.45);      // Hot highlight
+
+      // Color based on displacement + fresnel
+      vec3 baseColor = mix(coralDeep, coralBright, smoothstep(-0.1, 0.4, vDisplacement));
+      baseColor = mix(baseColor, coralHot, fresnel * 0.6);
+
+      // Pulsing inner glow on tentacle protrusions
+      float pulse = sin(vDisplacement * 8.0 + uTime * 1.5) * 0.5 + 0.5;
+      vec3 glowColor = mix(coralBright, coralHot, pulse);
+      float glowAmount = smoothstep(0.25, 0.6, vDisplacement) * 0.4;
+      baseColor = mix(baseColor, glowColor, glowAmount);
+
+      // Fresnel edge emission
+      vec3 edgeGlow = coralBright * 1.8;
+      baseColor += edgeGlow * fresnel * 0.5;
+
+      // Opacity: slight transparency at edges for ethereal feel
+      float alpha = 0.85 + fresnel * 0.15;
+
+      // Subtle scanline / micro-texture
+      float scan = sin(vUv.y * 400.0) * 0.02;
+      baseColor += scan;
+
+      gl_FragColor = vec4(baseColor, alpha);
+    }
+  `;
+
+  // Create the organism
+  const geo = new THREE.IcosahedronGeometry(1.0, 64);
+  const mat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uMouse: { value: new THREE.Vector2(0, 0) }
+    },
+    vertexShader: vertShader,
+    fragmentShader: fragShader,
+    transparent: true,
+    side: THREE.DoubleSide,
+    depthWrite: false
+  });
+  const creature = new THREE.Mesh(geo, mat);
+  scene.add(creature);
+
+  // ─── Particle Field — bioluminescent spores ───
+  const particleCount = 600;
+  const pGeo = new THREE.BufferGeometry();
+  const pPos = new Float32Array(particleCount * 3);
+  const pSizes = new Float32Array(particleCount);
+  const pPhases = new Float32Array(particleCount);
+  for(let i = 0; i < particleCount; i++){
+    // Distribute in a sphere shell around creature
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = 1.5 + Math.random() * 3.5;
+    pPos[i*3] = r * Math.sin(phi) * Math.cos(theta);
+    pPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+    pPos[i*3+2] = r * Math.cos(phi);
+    pSizes[i] = Math.random() * 2.5 + 0.5;
+    pPhases[i] = Math.random() * Math.PI * 2;
+  }
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  pGeo.setAttribute('aSize', new THREE.BufferAttribute(pSizes, 1));
+  pGeo.setAttribute('aPhase', new THREE.BufferAttribute(pPhases, 1));
+
+  const pMat = new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 } },
+    vertexShader: `
+      attribute float aSize;
+      attribute float aPhase;
+      uniform float uTime;
+      varying float vAlpha;
+      void main(){
+        vec3 p = position;
+        // Gentle orbital drift
+        float t = uTime * 0.15;
+        float s = sin(t + aPhase);
+        float c = cos(t + aPhase * 0.7);
+        p.x += sin(t * 0.3 + aPhase) * 0.3;
+        p.y += cos(t * 0.2 + aPhase * 1.3) * 0.2;
+        p.z += sin(t * 0.25 + aPhase * 0.5) * 0.25;
+        // Pulsing alpha
+        vAlpha = (sin(uTime * 1.5 + aPhase) * 0.5 + 0.5) * 0.6 + 0.1;
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_Position = projectionMatrix * mv;
+        gl_PointSize = aSize * (200.0 / -mv.z);
+      }
+    `,
+    fragmentShader: `
+      varying float vAlpha;
+      void main(){
+        float d = length(gl_PointCoord - 0.5);
+        if(d > 0.5) discard;
+        float glow = 1.0 - smoothstep(0.0, 0.5, d);
+        glow = pow(glow, 2.0);
+        vec3 color = vec3(0.93, 0.17, 0.36); // coral
+        gl_FragColor = vec4(color, glow * vAlpha);
+      }
+    `,
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+  const particles = new THREE.Points(pGeo, pMat);
+  scene.add(particles);
+
+  // ─── Ambient rings ───
+  for(let i = 0; i < 3; i++){
+    const ringGeo = new THREE.RingGeometry(1.8 + i * 0.7, 1.81 + i * 0.7, 128);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0xEE2B5B,
+      transparent: true,
+      opacity: 0.04 - i * 0.01,
+      side: THREE.DoubleSide
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI * 0.5 + i * 0.15;
+    ring.rotation.z = i * 0.3;
+    ring.userData = { speed: 0.08 + i * 0.03, axis: i };
+    scene.add(ring);
+  }
+
+  // ─── Animation Loop ───
+  const clock = new THREE.Clock();
+  function animate(){
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+
+    // Smooth mouse
+    mouse.x += (mouse.tx - mouse.x) * 0.04;
+    mouse.y += (mouse.ty - mouse.y) * 0.04;
+
+    // Update uniforms
+    mat.uniforms.uTime.value = t;
+    mat.uniforms.uMouse.value.set(mouse.x, mouse.y);
+    pMat.uniforms.uTime.value = t;
+
+    // Creature slow rotation + mouse tilt
+    creature.rotation.y = t * 0.08 + mouse.x * 0.3;
+    creature.rotation.x = Math.sin(t * 0.12) * 0.1 + mouse.y * 0.2;
+
+    // Rings rotation
+    scene.children.forEach(child => {
+      if(child.userData && child.userData.speed){
+        child.rotation.z += child.userData.speed * 0.01;
+        child.rotation.x += child.userData.speed * 0.005;
+      }
+    });
+
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // Resize
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+})();
+
+// ─── GSAP ScrollTrigger Animations ───
+gsap.registerPlugin(ScrollTrigger);
+
+// Hero entrance animation
+const heroTL = gsap.timeline({ defaults: { ease: 'power3.out' }});
+heroTL
+  .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.8, delay: 0.3 })
+  .to('h1.hero-h', { opacity: 1, duration: 0 }, '-=0.4')
+  .from('h1.hero-h .line span', { yPercent: 110, duration: 1, stagger: 0.12, ease: 'power4.out' }, '-=0.4')
+  .to('.hero-sub', { opacity: 1, y: 0, duration: 0.7 }, '-=0.5')
+  .to('.hero-actions', { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
+  .to('.chain-row', { opacity: 1, y: 0, duration: 0.5 }, '-=0.3')
+  .to('.scroll-hint', { opacity: 0.35, duration: 0.8 }, '-=0.2');
+
+// Hero parallax on scroll — creature scales down and fades
+gsap.to('#hero-canvas', {
+  scrollTrigger: {
+    trigger: '#hero',
+    start: 'top top',
+    end: 'bottom top',
+    scrub: 0.5
+  },
+  scale: 1.2,
+  opacity: 0,
+  ease: 'none'
+});
+gsap.to('.hero-content', {
+  scrollTrigger: {
+    trigger: '#hero',
+    start: 'top top',
+    end: '60% top',
+    scrub: 0.5
+  },
+  y: -100,
+  opacity: 0,
+  ease: 'none'
+});
+
+// Stats counter animation
+const counters = document.querySelectorAll('.counter');
+ScrollTrigger.create({
+  trigger: '#stats',
+  start: 'top 80%',
+  onEnter: () => {
+    counters.forEach(el => {
+      const to = parseInt(el.dataset.to);
+      gsap.to({ val: 0 }, {
+        val: to,
+        duration: 2.5,
+        ease: 'power2.out',
+        onUpdate: function(){ el.textContent = Math.round(this.targets()[0].val).toLocaleString() }
+      });
+    });
+  },
+  once: true
+});
+
+// Section reveals with stagger
+document.querySelectorAll('.sec').forEach(sec => {
+  const tag = sec.querySelector('.tag');
+  const h2 = sec.querySelector('h2');
+  const p = sec.querySelector('p');
+  const items = [tag, h2, p].filter(Boolean);
+
+  gsap.from(items, {
+    scrollTrigger: { trigger: sec, start: 'top 75%', once: true },
+    y: 40,
+    opacity: 0,
+    stagger: 0.12,
+    duration: 0.8,
+    ease: 'power3.out'
+  });
+});
+
+// Problem cards stagger
+gsap.from('.prob-row', {
+  scrollTrigger: { trigger: '.prob-stack', start: 'top 75%', once: true },
+  x: 30,
+  opacity: 0,
+  stagger: 0.1,
+  duration: 0.6,
+  ease: 'power3.out'
+});
+
+// Feature grid cells
+gsap.from('.feat-cell', {
+  scrollTrigger: { trigger: '.feat-grid', start: 'top 75%', once: true },
+  y: 30,
+  opacity: 0,
+  stagger: 0.08,
+  duration: 0.6,
+  ease: 'power3.out'
+});
+
+// Bento cards
+gsap.from('.bento-card', {
+  scrollTrigger: { trigger: '.bento', start: 'top 75%', once: true },
+  y: 40,
+  opacity: 0,
+  stagger: 0.08,
+  duration: 0.7,
+  ease: 'power3.out'
+});
+
+// Comparison table rows
+gsap.from('.cmp tbody tr', {
+  scrollTrigger: { trigger: '.cmp-wrap', start: 'top 75%', once: true },
+  x: -20,
+  opacity: 0,
+  stagger: 0.06,
+  duration: 0.5,
+  ease: 'power3.out'
+});
+
+// Backer logos
+gsap.from('.backer-grid img', {
+  scrollTrigger: { trigger: '.backer-sec', start: 'top 80%', once: true },
+  y: 15,
+  opacity: 0,
+  stagger: 0.05,
+  duration: 0.4,
+  ease: 'power3.out'
+});
+
+// CTA rings expand
+gsap.from('.cta-ring', {
+  scrollTrigger: { trigger: '#cta', start: 'top 80%', once: true },
+  scale: 0.5,
+  opacity: 0,
+  stagger: 0.15,
+  duration: 1.2,
+  ease: 'power2.out'
+});
+
+// Nav background intensity on scroll
+ScrollTrigger.create({
+  start: 50,
+  onUpdate: self => {
+    const nav = document.getElementById('main-nav');
+    if(self.progress > 0) nav.style.borderBottomColor = 'rgba(242,242,250,0.08)';
+    else nav.style.borderBottomColor = 'rgba(242,242,250,0.06)';
+  }
+});
 </script>
 </body>
 </html>
