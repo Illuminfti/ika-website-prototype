@@ -179,32 +179,10 @@
       0%,100% { opacity: .6; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.15); }
     }
-    /* Animated grid lines */
-    .hero-grid {
-      position: absolute; inset: 0; z-index: 1; overflow: hidden;
-      mask-image: radial-gradient(ellipse 70% 60% at 70% 80%, black 0%, transparent 100%);
-      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 70% 80%, black 0%, transparent 100%);
-      opacity: .15;
-    }
-    .hero-grid svg { position:absolute; inset:0; width:100%; height:100%; }
-    .grid-line {
-      stroke: var(--c); stroke-width: .5; fill: none; opacity: 0;
-      animation: gridFade 3s ease-out forwards;
-    }
-    @keyframes gridFade { 0% { opacity:0; stroke-dashoffset:600; } 100% { opacity:1; stroke-dashoffset:0; } }
-    /* Scan line sweep */
-    .hero-scan {
-      position: absolute; z-index: 2; pointer-events: none;
-      width: 100%; height: 2px; left: 0;
-      background: linear-gradient(90deg, transparent, rgba(238,43,91,.15), transparent);
-      animation: scanLine 6s ease-in-out infinite;
-      filter: blur(1px);
-    }
-    @keyframes scanLine {
-      0% { top: 20%; opacity: 0; }
-      10% { opacity: 1; }
-      50% { top: 80%; opacity: .3; }
-      100% { top: 20%; opacity: 0; }
+    /* Interactive hero canvas */
+    #hero-ix {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      z-index: 1; pointer-events: none;
     }
     .hero-content {
       position: relative;
@@ -502,24 +480,8 @@
     <div class="hero-glow hero-glow-1"></div>
     <div class="hero-glow hero-glow-2"></div>
     <div class="hero-glow hero-glow-3"></div>
-    <!-- Perspective grid lines -->
-    <div class="hero-grid">
-      <svg viewBox="0 0 1440 900" preserveAspectRatio="none">
-        <line class="grid-line" x1="720" y1="450" x2="0" y2="900" stroke-dasharray="600" style="animation-delay:.2s"/>
-        <line class="grid-line" x1="720" y1="450" x2="200" y2="900" stroke-dasharray="600" style="animation-delay:.35s"/>
-        <line class="grid-line" x1="720" y1="450" x2="400" y2="900" stroke-dasharray="600" style="animation-delay:.5s"/>
-        <line class="grid-line" x1="720" y1="450" x2="600" y2="900" stroke-dasharray="600" style="animation-delay:.65s"/>
-        <line class="grid-line" x1="720" y1="450" x2="800" y2="900" stroke-dasharray="600" style="animation-delay:.55s"/>
-        <line class="grid-line" x1="720" y1="450" x2="1000" y2="900" stroke-dasharray="600" style="animation-delay:.45s"/>
-        <line class="grid-line" x1="720" y1="450" x2="1200" y2="900" stroke-dasharray="600" style="animation-delay:.3s"/>
-        <line class="grid-line" x1="720" y1="450" x2="1440" y2="900" stroke-dasharray="600" style="animation-delay:.15s"/>
-        <ellipse class="grid-line" cx="720" cy="750" rx="500" ry="80" stroke-dasharray="600" style="animation-delay:.8s"/>
-        <ellipse class="grid-line" cx="720" cy="700" rx="380" ry="55" stroke-dasharray="600" style="animation-delay:.9s"/>
-        <ellipse class="grid-line" cx="720" cy="650" rx="260" ry="35" stroke-dasharray="600" style="animation-delay:1s"/>
-      </svg>
-    </div>
-    <!-- Scan line -->
-    <div class="hero-scan"></div>
+    <!-- Interactive canvas -->
+    <canvas id="hero-ix"></canvas>
     
     <div class="hero-content">
       <div class="hero-pill">
@@ -836,6 +798,149 @@
     window.addEventListener('scroll', () => {
       navEl.classList.toggle('scrolled', window.scrollY > 50);
     }, { passive: true });
+
+    // Interactive hero canvas
+    (() => {
+      const c = document.getElementById('hero-ix');
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      let W, H, mx = -9999, my = -9999;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const isMobile = window.innerWidth < 768;
+
+      function resize() {
+        W = c.parentElement.offsetWidth;
+        H = c.parentElement.offsetHeight;
+        c.width = W * dpr;
+        c.height = H * dpr;
+        c.style.width = W + 'px';
+        c.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      const N = isMobile ? 50 : 120;
+      const nodes = [];
+      const ATTRACT_R = 200;
+      const PUSH_R = 80;
+
+      function init() {
+        resize();
+        nodes.length = 0;
+        for (let i = 0; i < N; i++) {
+          nodes.push({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            ox: 0, oy: 0, // offset from mouse
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            r: Math.random() * 1.5 + 0.5,
+            a: Math.random() * 0.5 + 0.2, // base alpha
+          });
+        }
+      }
+
+      // Mouse tracking on hero
+      const hero = document.getElementById('hero');
+      hero.addEventListener('mousemove', e => {
+        const rect = hero.getBoundingClientRect();
+        mx = e.clientX - rect.left;
+        my = e.clientY - rect.top;
+      }, { passive: true });
+      hero.addEventListener('mouseleave', () => { mx = -9999; my = -9999; });
+
+      // Touch support
+      hero.addEventListener('touchmove', e => {
+        const t = e.touches[0];
+        const rect = hero.getBoundingClientRect();
+        mx = t.clientX - rect.left;
+        my = t.clientY - rect.top;
+      }, { passive: true });
+      hero.addEventListener('touchend', () => { mx = -9999; my = -9999; });
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+
+        for (let i = 0; i < N; i++) {
+          const n = nodes[i];
+          // Drift
+          n.x += n.vx;
+          n.y += n.vy;
+
+          // Wrap
+          if (n.x < 0) n.x = W;
+          if (n.x > W) n.x = 0;
+          if (n.y < 0) n.y = H;
+          if (n.y > H) n.y = 0;
+
+          // Mouse interaction
+          const dx = n.x - mx;
+          const dy = n.y - my;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          let offX = 0, offY = 0;
+          if (dist < ATTRACT_R && dist > 0) {
+            const force = (1 - dist / ATTRACT_R);
+            if (dist < PUSH_R) {
+              // Push away close ones
+              offX = (dx / dist) * force * 30;
+              offY = (dy / dist) * force * 30;
+            } else {
+              // Attract distant ones slightly
+              offX = -(dx / dist) * force * 8;
+              offY = -(dy / dist) * force * 8;
+            }
+          }
+          n.ox += (offX - n.ox) * 0.1;
+          n.oy += (offY - n.oy) * 0.1;
+
+          const px = n.x + n.ox;
+          const py = n.y + n.oy;
+
+          // Glow near mouse
+          const glow = dist < ATTRACT_R ? (1 - dist / ATTRACT_R) * 0.8 : 0;
+          const alpha = n.a + glow;
+
+          // Draw node
+          ctx.beginPath();
+          ctx.arc(px, py, n.r + glow * 2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(238, 43, 91, ${alpha})`;
+          ctx.fill();
+
+          // Draw connections to nearby nodes
+          for (let j = i + 1; j < N; j++) {
+            const m = nodes[j];
+            const mx2 = m.x + m.ox;
+            const my2 = m.y + m.oy;
+            const d = Math.hypot(px - mx2, py - my2);
+            const maxD = isMobile ? 80 : 120;
+            if (d < maxD) {
+              const la = (1 - d / maxD) * 0.15;
+              ctx.beginPath();
+              ctx.moveTo(px, py);
+              ctx.lineTo(mx2, my2);
+              ctx.strokeStyle = `rgba(238, 43, 91, ${la})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Mouse glow
+        if (mx > 0 && my > 0) {
+          const g = ctx.createRadialGradient(mx, my, 0, mx, my, 150);
+          g.addColorStop(0, 'rgba(238, 43, 91, 0.06)');
+          g.addColorStop(1, 'transparent');
+          ctx.fillStyle = g;
+          ctx.fillRect(mx - 150, my - 150, 300, 300);
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', () => { resize(); });
+      init();
+      draw();
+    })();
 
     // Marquee Clone
     const mq = document.getElementById('mq');
