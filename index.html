@@ -192,7 +192,7 @@
     .hero-scan {
       position: absolute; z-index: 2; pointer-events: none;
       width: 100%; height: 2px; left: 0;
-      background: linear-gradient(90deg, transparent, rgba(238,43,91,.4), transparent);
+      background: linear-gradient(90deg, transparent, rgba(238,43,91,.15), transparent);
       animation: scanLine 6s ease-in-out infinite;
       filter: blur(1px);
     }
@@ -209,6 +209,7 @@
       max-width: 1320px;
       margin: 0 auto;
       padding: 0 3rem;
+      text-align: left;
     }
     .hero-pill {
       font-family: var(--fm); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.15em;
@@ -227,7 +228,7 @@
     /* Staggered text reveal */
     .hero-h {
       font-family: var(--fh);
-      font-size: clamp(3.5rem, 8vw, 7.5rem);
+      font-size: clamp(3rem, 7vw, 6.5rem);
       font-weight: 600; line-height: .9; letter-spacing: -0.03em;
       margin-bottom: 2rem;
       max-width: 900px;
