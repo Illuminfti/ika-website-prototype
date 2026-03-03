@@ -30,20 +30,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.75rem 2rem;display:
 .nav-links{display:flex;align-items:center;gap:1.5rem;list-style:none}
 .nav-links a{font-size:.8125rem;font-weight:500;color:var(--t2);text-decoration:none;transition:color .2s}
 .nav-links a:hover{color:var(--white)}
-.btn-nav{background:var(--coral);color:#fff;font-size:.75rem;font-weight:600;padding:.5rem 1.25rem;border-radius:8px;text-decoration:none;transition:all .2s;border:none;cursor:pointer}
+.btn-nav{background:var(--coral);color:#fff;font-size:.6875rem;font-weight:600;padding:.45rem 1rem;border-radius:7px;text-decoration:none;transition:all .2s;border:none;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .btn-nav:hover{filter:brightness(1.12);transform:translateY(-1px)}
 
 /* ── HERO ── */
 #hero{height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;text-align:center}
-#hero-canvas{position:absolute;inset:0;z-index:0}
+#hero-canvas{position:absolute;inset:0;z-index:1}
 /* Gradient orbs (Solana style) */
 .orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
 .orb-1{width:500px;height:500px;background:rgba(238,43,91,.08);top:20%;left:30%;animation:orbFloat 12s ease-in-out infinite}
 .orb-2{width:350px;height:350px;background:rgba(238,43,91,.05);top:50%;right:20%;animation:orbFloat 15s ease-in-out infinite reverse}
 .orb-3{width:200px;height:200px;background:rgba(100,50,200,.04);bottom:20%;left:15%;animation:orbFloat 10s ease-in-out infinite 3s}
 @keyframes orbFloat{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-20px)}66%{transform:translate(-15px,25px)}}
-.hero-overlay{position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse 90% 80% at 50% 45%,transparent 50%,var(--bg) 100%);pointer-events:none}
-.hero-content{position:relative;z-index:2;max-width:780px;padding:0 1.5rem}
+.hero-overlay{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse 100% 90% at 50% 50%,transparent 60%,var(--bg) 100%);pointer-events:none}
+.hero-content{position:relative;z-index:3;max-width:780px;padding:0 1.5rem}
 .hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--coral);margin-bottom:2rem;display:inline-flex;align-items:center;gap:.65rem;background:var(--coral10);padding:.4rem 1.1rem;border-radius:100px;border:1px solid var(--coral20)}
 .hero-eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--coral);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -180,7 +180,7 @@ footer{border-top:1px solid var(--bdr);padding:1.25rem 2rem;background:var(--bg)
 <!-- HERO -->
 <section id="hero">
   <canvas id="hero-canvas"></canvas>
-  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(238,43,91,.12) 0%,transparent 70%);pointer-events:none;z-index:0;filter:blur(30px)"></div>
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(238,43,91,.18) 0%,rgba(238,43,91,.06) 40%,transparent 70%);pointer-events:none;z-index:0;filter:blur(40px)"></div>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
@@ -361,6 +361,8 @@ footer{border-top:1px solid var(--bdr);padding:1.25rem 2rem;background:var(--bg)
   const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.5;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 100);
@@ -399,14 +401,14 @@ footer{border-top:1px solid var(--bdr);padding:1.25rem 2rem;background:var(--bg)
     uniform float uTime;varying vec3 vNormal;varying vec3 vPos;varying float vDisp;
     void main(){
       vec3 vd=normalize(-vPos);float fr=1.-max(0.,dot(vd,normalize(vNormal)));fr=pow(fr,2.2);
-      vec3 deep=vec3(.65,.08,.2);vec3 bright=vec3(.93,.17,.36);vec3 hot=vec3(1.,.65,.55);
-      vec3 c=mix(deep,bright,smoothstep(-.2,.25,vDisp));c=mix(c,hot,fr*.7);
+      vec3 deep=vec3(.7,.1,.22);vec3 bright=vec3(.95,.2,.4);vec3 hot=vec3(1.,.7,.6);
+      vec3 c=mix(deep,bright,smoothstep(-.2,.2,vDisp));c=mix(c,hot,fr*.75);
       float pulse=sin(vDisp*8.+uTime*1.5)*.5+.5;vec3 gc=mix(bright,hot,pulse);
-      c=mix(c,gc,smoothstep(.1,.45,vDisp)*.5);c+=bright*3.*fr*.7;c*=1.5;
-      gl_FragColor=vec4(c,.95);
+      c=mix(c,gc,smoothstep(.08,.4,vDisp)*.55);c+=bright*4.*fr*.8;c*=2.;
+      gl_FragColor=vec4(c,1.);
     }`;
 
-  const geo = new THREE.IcosahedronGeometry(1.3, 48);
+  const geo = new THREE.IcosahedronGeometry(1.5, 48);
   const mat = new THREE.ShaderMaterial({
     uniforms:{uTime:{value:0},uMouse:{value:new THREE.Vector2()}},
     vertexShader:vs, fragmentShader:fs, transparent:true, side:THREE.DoubleSide, depthWrite:false
