@@ -1031,7 +1031,17 @@ footer .nav-logo svg { height:18px; }
 
 </div><!-- /page-wrap -->
 
+<div id="debug" style="position:fixed;top:60px;left:10px;background:red;color:white;font-size:12px;padding:4px 8px;z-index:10000;font-family:monospace;"></div>
+
 <script>
+// Debug: show page width
+const dbg = document.getElementById('debug');
+function updateDebug() {
+  dbg.textContent = `body:${document.body.scrollWidth} html:${document.documentElement.scrollWidth} vw:${window.innerWidth} hero:${document.getElementById('hero')?.offsetWidth||'?'}`;
+}
+updateDebug();
+window.addEventListener('resize', updateDebug);
+setTimeout(updateDebug, 2000);
 // ── Marquee duplicate for seamless loop ──
 const marquee = document.getElementById('marquee');
 marquee.innerHTML += marquee.innerHTML;
