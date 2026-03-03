@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ika — Sign Anything. On Any Chain.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg: #07070F;
+      --bg-2: #0D0D1A;
+      --bg-3: #12121F;
+      --coral: #FF4785;
+      --coral-dim: rgba(255, 71, 133, 0.12);
+      --coral-glow: rgba(255, 71, 133, 0.28);
+      --cyan: #00E5FF;
+      --cyan-dim: rgba(0, 229, 255, 0.1);
+      --cyan-glow: rgba(0, 229, 255, 0.22);
+      --text: #F0F0F8;
+      --text-2: rgba(240, 240, 248, 0.52);
+      --text-3: rgba(240, 240, 248, 0.22);
+      --border: rgba(240, 240, 248, 0.06);
+      --border-hover: rgba(240, 240, 248, 0.13);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1.25rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(7, 7, 15, 0.72);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 1.125rem; font-weight: 700; letter-spacing: -0.02em;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 0.625rem;
+    }
+    .logo-mark {
+      width: 30px; height: 30px; background: var(--coral);
+      border-radius: 7px; display: flex; align-items: center; justify-content: center;
+    }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.875rem; font-weight: 500; color: var(--text-2);
+      text-decoration: none; transition: color 0.2s; letter-spacing: 0.01em;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--coral); color: #fff; font-size: 0.875rem; font-weight: 600;
+      padding: 0.5rem 1.25rem; border-radius: 7px; text-decoration: none;
+      transition: opacity 0.2s; cursor: pointer;
+    }
+    .nav-cta:hover { opacity: 0.82; }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 10rem 2.5rem 5rem;
+      max-width: 1440px; margin: 0 auto;
+      position: relative;
+    }
+    .hero-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--coral);
+      margin-bottom: 1.75rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .hero-eyebrow::before {
+      content: ''; width: 28px; height: 1px; background: var(--coral);
+    }
+    h1.hero-head {
+      font-size: clamp(4.5rem, 9vw, 8.5rem);
+      font-weight: 700; line-height: 0.93;
+      letter-spacing: -0.045em;
+      margin-bottom: 1.75rem;
+      max-width: 860px;
+    }
+    h1.hero-head .muted { color: rgba(240,240,248,0.28); }
+    .hero-sub {
+      font-size: 1.0625rem; font-weight: 400; color: var(--text-2);
+      line-height: 1.65; max-width: 500px; margin-bottom: 2.75rem;
+    }
+    .hero-actions { display: flex; gap: 0.875rem; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--coral); color: #fff;
+      font-size: 0.9375rem; font-weight: 600;
+      padding: 0.9rem 1.875rem; border-radius: 8px;
+      text-decoration: none; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: opacity 0.2s; letter-spacing: -0.01em;
+    }
+    .btn-primary:hover { opacity: 0.82; }
+    .btn-ghost {
+      background: transparent; color: var(--text-2);
+      font-size: 0.9375rem; font-weight: 500;
+      padding: 0.9rem 1.875rem; border-radius: 8px;
+      text-decoration: none; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      border: 1px solid var(--border-hover); transition: all 0.2s;
+      letter-spacing: -0.01em;
+    }
+    .btn-ghost:hover { color: var(--text); border-color: rgba(240,240,248,0.26); }
+    .chain-row {
+      display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 3rem;
+    }
+    .chain-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.06em;
+      padding: 0.375rem 0.875rem; border-radius: 100px;
+      border: 1px solid var(--border); color: var(--text-3);
+      background: var(--bg-2);
+    }
+
+    /* STATS */
+    #stats {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-2);
+    }
+    .stats-grid {
+      max-width: 1440px; margin: 0 auto;
+      padding: 2.25rem 2.5rem;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+    }
+    .stat-item {
+      padding: 0 2rem;
+      border-left: 1px solid var(--border);
+    }
+    .stat-item:first-child { border-left: none; padding-left: 0; }
+    .stat-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(1.875rem, 3vw, 2.625rem);
+      font-weight: 500; letter-spacing: -0.03em; margin-bottom: 0.3rem;
+    }
+    .stat-label { font-size: 0.8125rem; color: var(--text-2); line-height: 1.4; }
+
+    /* SECTION BASICS */
+    .section { padding: 6.5rem 2.5rem; }
+    .section-inner { max-width: 1440px; margin: 0 auto; }
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.625rem; font-weight: 500; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 1rem;
+    }
+    h2.sec-head {
+      font-size: clamp(2.25rem, 4.5vw, 4rem);
+      font-weight: 700; line-height: 1.03; letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+    .sep { height: 1px; background: var(--border); }
+
+    /* PROBLEM */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .prob-stack {
+      border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+      background: var(--bg-3);
+    }
+    .prob-row {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 1.375rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .prob-row:last-child { border-bottom: none; }
+    .prob-row:hover { background: rgba(255,255,255,0.02); }
+    .prob-icon {
+      width: 34px; height: 34px; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .prob-icon.bad { background: rgba(239,68,68,0.1); }
+    .prob-icon.bad svg { stroke: #F87171; }
+    .prob-icon.good { background: var(--cyan-dim); }
+    .prob-icon.good svg { stroke: var(--cyan); }
+    .prob-title { font-size: 0.9375rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .prob-desc { font-size: 0.8125rem; color: var(--text-2); line-height: 1.55; }
+
+    /* PRODUCT SECTIONS */
+    .product-vis {
+      border-radius: 18px; overflow: hidden;
+      aspect-ratio: 4/3; position: relative;
+      border: 1px solid var(--border);
+    }
+    .vis-coral { background: radial-gradient(ellipse at 35% 45%, var(--coral-dim) 0%, transparent 65%), var(--bg-3); }
+    .vis-cyan  { background: radial-gradient(ellipse at 65% 55%, var(--cyan-dim) 0%, transparent 65%), var(--bg-3); }
+    .node-stage {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .node-ring { position: relative; width: 290px; height: 290px; }
+    .pulse { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); border-radius: 50%; border: 1px solid; animation: px 3s ease-out infinite; }
+    .pulse.c { border-color: rgba(255,71,133,0.4); }
+    .pulse.e { border-color: rgba(0,229,255,0.35); }
+    .pulse:nth-child(2) { animation-delay: 1s; }
+    .pulse:nth-child(3) { animation-delay: 2s; }
+    @keyframes px { 0%{width:56px;height:56px;opacity:.9} 100%{width:290px;height:290px;opacity:0} }
+    .node-hub {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 52px; height: 52px; border-radius: 50%; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hub-c { background: var(--coral-dim); border: 2px solid rgba(255,71,133,0.4); box-shadow: 0 0 32px var(--coral-glow); }
+    .hub-e { background: var(--cyan-dim); border: 2px solid rgba(0,229,255,0.3); box-shadow: 0 0 32px var(--cyan-glow); }
+    .hub-dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot-c { background: var(--coral); box-shadow: 0 0 14px var(--coral); }
+    .dot-e { background: var(--cyan); box-shadow: 0 0 14px var(--cyan); }
+    .orb {
+      position: absolute; width: 34px; height: 34px; border-radius: 50%;
+      border: 1px solid; display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.5rem; font-weight: 500;
+    }
+    .orb.c { border-color: rgba(255,71,133,0.3); background: rgba(255,71,133,0.05); color: var(--coral); }
+    .orb.e { border-color: rgba(0,229,255,0.28); background: rgba(0,229,255,0.05); color: var(--cyan); }
+    .p1{top:-17px;left:calc(50% - 17px)}
+    .p2{top:calc(22% - 17px);right:-17px}
+    .p3{bottom:calc(22% - 17px);right:-17px}
+    .p4{bottom:-17px;left:calc(50% - 17px)}
+    .p5{bottom:calc(22% - 17px);left:-17px}
+    .p6{top:calc(22% - 17px);left:-17px}
+    .vis-stats {
+      position: absolute; bottom: 1.5rem; left: 1.5rem; right: 1.5rem;
+      display: flex; gap: 0.75rem;
+    }
+    .vis-stat {
+      flex: 1; border-radius: 9px; padding: 0.875rem;
+    }
+    .vs-c { background: rgba(255,71,133,0.07); border: 1px solid rgba(255,71,133,0.18); }
+    .vs-e { background: var(--cyan-dim); border: 1px solid rgba(0,229,255,0.18); }
+    .vis-stat-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1875rem; font-weight: 500; margin-bottom: 0.2rem;
+    }
+    .vis-stat-label { font-size: 0.625rem; color: var(--text-2); }
+    .feat-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 2rem; }
+    .feat-row {
+      display: flex; align-items: flex-start; gap: 0.875rem;
+      padding: 1rem; border-radius: 9px;
+      border: 1px solid transparent; transition: all 0.2s;
+    }
+    .feat-row:hover { background: var(--bg-3); border-color: var(--border); }
+    .feat-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 8px; flex-shrink: 0; }
+    .fd-c { background: var(--coral); }
+    .fd-e { background: var(--cyan); }
+    .feat-title { font-size: 0.9375rem; font-weight: 600; margin-bottom: 0.2rem; }
+    .feat-desc { font-size: 0.8125rem; color: var(--text-2); line-height: 1.5; }
+
+    /* CALLOUT BOX */
+    .callout-cyan {
+      background: var(--cyan-dim); border: 1px solid rgba(0,229,255,0.15);
+      border-radius: 11px; padding: 1.25rem; margin-bottom: 1.75rem;
+    }
+    .callout-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.625rem; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--cyan); margin-bottom: 0.5rem;
+    }
+    .callout-text { font-size: 0.875rem; color: var(--text-2); line-height: 1.6; }
+
+    /* CIPHER OVERLAY */
+    .cipher-wrap {
+      position: absolute; top: 1rem; left: 1.5rem; right: 1.5rem;
+      overflow: hidden; height: 80px;
+      mask-image: linear-gradient(to bottom, transparent, black 40%, black 60%, transparent);
+      -webkit-mask-image: linear-gradient(to bottom, transparent, black 40%, black 60%, transparent);
+    }
+    .cipher-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.5625rem; color: var(--cyan); opacity: 0.45;
+      letter-spacing: 0.04em; line-height: 1.9;
+    }
+
+    /* USE CASES */
+    #use-cases { background: var(--bg-2); overflow: hidden; }
+    .uc-scroll {
+      display: flex; gap: 0.875rem; overflow-x: auto; padding: 2rem 0;
+      scrollbar-width: none; -ms-overflow-style: none; cursor: grab;
+      padding-left: calc((100vw - min(1440px, 100vw)) / 2 + 2.5rem);
+      padding-right: 2.5rem;
+    }
+    .uc-scroll::-webkit-scrollbar { display: none; }
+    .uc-card {
+      flex-shrink: 0; width: 296px; padding: 1.75rem;
+      border-radius: 14px; border: 1px solid var(--border);
+      background: var(--bg-3); transition: all 0.22s; cursor: pointer;
+    }
+    .uc-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+    .uc-card.cc:hover { border-color: rgba(255,71,133,0.22); }
+    .uc-card.ec:hover { border-color: rgba(0,229,255,0.18); }
+    .uc-icon {
+      width: 42px; height: 42px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;
+    }
+    .uc-icon.c { background: var(--coral-dim); }
+    .uc-icon.c svg { stroke: var(--coral); }
+    .uc-icon.e { background: var(--cyan-dim); }
+    .uc-icon.e svg { stroke: var(--cyan); }
+    .uc-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .uc-desc { font-size: 0.8125rem; color: var(--text-2); line-height: 1.55; }
+    .uc-badge {
+      margin-top: 1rem; font-family: 'JetBrains Mono', monospace;
+      font-size: 0.5625rem; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 0.3rem 0.625rem;
+      border-radius: 5px; display: inline-block;
+    }
+    .ub-c { background: var(--coral-dim); color: var(--coral); }
+    .ub-e { background: var(--cyan-dim); color: var(--cyan); }
+
+    /* COMPARISON TABLE */
+    .cmp-table {
+      width: 100%; border-collapse: collapse;
+      border-radius: 13px; overflow: hidden;
+      border: 1px solid var(--border); margin-top: 3rem;
+    }
+    .cmp-table th {
+      padding: 1rem 1.375rem; font-size: 0.8125rem; font-weight: 600;
+      text-align: left; background: var(--bg-3); color: var(--text-2);
+      letter-spacing: 0.02em; border-bottom: 1px solid var(--border);
+    }
+    .cmp-table th.ika-col { color: var(--coral); }
+    .cmp-table td {
+      padding: 0.9375rem 1.375rem; font-size: 0.875rem;
+      border-bottom: 1px solid var(--border); color: var(--text-2);
+    }
+    .cmp-table tr:last-child td { border-bottom: none; }
+    .cmp-table td.ika-col { color: var(--text); font-weight: 500; }
+    .chk { color: #4ADE80; }
+    .crs { color: #F87171; }
+
+    /* CTA */
+    #cta { background: var(--bg-2); position: relative; overflow: hidden; padding: 9rem 2.5rem; }
+    .cta-glow {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 700px; height: 350px;
+      background: radial-gradient(ellipse, rgba(255,71,133,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-inner { max-width: 640px; margin: 0 auto; text-align: center; position: relative; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border); padding: 2rem 2.5rem;
+      background: var(--bg);
+    }
+    .footer-inner {
+      max-width: 1440px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-links { display: flex; gap: 1.75rem; list-style: none; }
+    .footer-links a {
+      font-size: 0.8125rem; color: var(--text-3); text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text-2); }
+    .footer-mono { font-family: 'JetBrains Mono', monospace; font-size: 0.625rem; color: var(--text-3); }
+
+    /* SCROLL REVEAL */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.1s; }
+    .d2 { transition-delay: 0.2s; }
+    .d3 { transition-delay: 0.3s; }
+
+    /* RESPONSIVE */
+    @media(max-width:1024px){
+      .two-col { grid-template-columns:1fr; gap:3rem; }
+      .stats-grid { grid-template-columns:repeat(2,1fr); gap:1.5rem; }
+    }
+    @media(max-width:640px){
+      .nav-links { display:none; }
+      h1.hero-head { font-size: clamp(3.25rem, 14vw, 4.5rem); }
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      nav { padding: 1rem 1.25rem; }
+    }
+
+    /* Divider */
+    .pin-footer {
+      display: flex; gap: 2.5rem; justify-content: center; align-items: center;
+      opacity: 0.28; flex-wrap: wrap; margin-top: 4rem;
+    }
+    .pin-foot-item {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem; letter-spacing: 0.12em; color: var(--text);
+    }
+    .pin-sep { width: 1px; height: 14px; background: var(--border); }
+  </style>
+</head>
+
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-mark">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="3.5" fill="white"/>
+        <circle cx="3" cy="4" r="1.8" fill="white" opacity="0.5"/>
+        <circle cx="13" cy="4" r="1.8" fill="white" opacity="0.5"/>
+        <circle cx="3" cy="12" r="1.8" fill="white" opacity="0.5"/>
+        <circle cx="13" cy="12" r="1.8" fill="white" opacity="0.5"/>
+      </svg>
+    </div>
+    Ika
+  </a>
+  <ul class="nav-links">
+    <li><a href="#ika-mpc">MPC Network</a></li>
+    <li><a href="#encrypt">Encrypt</a></li>
+    <li><a href="#use-cases">Use Cases</a></li>
+    <li><a href="https://docs.ika.xyz" target="_blank">Docs</a></li>
+    <li><a href="#">Blog</a></li>
+  </ul>
+  <a href="https://docs.ika.xyz" class="nav-cta">Start Building</a>
+</nav>
+
+
+<!-- ─── HERO ─── -->
+<section style="position:relative; overflow:hidden;">
+  <div id="hero">
+    <div class="hero-eyebrow">Now live on Solana &amp; Sui</div>
+    <h1 class="hero-head">
+      Sign anything.<br>
+      <span class="muted">On any chain.</span>
+    </h1>
+    <p class="hero-sub">
+      Ika is the MPC network for Solana builders — giving your programs the ability to sign transactions on Bitcoin, Ethereum, and any other chain. Sub-second. Massively decentralised. Zero trust required.
+    </p>
+    <div class="hero-actions">
+      <a href="https://docs.ika.xyz" class="btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Start Building
+      </a>
+      <a href="#" class="btn-ghost">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        Whitepaper
+      </a>
+    </div>
+    <div class="chain-row">
+      <span class="chain-pill">Bitcoin</span>
+      <span class="chain-pill">Ethereum</span>
+      <span class="chain-pill">Solana</span>
+      <span class="chain-pill">Sui</span>
+      <span class="chain-pill">EVM Chains</span>
+      <span class="chain-pill">+ Any Chain</span>
+    </div>
+  </div>
+  <!-- Canvas bg -->
+  <canvas id="net-canvas" style="position:absolute;top:0;right:0;width:58%;height:100%;pointer-events:none;opacity:.55;"></canvas>
+  <!-- Ambient glow -->
+  <div style="position:absolute;top:18%;right:8%;width:480px;height:480px;background:radial-gradient(circle,rgba(255,71,133,0.055) 0%,transparent 70%);pointer-events:none;border-radius:50%;"></div>
+</section>
+
+
+<!-- ─── STATS ─── -->
+<div id="stats">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-num" style="color:var(--coral);">
+        <span data-count="10000" data-suffix="x">0x</span>
+      </div>
+      <div class="stat-label">Higher throughput than legacy MPC</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num mono" style="color:var(--text);">&lt;<span style="color:var(--coral);">1</span>s</div>
+      <div class="stat-label">Signature latency end-to-end</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" style="color:var(--text);">
+        <span data-count="1000" data-suffix="+">0+</span>
+      </div>
+      <div class="stat-label">Signer nodes, non-collusive</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num mono" style="color:var(--cyan);">0</div>
+      <div class="stat-label">Trust assumptions required</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── PROBLEM ─── -->
+<section class="section" id="problem">
+  <div class="section-inner">
+    <div class="two-col">
+      <div class="reveal">
+        <div class="tag">The problem</div>
+        <h2 class="sec-head">Cross-chain coordination<br>is <span style="color:rgba(248,113,113,0.85);">broken.</span></h2>
+        <p style="font-size:1rem;color:var(--text-2);line-height:1.72;max-width:440px;margin-bottom:1rem;">
+          Current MPC solutions support 4–8 nodes, take 30+ seconds, and require trusting a custodian. Bridges get hacked. Wrapping loses composability. Your users pay the price.
+        </p>
+        <p style="font-size:1rem;color:var(--text-2);line-height:1.72;max-width:440px;">
+          Ika fixes this at the protocol level. Not with another bridge.
+        </p>
+      </div>
+      <div class="reveal d2">
+        <div class="prob-stack">
+          <div class="prob-row">
+            <div class="prob-icon bad">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            </div>
+            <div>
+              <div class="prob-title">Legacy MPC: 30+ second latency</div>
+              <div class="prob-desc">4–8 node threshold signing bottlenecks throughput. Unusable for real-time DeFi.</div>
+            </div>
+          </div>
+          <div class="prob-row">
+            <div class="prob-icon bad">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            </div>
+            <div>
+              <div class="prob-title">Bridges: $2.5B stolen so far</div>
+              <div class="prob-desc">Wrapped assets, custodial risk, and repeated catastrophic exploits. Not a solution.</div>
+            </div>
+          </div>
+          <div class="prob-row">
+            <div class="prob-icon bad">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            </div>
+            <div>
+              <div class="prob-title">Centralised custodians: requires trust</div>
+              <div class="prob-desc">Back to trusting a company. Defeats the premise of decentralised finance.</div>
+            </div>
+          </div>
+          <div class="prob-row" style="border-top:1px solid var(--border);">
+            <div class="prob-icon good">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <div class="prob-title" style="color:var(--cyan);">Ika: &lt;1s · 1,000s of nodes · zero trust</div>
+              <div class="prob-desc">2PC-MPC eliminates collusion risk. Scales to institutional demand without compromise.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+
+<!-- ─── IKA MPC ─── -->
+<section class="section" id="ika-mpc" style="background:var(--bg-2);">
+  <div class="section-inner">
+    <div class="two-col">
+      <div class="reveal">
+        <div class="tag">Ika MPC Network</div>
+        <h2 class="sec-head">Your Solana program.<br>Any chain's<br><span style="color:var(--coral);">private key.</span></h2>
+        <p style="font-size:1rem;color:var(--text-2);line-height:1.72;max-width:480px;margin-bottom:1.75rem;">
+          Control accounts on Bitcoin, Ethereum, and any other chain directly from a Solana smart contract. A faster, cheaper Near Intents. On-chain Fireblocks. Whatever you need — Ika handles the signing.
+        </p>
+        <div class="feat-list">
+          <div class="feat-row">
+            <div class="feat-dot fd-c"></div>
+            <div>
+              <div class="feat-title">On-chain Fireblocks &amp; Privy</div>
+              <div class="feat-desc">Institutional-grade MPC custody, fully programmable from Solana. No vendor lock-in.</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-dot fd-c"></div>
+            <div>
+              <div class="feat-title">Native Bitcoin DeFi</div>
+              <div class="feat-desc">Lend against native BTC and Zcash. No wrapping. No trust. Real cross-chain composability.</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-dot fd-c"></div>
+            <div>
+              <div class="feat-title">Solana multisig, any chain</div>
+              <div class="feat-desc">One Solana program as the controlling signer for assets across every other network.</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-dot fd-c"></div>
+            <div>
+              <div class="feat-title">AI agent guardrails</div>
+              <div class="feat-desc">Enforce spending limits and MPC approval flows for autonomous AI agents managing real assets.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal d2">
+        <div class="product-vis vis-coral">
+          <div class="node-stage">
+            <div class="node-ring">
+              <div class="pulse c"></div>
+              <div class="pulse c"></div>
+              <div class="pulse c"></div>
+              <div class="node-hub hub-c"><div class="hub-dot dot-c"></div></div>
+              <div class="orb c p1">BTC</div>
+              <div class="orb c p2">ETH</div>
+              <div class="orb c p3">SOL</div>
+              <div class="orb c p4">SUI</div>
+              <div class="orb c p5">ZEC</div>
+              <div class="orb c p6">EVM</div>
+            </div>
+          </div>
+          <div class="vis-stats">
+            <div class="vis-stat vs-c">
+              <div class="vis-stat-val" style="color:var(--coral);">10,000x</div>
+              <div class="vis-stat-label">vs legacy MPC throughput</div>
+            </div>
+            <div class="vis-stat vs-c">
+              <div class="vis-stat-val" style="color:var(--coral);">&lt;1s</div>
+              <div class="vis-stat-label">signature latency</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+
+<!-- ─── ENCRYPT ─── -->
+<section class="section" id="encrypt">
+  <div class="section-inner">
+    <div class="two-col" style="direction:rtl;">
+      <div class="reveal" style="direction:ltr;">
+        <div class="tag">Encrypt by Ika</div>
+        <h2 class="sec-head">Logic on<br><span style="color:var(--cyan);">encrypted</span><br>data. On Solana.</h2>
+        <p style="font-size:1rem;color:var(--text-2);line-height:1.72;max-width:480px;margin-bottom:1.75rem;">
+          The first FHE platform fast enough for production DeFi. Unlike Zama or Arcium, Encrypt is built for Solana's throughput — enabling confidential trading, private lending, and the world's first FHE-TLS.
+        </p>
+        <div class="callout-cyan">
+          <div class="callout-label">FHE-TLS — The Killer Feature</div>
+          <div class="callout-text">Your Solana program can perform confidential, verifiable read <em>and write</em> operations to any API on earth. No other platform does this.</div>
+        </div>
+        <div class="feat-list">
+          <div class="feat-row">
+            <div class="feat-dot fd-e"></div>
+            <div>
+              <div class="feat-title">Confidential DeFi</div>
+              <div class="feat-desc">Private order books, sealed-bid auctions, encrypted lending positions. MEV-resistant by design.</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-dot fd-e"></div>
+            <div>
+              <div class="feat-title">Private governance</div>
+              <div class="feat-desc">On-chain votes where individual ballots stay encrypted until reveal. Provably fair outcomes.</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-dot fd-e"></div>
+            <div>
+              <div class="feat-title">Production-grade speed</div>
+              <div class="feat-desc">Not retrofitted. Built for Solana throughput from day one. Actually usable in real DeFi.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal d2" style="direction:ltr;">
+        <div class="product-vis vis-cyan">
+          <div class="cipher-wrap">
+            <div class="cipher-text">
+              0x4f3a9c1e7b2d8f6a0c5e3b1d9f7a2c4e6b8d0f2a4c6e8b0d2f4a6c8e0b2d4f6a<br>
+              0xe2d4b6a8c0f2d4b6a8c0e2d4b6a8c0f2d4b6a8c0e2d4b6a8c0f2d4b6a8c0e2d4<br>
+              0x9f7e5d3c1b0a8f6e4d2c0b9a7f6e5d4c3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7
+            </div>
+          </div>
+          <div class="node-stage">
+            <div class="node-ring">
+              <div class="pulse e"></div>
+              <div class="pulse e"></div>
+              <div class="pulse e"></div>
+              <div class="node-hub hub-e"><div class="hub-dot dot-e"></div></div>
+              <div class="orb e p1">AES</div>
+              <div class="orb e p2">FHE</div>
+              <div class="orb e p3">TLS</div>
+              <div class="orb e p4">ZK</div>
+              <div class="orb e p5">API</div>
+              <div class="orb e p6">SOL</div>
+            </div>
+          </div>
+          <div class="vis-stats">
+            <div class="vis-stat vs-e">
+              <div class="vis-stat-val" style="color:var(--cyan);">FHE-TLS</div>
+              <div class="vis-stat-label">Read + write any API</div>
+            </div>
+            <div class="vis-stat vs-e">
+              <div class="vis-stat-val" style="color:var(--cyan);">Production</div>
+              <div class="vis-stat-label">Fast enough for DeFi</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+
+<!-- ─── USE CASES ─── -->
+<section id="use-cases" style="padding: 6.5rem 0;">
+  <div class="section-inner" style="padding: 0 2.5rem;">
+    <div class="reveal">
+      <div class="tag">What you can build</div>
+      <h2 class="sec-head" style="margin-bottom:0.375rem;">New primitives.<br>New design space.</h2>
+      <p style="font-size:0.875rem;color:var(--text-3);font-family:'JetBrains Mono',monospace;margin-top:0.5rem;">← drag to explore →</p>
+    </div>
+  </div>
+
+  <div class="uc-scroll" id="uc-scroll" style="margin-top:2.25rem;">
+
+    <div class="uc-card cc">
+      <div class="uc-icon c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+      <div class="uc-title">On-chain Fireblocks</div>
+      <div class="uc-desc">Institutional MPC custody controlled by your Solana program. No vendor. No custodian.</div>
+      <div class="uc-badge ub-c">Ika MPC</div>
+    </div>
+
+    <div class="uc-card cc">
+      <div class="uc-icon c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      <div class="uc-title">Near Intents, faster &amp; cheaper</div>
+      <div class="uc-desc">Cross-chain intent execution at Solana speed. Sub-second settlement, fraction of the cost.</div>
+      <div class="uc-badge ub-c">Ika MPC</div>
+    </div>
+
+    <div class="uc-card cc">
+      <div class="uc-icon c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg></div>
+      <div class="uc-title">Lend against native Bitcoin</div>
+      <div class="uc-desc">Use native BTC and Zcash as collateral in Solana DeFi. No wrapping. Full custody ownership.</div>
+      <div class="uc-badge ub-c">Ika MPC</div>
+    </div>
+
+    <div class="uc-card cc">
+      <div class="uc-icon c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>
+      <div class="uc-title">AI Agent Guardrails</div>
+      <div class="uc-desc">MPC approval flows that prevent autonomous AI agents from exceeding authorised spending limits.</div>
+      <div class="uc-badge ub-c">Ika MPC</div>
+    </div>
+
+    <div class="uc-card ec">
+      <div class="uc-icon e"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="uc-title">Confidential DeFi</div>
+      <div class="uc-desc">Private order books and encrypted positions. Traders can't front-run what they can't see.</div>
+      <div class="uc-badge ub-e">Encrypt</div>
+    </div>
+
+    <div class="uc-card ec">
+      <div class="uc-icon e"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+      <div class="uc-title">FHE-TLS</div>
+      <div class="uc-desc">Your Solana program makes confidential, verifiable calls to any real-world API. Read and write.</div>
+      <div class="uc-badge ub-e">Encrypt</div>
+    </div>
+
+    <div class="uc-card ec">
+      <div class="uc-icon e"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
+      <div class="uc-title">Sealed-Bid Auctions</div>
+      <div class="uc-desc">All bids stay encrypted until the reveal. No information leakage. Provably fair outcomes.</div>
+      <div class="uc-badge ub-e">Encrypt</div>
+    </div>
+
+    <div class="uc-card ec">
+      <div class="uc-icon e"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="uc-title">Private Governance</div>
+      <div class="uc-desc">Vote without revealing your position until the tally. Cryptographically private, publicly verifiable.</div>
+      <div class="uc-badge ub-e">Encrypt</div>
+    </div>
+
+  </div>
+</section>
+
+<div class="sep"></div>
+
+
+<!-- ─── COMPARISON ─── -->
+<section class="section" style="background:var(--bg);">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="tag">How we compare</div>
+      <h2 class="sec-head" style="margin-bottom:0.5rem;">Not all MPC<br>is equal.</h2>
+      <p style="font-size:0.9375rem;color:var(--text-2);max-width:460px;">Legacy solutions were designed for a different era. Ika was built for Solana-scale demand from day one.</p>
+    </div>
+    <table class="cmp-table">
+      <thead>
+        <tr>
+          <th>Capability</th>
+          <th class="ika-col">Ika</th>
+          <th>Legacy MPC</th>
+          <th>Bridges</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Latency</td>
+          <td class="ika-col">&lt;1 second</td>
+          <td>30–120 seconds</td>
+          <td>Minutes to hours</td>
+        </tr>
+        <tr>
+          <td>Throughput</td>
+          <td class="ika-col">10,000 TPS</td>
+          <td>~1 TPS</td>
+          <td>Low</td>
+        </tr>
+        <tr>
+          <td>Node count</td>
+          <td class="ika-col">1,000s</td>
+          <td>4–8</td>
+          <td>Centralised</td>
+        </tr>
+        <tr>
+          <td>Zero-trust security</td>
+          <td class="ika-col"><span class="chk">✓</span></td>
+          <td><span class="crs">✗</span></td>
+          <td><span class="crs">✗</span></td>
+        </tr>
+        <tr>
+          <td>Solana native</td>
+          <td class="ika-col"><span class="chk">✓</span></td>
+          <td><span class="crs">✗</span></td>
+          <td>Partial</td>
+        </tr>
+        <tr>
+          <td>Asset wrapping required</td>
+          <td class="ika-col">Never</td>
+          <td>Yes</td>
+          <td>Always</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+
+<!-- ─── CTA ─── -->
+<section id="cta">
+  <div class="cta-glow"></div>
+  <div class="cta-inner reveal">
+    <div class="tag" style="display:block;text-align:center;margin-bottom:1.5rem;">Join the builders</div>
+    <h2 class="sec-head" style="margin-bottom:1.25rem;">Ready to build<br>on Ika?</h2>
+    <p style="font-size:1rem;color:var(--text-2);line-height:1.72;margin-bottom:2.75rem;max-width:420px;margin-left:auto;margin-right:auto;">
+      Start with our docs, join the Solana builders Telegram, or apply to the Colosseum hackathon to build with Encrypt and Ika.
+    </p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="https://docs.ika.xyz" class="btn-primary" style="font-size:1rem;padding:1rem 2.25rem;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Read the Docs
+      </a>
+      <a href="#" class="btn-ghost" style="font-size:1rem;padding:1rem 2.25rem;">
+        Join Builders TG
+      </a>
+    </div>
+    <div class="pin-footer">
+      <span class="pin-foot-item mono">BUILT ON SOLANA</span>
+      <div class="pin-sep"></div>
+      <span class="pin-foot-item mono">POWERED BY SUI</span>
+      <div class="pin-sep"></div>
+      <span class="pin-foot-item mono">2PC-MPC PROTOCOL</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <a href="#" class="nav-logo" style="text-decoration:none;">
+      <div class="logo-mark">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="3.5" fill="white"/>
+          <circle cx="3" cy="4" r="1.8" fill="white" opacity="0.5"/>
+          <circle cx="13" cy="4" r="1.8" fill="white" opacity="0.5"/>
+          <circle cx="3" cy="12" r="1.8" fill="white" opacity="0.5"/>
+          <circle cx="13" cy="12" r="1.8" fill="white" opacity="0.5"/>
+        </svg>
+      </div>
+      Ika
+    </a>
+    <ul class="footer-links">
+      <li><a href="#">Docs</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">GitHub</a></li>
+      <li><a href="#">Twitter</a></li>
+      <li><a href="#">Telegram</a></li>
+    </ul>
+    <div class="footer-mono">© 2026 Ika Network</div>
+  </div>
+</footer>
+
+
+<script>
+  // ── Scroll reveal ──
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // ── Animated counters ──
+  function runCounter(el) {
+    const target = parseInt(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const dur = 1800;
+    const t0 = performance.now();
+    const tick = (now) => {
+      const p = Math.min((now - t0) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(ease * target).toLocaleString() + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+  const statObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('[data-count]').forEach(runCounter);
+        statObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  const statsEl = document.getElementById('stats');
+  if (statsEl) statObs.observe(statsEl);
+
+  // ── Network canvas ──
+  const canvas = document.getElementById('net-canvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let W, H, nodes = [];
+
+    function resize() {
+      W = canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+      H = canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+      canvas.style.width = canvas.offsetWidth + 'px';
+      canvas.style.height = canvas.offsetHeight + 'px';
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+
+    function init() {
+      const cW = canvas.offsetWidth, cH = canvas.offsetHeight;
+      nodes = [];
+      const n = Math.max(12, Math.floor((cW * cH) / 16000));
+      for (let i = 0; i < n; i++) {
+        nodes.push({
+          x: Math.random() * cW,
+          y: Math.random() * cH,
+          vx: (Math.random() - 0.5) * 0.28,
+          vy: (Math.random() - 0.5) * 0.28,
+          r: Math.random() * 1.8 + 0.8,
+          phase: Math.random() * Math.PI * 2,
+        });
+      }
+    }
+
+    function draw() {
+      const cW = canvas.offsetWidth, cH = canvas.offsetHeight;
+      ctx.clearRect(0, 0, cW, cH);
+      const t = Date.now() * 0.001;
+
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < 150) {
+            const a = (1 - d / 150) * 0.18;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.strokeStyle = `rgba(255,71,133,${a})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      nodes.forEach(n => {
+        n.phase += 0.018;
+        const g = (Math.sin(n.phase) + 1) / 2;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r + g * 0.8, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,71,133,${0.35 + g * 0.45})`;
+        ctx.fill();
+        n.x += n.vx;
+        n.y += n.vy;
+        if (n.x < 0 || n.x > cW) n.vx *= -1;
+        if (n.y < 0 || n.y > cH) n.vy *= -1;
+      });
+
+      requestAnimationFrame(draw);
+    }
+
+    resize(); init(); draw();
+    window.addEventListener('resize', () => { resize(); init(); });
+  }
+
+  // ── Drag scroll ──
+  const scroller = document.getElementById('uc-scroll');
+  if (scroller) {
+    let down = false, startX, scrollL;
+    scroller.addEventListener('mousedown', e => {
+      down = true; startX = e.pageX - scroller.offsetLeft; scrollL = scroller.scrollLeft;
+      scroller.style.cursor = 'grabbing';
+    });
+    document.addEventListener('mouseup', () => { down = false; scroller.style.cursor = 'grab'; });
+    scroller.addEventListener('mousemove', e => {
+      if (!down) return;
+      e.preventDefault();
+      scroller.scrollLeft = scrollL - (e.pageX - scroller.offsetLeft - startX) * 1.4;
+    });
+  }
+</script>
+
+</body>
+</html>
