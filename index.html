@@ -2,480 +2,1070 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<style>
-#hero{position:relative !important}
-.hero-content{position:absolute !important;left:50% !important;top:55% !important;transform:translate(-50%,-50%) !important;text-align:center !important;width:780px !important;max-width:90% !important}
-</style>
-<title>Ika — The MPC Network</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ika — Sign anything. Any chain.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#050510;--bg2:#0a0a1a;--bg3:#0f0f24;
-  --coral:#EE2B5B;--coral50:rgba(238,43,91,.5);--coral20:rgba(238,43,91,.2);--coral10:rgba(238,43,91,.1);--coral05:rgba(238,43,91,.05);
-  --white:#F4F4FB;--t2:rgba(244,244,251,.55);--t3:rgba(244,244,251,.2);--t4:rgba(244,244,251,.06);
-  --bdr:rgba(244,244,251,.06);
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════════════ */
+:root {
+  --coral: #EE2B5B;
+  --coral-bright: #FF3D6E;
+  --coral-dim: rgba(238,43,91,.15);
+  --coral-glow: rgba(238,43,91,.08);
+  --bg: #060810;
+  --bg2: #0B0E18;
+  --bg3: #10141F;
+  --surface: rgba(16,20,31,.6);
+  --border: rgba(255,255,255,.06);
+  --border-hover: rgba(255,255,255,.12);
+  --white: #F4F4F6;
+  --t1: rgba(244,244,246,.88);
+  --t2: rgba(244,244,246,.55);
+  --t3: rgba(244,244,246,.3);
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'Inter', sans-serif;
+  --ease: cubic-bezier(.16,1,.3,1);
+  --ease-out: cubic-bezier(.33,1,.68,1);
 }
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--white);font-family:'Space Grotesk',system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-::selection{background:var(--coral20);color:#fff}
 
-/* ── Noise overlay ── */
-.noise{position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px}
-
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,16,.6);backdrop-filter:blur(24px) saturate(1.2);-webkit-backdrop-filter:blur(24px) saturate(1.2);border-bottom:1px solid var(--bdr)}
-.nav-logo svg{height:24px;width:auto;display:block}
-.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
-.nav-links a{font-size:.8125rem;font-weight:500;color:var(--t2);text-decoration:none;transition:color .2s}
-.nav-links a:hover{color:var(--white)}
-.btn-nav{background:var(--coral);color:#fff;font-size:.75rem;font-weight:600;padding:.5rem 1.25rem;border-radius:8px;text-decoration:none;transition:all .2s;border:none;cursor:pointer}
-.btn-nav:hover{filter:brightness(1.12);transform:translateY(-1px)}
-
-/* ── HERO ── */
-#hero{height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;text-align:center}
-#hero-canvas{position:absolute;inset:0;z-index:0}
-/* Gradient orbs (Solana style) */
-.orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
-.orb-1{width:500px;height:500px;background:rgba(238,43,91,.08);top:20%;left:30%;animation:orbFloat 12s ease-in-out infinite}
-.orb-2{width:350px;height:350px;background:rgba(238,43,91,.05);top:50%;right:20%;animation:orbFloat 15s ease-in-out infinite reverse}
-.orb-3{width:200px;height:200px;background:rgba(100,50,200,.04);bottom:20%;left:15%;animation:orbFloat 10s ease-in-out infinite 3s}
-@keyframes orbFloat{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-20px)}66%{transform:translate(-15px,25px)}}
-.hero-overlay{position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse 80% 70% at 50% 45%,transparent 40%,var(--bg) 100%);pointer-events:none}
-.hero-content{position:relative;z-index:2;max-width:780px;padding:0 1.5rem}
-.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--coral);margin-bottom:2rem;display:inline-flex;align-items:center;gap:.65rem;background:var(--coral10);padding:.4rem 1.1rem;border-radius:100px;border:1px solid var(--coral20)}
-.hero-eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--coral);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-h1.hero-h{font-size:clamp(3.5rem,9vw,7.5rem);font-weight:700;line-height:.9;letter-spacing:-.055em;margin-bottom:1.75rem}
-h1.hero-h .coral{color:var(--coral)}
-h1.hero-h .dim{color:var(--t3)}
-.hero-sub{font-size:1rem;font-weight:400;color:var(--t2);line-height:1.75;max-width:460px;margin:0 auto 2.5rem}
-.hero-actions{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
-.btn-p{background:var(--coral);color:#fff;font-size:.875rem;font-weight:600;padding:.8rem 1.6rem;border-radius:8px;text-decoration:none;cursor:pointer;transition:all .2s;border:none;position:relative;overflow:hidden}
-.btn-p:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 8px 30px rgba(238,43,91,.3)}
-.btn-g{background:rgba(255,255,255,.04);color:var(--t2);font-size:.875rem;font-weight:500;padding:.8rem 1.6rem;border-radius:8px;text-decoration:none;cursor:pointer;border:1px solid rgba(255,255,255,.08);transition:all .2s}
-.btn-g:hover{color:var(--white);border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06);transform:translateY(-2px)}
-
-/* Chain marquee */
-.chain-marquee{position:absolute;bottom:0;left:0;right:0;z-index:2;border-top:1px solid var(--bdr);padding:.75rem 0;overflow:hidden;background:rgba(5,5,16,.5);backdrop-filter:blur(12px)}
-.marquee-track{display:flex;gap:3rem;animation:marquee 30s linear infinite;width:max-content}
-.marquee-track span{font-family:'JetBrains Mono',monospace;font-size:.5625rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);white-space:nowrap;display:flex;align-items:center;gap:.5rem}
-.marquee-track .chain-dot{width:4px;height:4px;border-radius:50%;background:var(--coral50)}
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-
-/* ── STATS ── */
-#stats{border-bottom:1px solid var(--bdr);background:var(--bg2);position:relative}
-.stats-grid{max-width:1200px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
-.stat{text-align:center;padding:0 1rem}
-.stat-n{font-family:'JetBrains Mono',monospace;font-size:clamp(1.75rem,3vw,2.75rem);font-weight:500;letter-spacing:-.03em;color:var(--coral)}
-.stat-l{font-size:.6875rem;color:var(--t2);line-height:1.5;margin-top:.25rem}
-
-/* ── SECTIONS ── */
-.sec{padding:6rem 2rem}
-.sec-inner{max-width:1100px;margin:0 auto}
-.tag{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
-.tag::before{content:'';width:14px;height:1px;background:var(--coral50)}
-h2.sh{font-size:clamp(2.25rem,4.5vw,3.75rem);font-weight:700;line-height:.96;letter-spacing:-.04em;margin-bottom:1.25rem}
-.sep{height:1px;background:var(--bdr)}
-
-/* ── PROBLEM ── */
-.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;margin-top:3rem}
-.prob-text{font-size:1rem;color:var(--t2);line-height:1.75;max-width:400px;margin-top:1rem}
-.prob-stack{display:flex;flex-direction:column;gap:1px;background:var(--bdr);border-radius:14px;overflow:hidden;border:1px solid var(--bdr)}
-.prob-row{display:flex;align-items:flex-start;gap:.875rem;padding:1.125rem 1.25rem;background:var(--bg2);transition:background .2s}
-.prob-row:hover{background:var(--bg3)}
-.prob-row.sol{background:var(--coral05)}
-.prob-row.sol:hover{background:var(--coral10)}
-.prob-ic{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.prob-ic.bad{background:rgba(248,113,113,.06)}.prob-ic.bad svg{stroke:#F87171}
-.prob-ic.good{background:var(--coral10)}.prob-ic.good svg{stroke:var(--coral)}
-.prob-t{font-size:.8125rem;font-weight:600;margin-bottom:.1rem}
-.prob-d{font-size:.6875rem;color:var(--t2);line-height:1.55}
-
-/* ── FEATURES ── */
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border-radius:16px;overflow:hidden;margin-top:3rem;border:1px solid var(--bdr)}
-.feat-cell{background:var(--bg2);padding:2rem 1.75rem;transition:all .3s;position:relative}
-.feat-cell:hover{background:var(--bg3)}
-.feat-num{font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.12em;color:var(--t3);text-transform:uppercase;margin-bottom:1.25rem}
-.feat-cell h3{font-size:1rem;font-weight:600;margin-bottom:.4rem;letter-spacing:-.015em}
-.feat-cell p{font-size:.75rem;color:var(--t2);line-height:1.6}
-
-/* ── BENTO ── */
-.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;background:var(--bdr);border-radius:16px;overflow:hidden;margin-top:3rem;border:1px solid var(--bdr)}
-.b-card{background:var(--bg2);padding:2rem 1.75rem;position:relative;overflow:hidden;transition:all .3s}
-.b-card:hover{background:var(--bg3)}
-.b-7{grid-column:span 7}.b-5{grid-column:span 5}.b-4{grid-column:span 4}.b-6{grid-column:span 6}
-.b-tag{font-family:'JetBrains Mono',monospace;font-size:.4375rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);margin-bottom:.875rem;display:inline-block;background:var(--coral10);padding:.25rem .6rem;border-radius:4px}
-.b-card h3{font-size:1.125rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.35rem}
-.b-card p{font-size:.75rem;color:var(--t2);line-height:1.6;max-width:340px}
-.b-glow{position:absolute;bottom:-60px;right:-60px;width:160px;height:160px;background:radial-gradient(circle,var(--coral05),transparent 70%);pointer-events:none;border-radius:50%}
-
-/* ── TABLE ── */
-.cmp-wrap{margin-top:3rem;border-radius:14px;overflow:hidden;border:1px solid var(--bdr)}
-table.cmp{width:100%;border-collapse:collapse}
-.cmp th{padding:.875rem 1.25rem;font-size:.625rem;font-weight:600;text-align:left;background:var(--bg3);color:var(--t3);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--bdr)}
-.cmp th.ik{color:var(--coral)}
-.cmp td{padding:.75rem 1.25rem;font-size:.8125rem;border-bottom:1px solid var(--bdr);color:var(--t2)}
-.cmp tr:last-child td{border-bottom:none}
-.cmp td.ik{color:var(--white);font-weight:600}
-.cmp tbody tr:hover{background:rgba(255,255,255,.01)}
-.chk{color:#4ADE80;font-weight:700}.crs{color:rgba(248,113,113,.6)}
-
-/* ── BACKERS ── */
-.backer-sec{background:var(--bg2);padding:4.5rem 2rem;text-align:center;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
-.backer-label{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);margin-bottom:2.5rem}
-.backer-grid{max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:1.5rem 2.5rem}
-.backer-grid img{height:18px;opacity:.35;transition:all .3s;filter:brightness(0) invert(1)}
-.backer-grid img:hover{opacity:.65}
-
-/* ── CTA ── */
-#cta{padding:8rem 2rem;text-align:center;position:relative;overflow:hidden}
-.cta-orb{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,var(--coral05),transparent 70%);pointer-events:none;border-radius:50%}
-.cta-inner{position:relative;z-index:1;max-width:500px;margin:0 auto}
-
-/* ── FOOTER ── */
-footer{border-top:1px solid var(--bdr);padding:1.25rem 2rem;background:var(--bg)}
-.foot-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-.foot-links{display:flex;gap:1.5rem;list-style:none}
-.foot-links a{font-size:.6875rem;color:var(--t3);text-decoration:none;transition:color .2s}
-.foot-links a:hover{color:var(--t2)}
-.foot-c{font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--t3)}
-
-/* ── RESPONSIVE ── */
-@media(max-width:1024px){
-  .problem-grid{grid-template-columns:1fr;gap:2.5rem}
-  .feat-grid{grid-template-columns:1fr 1fr}
-  .b-7,.b-5,.b-4,.b-6{grid-column:span 12}
-  .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.5rem}
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  line-height: 1.6;
 }
-@media(max-width:640px){
-  .nav-links{display:none}
-  nav{padding:.75rem 1rem}
-  .feat-grid{grid-template-columns:1fr}
-  .stats-grid{grid-template-columns:1fr 1fr}
-  .backer-grid img{height:14px}
-  .sec{padding:4rem 1.25rem}
+
+a { color:inherit; text-decoration:none; cursor:pointer; }
+img { display:block; max-width:100%; }
+
+/* ═══════════════════════════════════════════════
+   FILM GRAIN OVERLAY (Sui pattern)
+   ═══════════════════════════════════════════════ */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  pointer-events:none;
+  opacity:.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+
+/* ═══════════════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════════════ */
+.container { max-width:1140px; margin:0 auto; padding:0 2rem; }
+.tag {
+  font-family: var(--font-mono);
+  font-size:.625rem;
+  font-weight:500;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color: var(--t3);
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+}
+.tag::before {
+  content:'';
+  width:16px;
+  height:1px;
+  background: var(--coral);
+}
+.section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: .95;
+  letter-spacing: -.03em;
+  margin-top: 1rem;
+}
+.section-heading .accent { color: var(--coral); }
+.section-heading .dim { color: var(--t3); }
+.section-sub {
+  font-size: .9375rem;
+  color: var(--t2);
+  line-height: 1.7;
+  max-width: 520px;
+  margin-top: 1.25rem;
+}
+
+/* Reveal animation base */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity .8s var(--ease), transform .8s var(--ease);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════
+   NAV
+   ═══════════════════════════════════════════════ */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding: .875rem 2rem;
+  display:flex; align-items:center; justify-content:space-between;
+  background: rgba(6,8,16,.7);
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo svg { height:22px; width:auto; display:block; }
+.nav-center { display:flex; align-items:center; gap:2rem; list-style:none; }
+.nav-center a {
+  font-family: var(--font-body);
+  font-size: .8125rem;
+  font-weight: 500;
+  color: var(--t2);
+  transition: color .2s;
+}
+.nav-center a:hover { color: var(--white); }
+.btn-nav {
+  background: var(--coral);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: .75rem;
+  font-weight: 600;
+  padding: .5rem 1.25rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all .25s var(--ease);
+  white-space: nowrap;
+}
+.btn-nav:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(238,43,91,.25);
+}
+
+/* ═══════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════ */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+  padding: 6rem 2rem 4rem;
+}
+
+/* Gradient orbs (Solana-style CSS only — no Three.js) */
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(120px);
+  z-index: 0;
+}
+.hero-orb-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(238,43,91,.14) 0%, transparent 70%);
+  top: 15%; left: 25%;
+  animation: orbDrift 14s ease-in-out infinite;
+}
+.hero-orb-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(238,43,91,.08) 0%, transparent 70%);
+  bottom: 20%; right: 15%;
+  animation: orbDrift 18s ease-in-out infinite reverse;
+}
+.hero-orb-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(100,60,220,.06) 0%, transparent 70%);
+  top: 40%; right: 30%;
+  animation: orbDrift 12s ease-in-out infinite 2s;
+}
+@keyframes orbDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -25px) scale(1.05); }
+  66% { transform: translate(-20px, 30px) scale(.95); }
+}
+
+/* Central glow behind hero text */
+.hero-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(238,43,91,.12) 0%, rgba(238,43,91,.04) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(60px);
+  animation: glowPulse 4s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: .8; transform: translate(-50%,-50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%,-50%) scale(1.08); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+}
+
+.hero-pill {
+  font-family: var(--font-mono);
+  font-size: .5625rem;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--coral);
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  background: var(--coral-dim);
+  padding: .45rem 1.1rem;
+  border-radius: 100px;
+  border: 1px solid rgba(238,43,91,.2);
+  margin-bottom: 2.5rem;
+}
+.hero-pill .dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--coral);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+@keyframes dotPulse { 0%,100% { opacity:1; } 50% { opacity:.3; } }
+
+h1.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(3.25rem, 8.5vw, 7rem);
+  font-weight: 800;
+  line-height: .88;
+  letter-spacing: -.045em;
+  margin-bottom: 1.75rem;
+}
+h1.hero-title .coral { color: var(--coral); }
+h1.hero-title .dim { color: var(--t3); }
+
+.hero-sub {
+  font-size: 1.0625rem;
+  font-weight: 400;
+  color: var(--t2);
+  line-height: 1.75;
+  max-width: 480px;
+  margin: 0 auto 2.75rem;
+}
+
+.hero-actions {
+  display: flex;
+  gap: .875rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: var(--coral);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: .875rem;
+  font-weight: 600;
+  padding: .85rem 1.75rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all .25s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary:hover {
+  filter: brightness(1.12);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(238,43,91,.3);
+}
+.btn-primary::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
+  transform: translateX(-100%);
+  transition: transform .5s;
+}
+.btn-primary:hover::after { transform: translateX(100%); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--t1);
+  font-family: var(--font-body);
+  font-size: .875rem;
+  font-weight: 500;
+  padding: .85rem 1.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-hover);
+  cursor: pointer;
+  transition: all .25s var(--ease);
+}
+.btn-outline:hover {
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.2);
+  transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════════
+   CHAIN MARQUEE
+   ═══════════════════════════════════════════════ */
+.marquee-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 30s linear infinite;
+  gap: 3rem;
+}
+.marquee-track:hover { animation-play-state:paused; }
+@keyframes marqueeScroll { to { transform: translateX(-50%); } }
+.chain-item {
+  font-family: var(--font-mono);
+  font-size: .625rem;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--t3);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  transition: color .3s;
+}
+.chain-item:hover { color: var(--t1); }
+.chain-dot { width:4px; height:4px; border-radius:50%; background:var(--coral); opacity:.4; }
+
+/* ═══════════════════════════════════════════════
+   STATS
+   ═══════════════════════════════════════════════ */
+#stats {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.stats-grid {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 3.5rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.stat { text-align:center; padding:0 .75rem; }
+.stat-number {
+  font-family: var(--font-mono);
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
+  font-weight: 500;
+  letter-spacing: -.03em;
+  color: var(--coral);
+}
+.stat-label {
+  font-size: .6875rem;
+  color: var(--t3);
+  line-height: 1.5;
+  margin-top: .25rem;
+}
+
+/* ═══════════════════════════════════════════════
+   SECTIONS (shared)
+   ═══════════════════════════════════════════════ */
+.section {
+  padding: 7rem 0;
+  position: relative;
+}
+.section + .section { border-top: 1px solid var(--border); }
+
+/* ═══════════════════════════════════════════════
+   PROBLEM SECTION
+   ═══════════════════════════════════════════════ */
+.problem-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+  margin-top: 3rem;
+}
+.problem-text {
+  font-size: 1rem;
+  color: var(--t2);
+  line-height: 1.75;
+  max-width: 420px;
+  margin-top: 1.25rem;
+}
+.problem-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.problem-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  transition: background .3s;
+}
+.problem-card:hover { background: var(--bg3); }
+.problem-icon {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.problem-icon.bad { background: rgba(248,113,113,.1); color: rgba(248,113,113,.7); }
+.problem-icon.good { background: var(--coral-dim); color: var(--coral); }
+.problem-title {
+  font-family: var(--font-display);
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--t1);
+  margin-bottom: .2rem;
+}
+.problem-desc {
+  font-size: .75rem;
+  color: var(--t2);
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════
+   FEATURES GRID
+   ═══════════════════════════════════════════════ */
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 3rem;
+  border: 1px solid var(--border);
+}
+.feat-cell {
+  background: var(--bg2);
+  padding: 2.25rem 1.75rem;
+  transition: all .35s var(--ease);
+  position: relative;
+}
+.feat-cell:hover {
+  background: var(--bg3);
+}
+.feat-cell::after {
+  content:'';
+  position:absolute;
+  bottom:0; left:1.75rem; right:1.75rem;
+  height:1px;
+  background: linear-gradient(90deg, transparent, var(--coral-glow), transparent);
+  opacity:0;
+  transition: opacity .35s;
+}
+.feat-cell:hover::after { opacity:1; }
+.feat-num {
+  font-family: var(--font-mono);
+  font-size: .5rem;
+  letter-spacing: .12em;
+  color: var(--t3);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+.feat-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: .5rem;
+}
+.feat-desc {
+  font-size: .8125rem;
+  color: var(--t2);
+  line-height: 1.65;
+}
+
+/* ═══════════════════════════════════════════════
+   BENTO GRID (Use Cases)
+   ═══════════════════════════════════════════════ */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 3rem;
+  border: 1px solid var(--border);
+}
+.b-card {
+  background: var(--bg2);
+  padding: 2rem 1.75rem;
+  position: relative;
+  overflow: hidden;
+  transition: all .35s var(--ease);
+}
+.b-card:hover {
+  background: var(--bg3);
+  transform: translateY(-2px);
+}
+.b-7 { grid-column: span 7; }
+.b-5 { grid-column: span 5; }
+.b-4 { grid-column: span 4; }
+.b-6 { grid-column: span 6; }
+.b-tag {
+  font-family: var(--font-mono);
+  font-size: .5rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: var(--coral-dim);
+  color: var(--coral);
+  padding: .25rem .6rem;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+.b-title {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  margin-bottom: .4rem;
+}
+.b-desc {
+  font-size: .8125rem;
+  color: var(--t2);
+  line-height: 1.6;
+}
+/* Glow on bento cards */
+.b-card::before {
+  content:'';
+  position:absolute;
+  bottom:-80px; right:-80px;
+  width:180px; height:180px;
+  background: radial-gradient(circle, var(--coral-glow), transparent 70%);
+  pointer-events:none;
+  border-radius:50%;
+  opacity:0;
+  transition: opacity .4s;
+}
+.b-card:hover::before { opacity:1; }
+
+/* ═══════════════════════════════════════════════
+   COMPARISON TABLE
+   ═══════════════════════════════════════════════ */
+.table-wrap {
+  margin-top: 3rem;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+table.cmp {
+  width: 100%;
+  border-collapse: collapse;
+}
+.cmp th {
+  padding: .875rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: .5625rem;
+  font-weight: 600;
+  text-align: left;
+  background: var(--bg3);
+  color: var(--t3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.cmp th.ika-col { color: var(--coral); }
+.cmp td {
+  padding: .875rem 1.5rem;
+  font-size: .8125rem;
+  color: var(--t2);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  white-space: nowrap;
+}
+.cmp tr:last-child td { border-bottom: none; }
+.cmp td:nth-child(2) { color: var(--white); font-weight: 500; }
+.cmp .check { color: #4ade80; }
+.cmp .cross { color: rgba(248,113,113,.7); }
+
+/* ═══════════════════════════════════════════════
+   BACKERS
+   ═══════════════════════════════════════════════ */
+.backer-section {
+  background: var(--bg2);
+  padding: 4.5rem 2rem;
+  text-align: center;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.backer-label {
+  font-family: var(--font-mono);
+  font-size: .5625rem;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--t3);
+  margin-bottom: 2.5rem;
+}
+.backer-grid {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem 2.5rem;
+}
+.backer-grid img {
+  height: 18px;
+  opacity: .3;
+  filter: brightness(0) invert(1);
+  transition: all .3s;
+}
+.backer-grid img:hover { opacity: .6; }
+
+/* ═══════════════════════════════════════════════
+   CTA
+   ═══════════════════════════════════════════════ */
+.cta-section {
+  padding: 8rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section .hero-orb {
+  width: 500px; height: 500px;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  background: radial-gradient(circle, rgba(238,43,91,.1) 0%, transparent 70%);
+}
+.cta-tag {
+  font-family: var(--font-mono);
+  font-size: .5625rem;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--coral);
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: 1.5rem;
+}
+.cta-tag::before { content:''; width:14px; height:1px; background:var(--coral); }
+.cta-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+  font-weight: 700;
+  line-height: .95;
+  letter-spacing: -.03em;
+  margin-bottom: 1rem;
+}
+.cta-sub {
+  font-size: .9375rem;
+  color: var(--t2);
+  max-width: 460px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.7;
+}
+.cta-actions {
+  display: flex;
+  gap: .875rem;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1.25rem 2rem;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: .75rem;
+  color: var(--t3);
+}
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+}
+.footer-links a { color: var(--t2); transition: color .2s; }
+.footer-links a:hover { color: var(--white); }
+footer .nav-logo svg { height:18px; }
+
+/* ═══════════════════════════════════════════════
+   SHIMMER CARD BORDERS (Solana pattern)
+   ═══════════════════════════════════════════════ */
+@property --shimmer-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+.shimmer-border {
+  position: relative;
+}
+.shimmer-border::before {
+  content:'';
+  position:absolute;
+  inset:-1px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--shimmer-angle), transparent 60%, rgba(238,43,91,.2) 80%, transparent 100%);
+  z-index: -1;
+  animation: shimmerRotate 4s linear infinite;
+}
+@keyframes shimmerRotate { to { --shimmer-angle: 360deg; } }
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .problem-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .feat-grid { grid-template-columns: 1fr; }
+  .bento { grid-template-columns: 1fr; }
+  .b-7,.b-5,.b-4,.b-6 { grid-column: span 1; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .nav-center { display: none; }
+  h1.hero-title { font-size: clamp(2.5rem, 10vw, 4rem); }
 }
 </style>
 </head>
 <body>
-<div class="noise"></div>
 
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
-    <svg viewBox="0 0 96 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M29.4847 28.9053V19.0107C29.4847 13.5461 25.0548 9.11621 19.5902 9.11621C14.1256 9.11621 9.69568 13.5461 9.69568 19.0107V28.9053" stroke="#EE2B5B" stroke-width="3.904"/><path d="M29.485 25.6067L29.485 29.4546C29.485 31.5797 31.2078 33.3025 33.3329 33.3025C35.458 33.3025 37.1808 31.5797 37.1808 29.4546L37.1808 25.6068" stroke="#EE2B5B" stroke-width="3.904"/><path d="M23.6494 38.8841L23.6494 33.0207C23.6494 30.7788 21.832 28.9614 19.5901 28.9614C17.3482 28.9614 15.5308 30.7788 15.5308 33.0207L15.5308 38.8841" stroke="#EE2B5B" stroke-width="3.904"/><path d="M1.99994 25.6067L1.99994 29.4546C1.99994 31.5797 3.72269 33.3025 5.84781 33.3025C7.97293 33.3025 9.69568 31.5797 9.69568 29.4546L9.69568 25.6068" stroke="#EE2B5B" stroke-width="3.904"/><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5903 23.4076C21.4118 23.4076 22.8884 21.931 22.8884 20.1095C22.8884 18.2879 21.4118 16.8113 19.5903 16.8113C17.7687 16.8113 16.2921 18.2879 16.2921 20.1095C16.2921 20.4474 16.3429 20.7735 16.4374 21.0806C16.6959 20.5079 17.272 20.1094 17.9411 20.1094C18.8519 20.1094 19.5902 20.8477 19.5902 21.7585C19.5902 22.4276 19.1916 23.0037 18.6189 23.2623C18.926 23.3568 19.2522 23.4076 19.5903 23.4076Z" fill="#EE2B5B"/><path d="M44.997 39V11.2762H49.6369V39H44.997ZM55.3654 39L55.404 11.2762H60.1016V28.2185L67.7064 18.2072H73.5014L65.4346 28.6036L74.1945 39H68.0529L60.1016 28.9886V39H55.3654ZM81.9374 39.5776C80.4357 39.5776 79.165 39.2952 78.1253 38.7305C77.0857 38.1529 76.2963 37.3892 75.7573 36.4394C75.231 35.4896 74.9679 34.4435 74.9679 33.3012C74.9679 32.3001 75.1348 31.4016 75.4685 30.6059C75.8022 29.7973 76.3156 29.1042 77.0087 28.5266C77.7018 27.9362 78.6002 27.4548 79.7041 27.0826C80.5383 26.8131 81.5138 26.5692 82.6305 26.351C83.7599 26.1328 84.9793 25.9339 86.2885 25.7542C87.6105 25.5617 88.9902 25.3563 90.4278 25.1381L88.772 26.0815C88.7849 24.644 88.464 23.5851 87.8094 22.9048C87.1548 22.2246 86.051 21.8844 84.498 21.8844C83.561 21.8844 82.6561 22.1026 81.7833 22.539C80.9106 22.9754 80.3009 23.7263 79.9543 24.7916L75.7188 23.4631C76.2322 21.7047 77.2076 20.2929 78.6452 19.2276C80.0955 18.1623 82.0465 17.6296 84.498 17.6296C86.3462 17.6296 87.9698 17.9312 89.3689 18.5345C90.7807 19.1377 91.8268 20.126 92.507 21.4994C92.8793 22.231 93.1039 22.9818 93.1809 23.7519C93.2579 24.5092 93.2964 25.3371 93.2964 26.2355V39H89.2341V34.4949L89.9079 35.2265C88.971 36.7282 87.8736 37.832 86.6157 38.5379C85.3707 39.231 83.8113 39.5776 81.9374 39.5776ZM82.8615 35.8811C83.914 35.8811 84.8124 35.695 85.5569 35.3228C86.3013 34.9505 86.8917 34.4494 87.3281 33.9558C87.7773 33.4167 88.0789 32.9098 88.233 32.4349C88.4768 31.8444 88.6116 31.1706 88.6373 30.4133C88.6758 29.6432 88.695 29.0207 88.695 28.5458L90.1197 28.9694C88.7207 29.1876 87.5206 29.3801 86.5195 29.547C85.5183 29.7138 84.6584 29.8743 83.9396 30.0283C83.2209 30.1695 82.5855 30.3299 82.0336 30.5096C81.4946 30.7021 81.0389 30.9267 80.6667 31.1834C80.2945 31.4401 80.0057 31.7353 79.8003 32.0691C79.6078 32.4028 79.5115 32.7942 79.5115 33.2435C79.5115 33.7569 79.6399 34.2125 79.8966 34.6104C80.1533 34.9955 80.5255 35.3035 81.0132 35.5345C81.5138 35.7656 82.1299 35.8811 82.8615 35.8811Z" fill="#EE2B5B"/></svg>
+    <svg viewBox="0 0 698 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M289.5 42h27v116h-27V42ZM385 42h27l-3 60.5 3 55.5h-27l3-55.5L385 42Z" fill="#EE2B5B"/><path d="M451.5 42h27l42.5 56V42h27v116h-27l-42.5-56.5V158h-27V42Z" fill="#F4F4F6"/><path d="M361.5 42l-34 58 34 58h-30.5l-34-58 34-58h30.5Z" fill="#F4F4F6"/><path d="M140.8 100c0-43.1 29.9-66 59.6-66 29.8 0 59.6 22.9 59.6 66s-29.8 66-59.6 66c-29.7 0-59.6-22.9-59.6-66Z" fill="none" stroke="#EE2B5B" stroke-width="24"/><circle cx="200.4" cy="100" r="16" fill="#EE2B5B"/><path d="M0 100c0-55.2 44.8-100 100-100v32c-37.6 0-68 30.4-68 68s30.4 68 68 68v32c-55.2 0-100-44.8-100-100Z" fill="#EE2B5B"/></svg>
   </a>
-  <ul class="nav-links">
+  <ul class="nav-center">
     <li><a href="#how">How It Works</a></li>
     <li><a href="#use-cases">Use Cases</a></li>
     <li><a href="#compare">Compare</a></li>
     <li><a href="https://docs.ika.xyz" target="_blank">Docs</a></li>
   </ul>
-  <a href="https://docs.ika.xyz" class="btn-nav">Start Building →</a>
+  <a href="https://docs.ika.xyz" target="_blank" class="btn-nav">Start Building →</a>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
-  <canvas id="hero-canvas"></canvas>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-  <div class="hero-overlay"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+  <div class="hero-glow"></div>
+
   <div class="hero-content">
-    <div class="hero-eyebrow"><span class="dot"></span> Now live on Solana & Sui</div>
-    <h1 class="hero-h">Sign<br><span class="coral">anything.</span><br><span class="dim">Any chain.</span></h1>
+    <div class="hero-pill"><span class="dot"></span> Now live on Solana & Sui</div>
+    <h1 class="hero-title">Sign<br><span class="coral">anything.</span><br><span class="dim">Any chain.</span></h1>
     <p class="hero-sub">The massively decentralised MPC network. Your Solana program signs transactions on Bitcoin, Ethereum, and every chain. Sub-second. Zero trust.</p>
     <div class="hero-actions">
-      <a href="https://docs.ika.xyz" class="btn-p">Start Building</a>
-      <a href="#" class="btn-g">Read Whitepaper</a>
-    </div>
-  </div>
-  <!-- Chain marquee (Wormhole style) -->
-  <div class="chain-marquee">
-    <div class="marquee-track">
-      <span><i class="chain-dot"></i> Bitcoin</span>
-      <span><i class="chain-dot"></i> Ethereum</span>
-      <span><i class="chain-dot"></i> Solana</span>
-      <span><i class="chain-dot"></i> Sui</span>
-      <span><i class="chain-dot"></i> Arbitrum</span>
-      <span><i class="chain-dot"></i> Base</span>
-      <span><i class="chain-dot"></i> Optimism</span>
-      <span><i class="chain-dot"></i> Polygon</span>
-      <span><i class="chain-dot"></i> Avalanche</span>
-      <span><i class="chain-dot"></i> Any ECDSA Chain</span>
-      <span><i class="chain-dot"></i> Bitcoin</span>
-      <span><i class="chain-dot"></i> Ethereum</span>
-      <span><i class="chain-dot"></i> Solana</span>
-      <span><i class="chain-dot"></i> Sui</span>
-      <span><i class="chain-dot"></i> Arbitrum</span>
-      <span><i class="chain-dot"></i> Base</span>
-      <span><i class="chain-dot"></i> Optimism</span>
-      <span><i class="chain-dot"></i> Polygon</span>
-      <span><i class="chain-dot"></i> Avalanche</span>
-      <span><i class="chain-dot"></i> Any ECDSA Chain</span>
+      <a href="https://docs.ika.xyz" class="btn-primary">Start Building</a>
+      <a href="#" class="btn-outline">Read Whitepaper</a>
     </div>
   </div>
 </section>
+
+<!-- CHAIN MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marquee">
+    <span class="chain-item"><span class="chain-dot"></span>Bitcoin</span>
+    <span class="chain-item"><span class="chain-dot"></span>Ethereum</span>
+    <span class="chain-item"><span class="chain-dot"></span>Solana</span>
+    <span class="chain-item"><span class="chain-dot"></span>Sui</span>
+    <span class="chain-item"><span class="chain-dot"></span>Arbitrum</span>
+    <span class="chain-item"><span class="chain-dot"></span>Base</span>
+    <span class="chain-item"><span class="chain-dot"></span>Optimism</span>
+    <span class="chain-item"><span class="chain-dot"></span>Polygon</span>
+    <span class="chain-item"><span class="chain-dot"></span>Avalanche</span>
+    <span class="chain-item"><span class="chain-dot"></span>Any ECDSA Chain</span>
+  </div>
+</div>
 
 <!-- STATS -->
 <section id="stats">
   <div class="stats-grid">
-    <div class="stat"><div class="stat-n"><span class="ctr" data-to="10000">10,000</span>x</div><div class="stat-l">Higher throughput than legacy MPC</div></div>
-    <div class="stat"><div class="stat-n" style="color:var(--white)">&lt;<span style="color:var(--coral)">1</span>s</div><div class="stat-l">Signature latency end-to-end</div></div>
-    <div class="stat"><div class="stat-n"><span class="ctr" data-to="1000">1,000</span>+</div><div class="stat-l">Non-collusive signer nodes</div></div>
-    <div class="stat"><div class="stat-n" style="color:var(--white)">0</div><div class="stat-l">Trust assumptions required</div></div>
+    <div class="stat reveal"><div class="stat-number" data-target="10000" data-suffix="x">10,000x</div><div class="stat-label">Higher throughput than legacy MPC</div></div>
+    <div class="stat reveal"><div class="stat-number">&lt;1s</div><div class="stat-label">Signature latency end-to-end</div></div>
+    <div class="stat reveal"><div class="stat-number" data-target="1000" data-suffix="+">1,000+</div><div class="stat-label">Non-collusive signer nodes</div></div>
+    <div class="stat reveal"><div class="stat-number">0</div><div class="stat-label">Trust assumptions required</div></div>
   </div>
 </section>
 
 <!-- PROBLEM -->
-<section class="sec" id="problem">
-  <div class="sec-inner">
+<section class="section" id="problem">
+  <div class="container">
     <div class="problem-grid">
-      <div>
+      <div class="reveal">
         <div class="tag">The problem</div>
-        <h2 class="sh">Cross-chain<br>is <span style="color:rgba(248,113,113,.85)">broken.</span></h2>
-        <p class="prob-text">Bridges get hacked. Legacy MPC is slow and centralised. Wrapping loses composability. Builders deserve better.</p>
+        <h2 class="section-heading">Cross-chain<br>is <span class="accent">broken.</span></h2>
+        <p class="problem-text">Bridges get hacked. Legacy MPC is slow and centralised. Wrapping loses composability. Builders deserve better.</p>
       </div>
-      <div class="prob-stack">
-        <div class="prob-row"><div class="prob-ic bad"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div><div class="prob-t">Bridges</div><div class="prob-d">$2.8B stolen. Wrapped assets, custodial risk, catastrophic exploits.</div></div></div>
-        <div class="prob-row"><div class="prob-ic bad"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div><div class="prob-t">Legacy MPC</div><div class="prob-d">30s latency. 4-8 colluding nodes. Unusable for real-time DeFi.</div></div></div>
-        <div class="prob-row"><div class="prob-ic bad"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div><div class="prob-t">Centralised Custody</div><div class="prob-d">Back to trusting companies. Defeats decentralised finance entirely.</div></div></div>
-        <div class="prob-row sol"><div class="prob-ic good"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="prob-t" style="color:var(--coral)">Ika</div><div class="prob-d">Sub-second. 1,000+ nodes. Non-collusive 2PC-MPC. Built for Solana speed.</div></div></div>
+      <div class="problem-stack reveal">
+        <div class="problem-card">
+          <div class="problem-icon bad"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+          <div><div class="problem-title">Bridges</div><div class="problem-desc">$2.8B stolen. Wrapped assets, custodial risk, catastrophic exploits.</div></div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon bad"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+          <div><div class="problem-title">Legacy MPC</div><div class="problem-desc">30s latency. 4-8 colluding nodes. Unusable for real-time DeFi.</div></div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon bad"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+          <div><div class="problem-title">Centralised Custody</div><div class="problem-desc">Back to trusting companies. Defeats decentralised finance entirely.</div></div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon good"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <div><div class="problem-title">Ika</div><div class="problem-desc">Sub-second. 1,000+ nodes. Non-collusive 2PC-MPC. Built for Solana speed.</div></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="sep"></div>
+<!-- HOW IT WORKS / FEATURES -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">How it works</div>
+      <h2 class="section-heading">Your Solana program.<br><span class="accent">Any chain's key.</span></h2>
+      <p class="section-sub">Ika gives your smart contract a programmable MPC wallet that signs on any chain. No bridges. No wrapping. Sub-second signing across 1,000+ non-collusive nodes.</p>
+    </div>
 
-<!-- HOW IT WORKS -->
-<section class="sec" id="how" style="background:var(--bg2)">
-  <div class="sec-inner">
-    <div class="tag">How it works</div>
-    <h2 class="sh">Your Solana program.<br><span style="color:var(--coral)">Any chain's key.</span></h2>
-    <p style="font-size:1rem;color:var(--t2);line-height:1.75;max-width:500px;margin-top:.5rem">Ika gives your smart contract a programmable MPC wallet that signs on any chain. No bridges. No wrapping. Sub-second signing across 1,000+ non-collusive nodes.</p>
-    <div class="feat-grid">
-      <div class="feat-cell"><div class="feat-num">01 — Decentralisation</div><h3>Massively Decentralised</h3><p>Scale to thousands of signer nodes without performance loss.</p></div>
-      <div class="feat-cell"><div class="feat-num">02 — Speed</div><h3>Sub-Second Latency</h3><p>While legacy networks lag 30+ seconds, Ika operates at sub-second speeds.</p></div>
-      <div class="feat-cell"><div class="feat-num">03 — Security</div><h3>Zero-Trust</h3><p>2PC-MPC ensures no subset of validators can collude.</p></div>
-      <div class="feat-cell"><div class="feat-num">04 — Interop</div><h3>Native Multi-Chain</h3><p>Sign on Bitcoin, Ethereum, Solana, Sui, any ECDSA chain.</p></div>
-      <div class="feat-cell"><div class="feat-num">05 — Throughput</div><h3>10,000x</h3><p>Parallel signing delivers orders of magnitude beyond any existing MPC.</p></div>
-      <div class="feat-cell"><div class="feat-num">06 — Control</div><h3>Programmable Custody</h3><p>Recovery, spending limits, approval flows — enforced by smart contract.</p></div>
+    <div class="feat-grid reveal">
+      <div class="feat-cell">
+        <div class="feat-num">01 — Decentralisation</div>
+        <div class="feat-title">Massively Decentralised</div>
+        <p class="feat-desc">Scale to thousands of signer nodes without performance loss.</p>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-num">02 — Speed</div>
+        <div class="feat-title">Sub-Second Latency</div>
+        <p class="feat-desc">While legacy networks lag 30+ seconds, Ika operates at sub-second speeds.</p>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-num">03 — Security</div>
+        <div class="feat-title">Zero-Trust</div>
+        <p class="feat-desc">2PC-MPC ensures no subset of validators can collude.</p>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-num">04 — Interop</div>
+        <div class="feat-title">Native Multi-Chain</div>
+        <p class="feat-desc">Sign on Bitcoin, Ethereum, Solana, Sui, any ECDSA chain.</p>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-num">05 — Throughput</div>
+        <div class="feat-title">10,000x</div>
+        <p class="feat-desc">Parallel signing delivers orders of magnitude beyond any existing MPC.</p>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-num">06 — Control</div>
+        <div class="feat-title">Programmable Custody</div>
+        <p class="feat-desc">Recovery, spending limits, approval flows — enforced by smart contract.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<div class="sep"></div>
+<!-- USE CASES BENTO -->
+<section class="section" id="use-cases">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">What you can build</div>
+      <h2 class="section-heading">New primitives.<br><span class="dim">New design space.</span></h2>
+    </div>
 
-<!-- USE CASES -->
-<section class="sec" id="use-cases">
-  <div class="sec-inner">
-    <div class="tag">What you can build</div>
-    <h2 class="sh">New primitives.<br><span style="color:var(--t3)">New design space.</span></h2>
-    <div class="bento">
-      <div class="b-card b-7"><div class="b-tag">Cross-chain</div><h3>Near Intents, rebuilt</h3><p>Cross-chain intent execution at Solana speed. Users express intent, Ika handles signing.</p><div class="b-glow"></div></div>
-      <div class="b-card b-5"><div class="b-tag">Institutional</div><h3>On-chain Fireblocks</h3><p>MPC custody controlled by your Solana program. No vendor. Fully programmable.</p><div class="b-glow"></div></div>
-      <div class="b-card b-5"><div class="b-tag">Native BTC</div><h3>Lend against real Bitcoin</h3><p>Use native BTC as collateral in Solana DeFi. No wrapping. Full ownership.</p><div class="b-glow"></div></div>
-      <div class="b-card b-7"><div class="b-tag">Identity</div><h3>On-chain Privy</h3><p>Programmable auth and key management from Solana smart contracts.</p><div class="b-glow"></div></div>
-      <div class="b-card b-4"><div class="b-tag">Multi-chain</div><h3>Universal multisig</h3><p>One Solana program as signer for assets on every chain.</p></div>
-      <div class="b-card b-4"><div class="b-tag">AI Safety</div><h3>Agent guardrails</h3><p>Enforce spending limits for autonomous AI agents.</p></div>
-      <div class="b-card b-4"><div class="b-tag">Staking</div><h3>Cross-chain staking</h3><p>Stake any asset to secure any protocol.</p></div>
+    <div class="bento reveal">
+      <div class="b-card b-7">
+        <div class="b-tag">Cross-chain</div>
+        <div class="b-title">Near Intents, rebuilt</div>
+        <p class="b-desc">Cross-chain intent execution at Solana speed. Users express intent, Ika handles signing.</p>
+      </div>
+      <div class="b-card b-5">
+        <div class="b-tag">Institutional</div>
+        <div class="b-title">On-chain Fireblocks</div>
+        <p class="b-desc">MPC custody controlled by your Solana program. No vendor. Fully programmable.</p>
+      </div>
+      <div class="b-card b-4">
+        <div class="b-tag">Native BTC</div>
+        <div class="b-title">Lend against real Bitcoin</div>
+        <p class="b-desc">Use native BTC as collateral in Solana DeFi. No wrapping. Full ownership.</p>
+      </div>
+      <div class="b-card b-4">
+        <div class="b-tag">Identity</div>
+        <div class="b-title">On-chain Privy</div>
+        <p class="b-desc">Programmable auth and key management from Solana smart contracts.</p>
+      </div>
+      <div class="b-card b-4">
+        <div class="b-tag">Multi-chain</div>
+        <div class="b-title">Universal multisig</div>
+        <p class="b-desc">One Solana program as signer for assets on every chain.</p>
+      </div>
+      <div class="b-card b-6">
+        <div class="b-tag">AI Safety</div>
+        <div class="b-title">Agent guardrails</div>
+        <p class="b-desc">Enforce spending limits for autonomous AI agents.</p>
+      </div>
+      <div class="b-card b-6">
+        <div class="b-tag">Staking</div>
+        <div class="b-title">Cross-chain staking</div>
+        <p class="b-desc">Stake any asset to secure any protocol.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<div class="sep"></div>
+<!-- COMPARISON TABLE -->
+<section class="section" id="compare">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">How we compare</div>
+      <h2 class="section-heading">Not all MPC<br>is <span class="accent">equal.</span></h2>
+    </div>
 
-<!-- COMPARISON -->
-<section class="sec" id="compare" style="background:var(--bg2)">
-  <div class="sec-inner">
-    <div class="tag">How we compare</div>
-    <h2 class="sh">Not all MPC<br>is <span style="color:var(--coral)">equal.</span></h2>
-    <div class="cmp-wrap">
+    <div class="table-wrap reveal">
       <table class="cmp">
-        <thead><tr><th>Capability</th><th class="ik">Ika</th><th>Legacy MPC</th><th>Bridges</th></tr></thead>
+        <thead>
+          <tr><th>Capability</th><th class="ika-col">Ika</th><th>Legacy MPC</th><th>Bridges</th></tr>
+        </thead>
         <tbody>
-          <tr><td>Latency</td><td class="ik">&lt;1 second</td><td>30–120s</td><td>Minutes–hours</td></tr>
-          <tr><td>Throughput</td><td class="ik">10,000 TPS</td><td>~1 TPS</td><td>Low</td></tr>
-          <tr><td>Node count</td><td class="ik">1,000+</td><td>4–8</td><td>Centralised</td></tr>
-          <tr><td>Zero-trust</td><td class="ik"><span class="chk">✓</span> Non-collusive</td><td><span class="crs">✗</span></td><td><span class="crs">✗</span></td></tr>
-          <tr><td>Solana native</td><td class="ik"><span class="chk">✓</span></td><td><span class="crs">✗</span></td><td>Partial</td></tr>
-          <tr><td>Wrapping</td><td class="ik">Never</td><td>Sometimes</td><td>Always</td></tr>
-          <tr><td>Programmable</td><td class="ik"><span class="chk">✓</span> Smart contract</td><td>Limited</td><td><span class="crs">✗</span></td></tr>
+          <tr><td>Latency</td><td>&lt;1 second</td><td>30–120s</td><td>Minutes–hours</td></tr>
+          <tr><td>Throughput</td><td>10,000 TPS</td><td>~1 TPS</td><td>Low</td></tr>
+          <tr><td>Node count</td><td>1,000+</td><td>4–8</td><td>Centralised</td></tr>
+          <tr><td>Zero-trust</td><td><span class="check">✓</span> Non-collusive</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+          <tr><td>Solana native</td><td><span class="check">✓</span></td><td><span class="cross">✗</span></td><td>Partial</td></tr>
+          <tr><td>Wrapping</td><td>Never</td><td>Sometimes</td><td>Always</td></tr>
+          <tr><td>Programmable</td><td><span class="check">✓</span> Smart contract</td><td>Limited</td><td><span class="cross">✗</span></td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </section>
 
-<div class="sep"></div>
-
 <!-- BACKERS -->
-<section class="backer-sec">
+<section class="backer-section">
   <div class="backer-label">Backed by</div>
   <div class="backer-grid">
-    <img src="assets/logo-dcg.png" alt="DCG">
-    <img src="assets/logo-mysten-labs.png" alt="Mysten Labs">
-    <img src="assets/logo-falconX.png" alt="FalconX">
-    <img src="assets/logo-big-brain-holdings.png" alt="Big Brain Holdings">
-    <img src="assets/logo-blockchange.png" alt="Blockchange">
-    <img src="assets/logo-amplify.png" alt="Amplify">
-    <img src="assets/logo-liquid2.png" alt="Liquid2">
-    <img src="assets/logo-sui.png" alt="Sui">
-    <img src="assets/logo-dwallet-labs.png" alt="dWallet Labs">
+    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf79_logo-dcg.svg" alt="DCG">
+    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf8c_logo-mysten-labs.svg" alt="Mysten Labs">
+    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf7f_logo-falconx.svg" alt="FalconX">
+    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf76_logo-big-brain-holdings.svg" alt="Big Brain Holdings">
+    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf78_logo-blockchange.svg" alt="Blockchange">
+    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf74_logo-amplify.svg" alt="Amplify">
+    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf83_logo-liquid2.svg" alt="Liquid2">
+    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf8e_logo-sui.svg" alt="Sui">
+    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf7b_logo-dwallet-labs.svg" alt="dWallet Labs">
   </div>
 </section>
 
 <!-- CTA -->
-<section id="cta">
-  <div class="cta-orb"></div>
-  <div class="cta-inner">
-    <div class="tag" style="justify-content:center">Build the future</div>
-    <h2 class="sh" style="margin-bottom:1rem">Ready to build<br>on Ika?</h2>
-    <p style="font-size:.9375rem;color:var(--t2);line-height:1.75;margin-bottom:2.5rem">Read the docs, join our builder Telegram, or start building cross-chain apps today.</p>
-    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
-      <a href="https://docs.ika.xyz" class="btn-p">Read the Docs</a>
-      <a href="#" class="btn-g">Join Builders TG</a>
-    </div>
+<section class="cta-section">
+  <div class="hero-orb" style="position:absolute;filter:blur(100px);"></div>
+  <div class="cta-tag">Build the future</div>
+  <h2 class="cta-heading">Ready to build on Ika?</h2>
+  <p class="cta-sub">Read the docs, join our builder Telegram, or start building cross-chain apps today.</p>
+  <div class="cta-actions">
+    <a href="https://docs.ika.xyz" class="btn-primary">Read the Docs</a>
+    <a href="#" class="btn-outline">Join Builders TG</a>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="foot-inner">
-    <a href="#" class="nav-logo"><svg height="18" viewBox="0 0 96 48" fill="none"><path d="M29.4847 28.9053V19.0107C29.4847 13.5461 25.0548 9.11621 19.5902 9.11621C14.1256 9.11621 9.69568 13.5461 9.69568 19.0107V28.9053" stroke="#EE2B5B" stroke-width="3.904"/><path d="M29.485 25.6067L29.485 29.4546C29.485 31.5797 31.2078 33.3025 33.3329 33.3025C35.458 33.3025 37.1808 31.5797 37.1808 29.4546L37.1808 25.6068" stroke="#EE2B5B" stroke-width="3.904"/><path d="M23.6494 38.8841L23.6494 33.0207C23.6494 30.7788 21.832 28.9614 19.5901 28.9614C17.3482 28.9614 15.5308 30.7788 15.5308 33.0207L15.5308 38.8841" stroke="#EE2B5B" stroke-width="3.904"/><path d="M1.99994 25.6067L1.99994 29.4546C1.99994 31.5797 3.72269 33.3025 5.84781 33.3025C7.97293 33.3025 9.69568 31.5797 9.69568 29.4546L9.69568 25.6068" stroke="#EE2B5B" stroke-width="3.904"/><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5903 23.4076C21.4118 23.4076 22.8884 21.931 22.8884 20.1095C22.8884 18.2879 21.4118 16.8113 19.5903 16.8113C17.7687 16.8113 16.2921 18.2879 16.2921 20.1095C16.2921 20.4474 16.3429 20.7735 16.4374 21.0806C16.6959 20.5079 17.272 20.1094 17.9411 20.1094C18.8519 20.1094 19.5902 20.8477 19.5902 21.7585C19.5902 22.4276 19.1916 23.0037 18.6189 23.2623C18.926 23.3568 19.2522 23.4076 19.5903 23.4076Z" fill="#EE2B5B"/><path d="M44.997 39V11.2762H49.6369V39H44.997ZM55.3654 39L55.404 11.2762H60.1016V28.2185L67.7064 18.2072H73.5014L65.4346 28.6036L74.1945 39H68.0529L60.1016 28.9886V39H55.3654ZM81.9374 39.5776C80.4357 39.5776 79.165 39.2952 78.1253 38.7305C77.0857 38.1529 76.2963 37.3892 75.7573 36.4394C75.231 35.4896 74.9679 34.4435 74.9679 33.3012C74.9679 32.3001 75.1348 31.4016 75.4685 30.6059C75.8022 29.7973 76.3156 29.1042 77.0087 28.5266C77.7018 27.9362 78.6002 27.4548 79.7041 27.0826C80.5383 26.8131 81.5138 26.5692 82.6305 26.351C83.7599 26.1328 84.9793 25.9339 86.2885 25.7542C87.6105 25.5617 88.9902 25.3563 90.4278 25.1381L88.772 26.0815C88.7849 24.644 88.464 23.5851 87.8094 22.9048C87.1548 22.2246 86.051 21.8844 84.498 21.8844C83.561 21.8844 82.6561 22.1026 81.7833 22.539C80.9106 22.9754 80.3009 23.7263 79.9543 24.7916L75.7188 23.4631C76.2322 21.7047 77.2076 20.2929 78.6452 19.2276C80.0955 18.1623 82.0465 17.6296 84.498 17.6296C86.3462 17.6296 87.9698 17.9312 89.3689 18.5345C90.7807 19.1377 91.8268 20.126 92.507 21.4994C92.8793 22.231 93.1039 22.9818 93.1809 23.7519C93.2579 24.5092 93.2964 25.3371 93.2964 26.2355V39H89.2341V34.4949L89.9079 35.2265C88.971 36.7282 87.8736 37.832 86.6157 38.5379C85.3707 39.231 83.8113 39.5776 81.9374 39.5776ZM82.8615 35.8811C83.914 35.8811 84.8124 35.695 85.5569 35.3228C86.3013 34.9505 86.8917 34.4494 87.3281 33.9558C87.7773 33.4167 88.0789 32.9098 88.233 32.4349C88.4768 31.8444 88.6116 31.1706 88.6373 30.4133C88.6758 29.6432 88.695 29.0207 88.695 28.5458L90.1197 28.9694C88.7207 29.1876 87.5206 29.3801 86.5195 29.547C85.5183 29.7138 84.6584 29.8743 83.9396 30.0283C83.2209 30.1695 82.5855 30.3299 82.0336 30.5096C81.4946 30.7021 81.0389 30.9267 80.6667 31.1834C80.2945 31.4401 80.0057 31.7353 79.8003 32.0691C79.6078 32.4028 79.5115 32.7942 79.5115 33.2435C79.5115 33.7569 79.6399 34.2125 79.8966 34.6104C80.1533 34.9955 80.5255 35.3035 81.0132 35.5345C81.5138 35.7656 82.1299 35.8811 82.8615 35.8811Z" fill="#EE2B5B"/></svg></a>
-    <ul class="foot-links"><li><a href="https://docs.ika.xyz">Docs</a></li><li><a href="#">Blog</a></li><li><a href="#">GitHub</a></li><li><a href="#">Twitter</a></li><li><a href="#">Telegram</a></li></ul>
-    <div class="foot-c">© 2026 Ika Network</div>
-  </div>
+  <a href="#" class="nav-logo">
+    <svg viewBox="0 0 698 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:18px"><path d="M289.5 42h27v116h-27V42ZM385 42h27l-3 60.5 3 55.5h-27l3-55.5L385 42Z" fill="#EE2B5B"/><path d="M451.5 42h27l42.5 56V42h27v116h-27l-42.5-56.5V158h-27V42Z" fill="#F4F4F6"/><path d="M361.5 42l-34 58 34 58h-30.5l-34-58 34-58h30.5Z" fill="#F4F4F6"/><path d="M140.8 100c0-43.1 29.9-66 59.6-66 29.8 0 59.6 22.9 59.6 66s-29.8 66-59.6 66c-29.7 0-59.6-22.9-59.6-66Z" fill="none" stroke="#EE2B5B" stroke-width="24"/><circle cx="200.4" cy="100" r="16" fill="#EE2B5B"/><path d="M0 100c0-55.2 44.8-100 100-100v32c-37.6 0-68 30.4-68 68s30.4 68 68 68v32c-55.2 0-100-44.8-100-100Z" fill="#EE2B5B"/></svg>
+  </a>
+  <ul class="footer-links">
+    <li><a href="https://docs.ika.xyz">Docs</a></li>
+    <li><a href="#">Blog</a></li>
+    <li><a href="#">GitHub</a></li>
+    <li><a href="#">Twitter</a></li>
+    <li><a href="#">Telegram</a></li>
+  </ul>
+  <span>© 2026 Ika Network</span>
 </footer>
 
 <script>
-// ── Three.js Organic Creature ──
-(function(){
-  const canvas = document.getElementById('hero-canvas');
-  if(!canvas) return;
-  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
+// ── Marquee duplicate for seamless loop ──
+const marquee = document.getElementById('marquee');
+marquee.innerHTML += marquee.innerHTML;
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 100);
-  camera.position.set(0, 0, 4);
-
-  const mouse = {x:0, y:0, tx:0, ty:0};
-  window.addEventListener('mousemove', e => {
-    mouse.tx = (e.clientX/window.innerWidth - 0.5) * 2;
-    mouse.ty = -(e.clientY/window.innerHeight - 0.5) * 2;
+// ── Scroll reveal (IntersectionObserver) ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
   });
+}, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // Vertex shader with noise displacement + tentacle protrusions
-  const vs = `
-    uniform float uTime;
-    uniform vec2 uMouse;
-    varying vec3 vNormal;
-    varying vec3 vPos;
-    varying float vDisp;
-    vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}
-    vec4 mod289(vec4 x){return x-floor(x*(1./289.))*289.;}
-    vec4 permute(vec4 x){return mod289(((x*34.)+1.)*x);}
-    vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-.85373472095314*r;}
-    float snoise(vec3 v){const vec2 C=vec2(1./6.,1./3.);const vec4 D=vec4(0,.5,1.,2.);vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.-g;vec3 i1=min(g,l.zxy);vec3 i2=max(g,l.zxy);vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;i=mod289(i);vec4 p=permute(permute(permute(i.z+vec4(0,i1.z,i2.z,1.))+i.y+vec4(0,i1.y,i2.y,1.))+i.x+vec4(0,i1.x,i2.x,1.));float n_=.142857142857;vec3 ns=n_*D.wyz-D.xzx;vec4 j=p-49.*floor(p*ns.z*ns.z);vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.*x_);vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.-abs(x)-abs(y);vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);vec4 s0=floor(b0)*2.+1.;vec4 s1=floor(b1)*2.+1.;vec4 sh=-step(h,vec4(0));vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;vec4 m=max(.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.);m=m*m;return 42.*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));}
-    void main(){
-      vec3 pos=position;float t=uTime*.25;
-      float n1=snoise(pos*1.5+t)*.3;float n2=snoise(pos*3.+t*1.2)*.12;float n3=snoise(pos*5.5+t*.8)*.06;
-      float d=n1+n2+n3;
-      vec3 dir=normalize(pos);float tent=0.;
-      for(int i=0;i<8;i++){float a=float(i)*.785398;float el=sin(float(i)*1.2)*.6;vec3 td=normalize(vec3(cos(a),el,sin(a)));float al=max(0.,dot(dir,td));al=pow(al,4.);float w=sin(al*12.566+t*(1.+float(i)*.15))*.5+.5;tent+=al*w*.3;}
-      d+=tent;
-      vec3 md=normalize(vec3(uMouse.x,uMouse.y,.3));d+=pow(max(0.,dot(dir,md)),3.)*.15;
-      pos+=normal*d;vDisp=d;vNormal=normalMatrix*normal;vPos=(modelViewMatrix*vec4(pos,1.)).xyz;gl_Position=projectionMatrix*modelViewMatrix*vec4(pos,1.);
-    }`;
-
-  const fs = `
-    uniform float uTime;varying vec3 vNormal;varying vec3 vPos;varying float vDisp;
-    void main(){
-      vec3 vd=normalize(-vPos);float fr=1.-max(0.,dot(vd,normalize(vNormal)));fr=pow(fr,2.2);
-      vec3 deep=vec3(.55,.06,.16);vec3 bright=vec3(.93,.17,.36);vec3 hot=vec3(1.,.6,.5);
-      vec3 c=mix(deep,bright,smoothstep(-.15,.3,vDisp));c=mix(c,hot,fr*.65);
-      float pulse=sin(vDisp*8.+uTime*1.5)*.5+.5;vec3 gc=mix(bright,hot,pulse);
-      c=mix(c,gc,smoothstep(.15,.5,vDisp)*.45);c+=bright*2.2*fr*.6;c*=1.25;
-      gl_FragColor=vec4(c,.9+fr*.1);
-    }`;
-
-  const geo = new THREE.IcosahedronGeometry(1., 48);
-  const mat = new THREE.ShaderMaterial({
-    uniforms:{uTime:{value:0},uMouse:{value:new THREE.Vector2()}},
-    vertexShader:vs, fragmentShader:fs, transparent:true, side:THREE.DoubleSide, depthWrite:false
+// ── Counter animation ──
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const target = parseInt(el.dataset.target);
+    if (!target) return;
+    const suffix = el.dataset.suffix || '';
+    let current = 0;
+    const step = Math.ceil(target / 60);
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) {
+        current = target;
+        clearInterval(timer);
+      }
+      el.textContent = current.toLocaleString() + suffix;
+    }, 25);
+    counterObserver.unobserve(el);
   });
-  const mesh = new THREE.Mesh(geo, mat);
-  scene.add(mesh);
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
 
-  // Particles
-  const pc=400;const pg=new THREE.BufferGeometry();const pp=new Float32Array(pc*3);const ps=new Float32Array(pc);const ph=new Float32Array(pc);
-  for(let i=0;i<pc;i++){const th=Math.random()*Math.PI*2;const phi=Math.acos(2*Math.random()-1);const r=1.5+Math.random()*3;pp[i*3]=r*Math.sin(phi)*Math.cos(th);pp[i*3+1]=r*Math.sin(phi)*Math.sin(th);pp[i*3+2]=r*Math.cos(phi);ps[i]=Math.random()*2+.5;ph[i]=Math.random()*6.28;}
-  pg.setAttribute('position',new THREE.BufferAttribute(pp,3));pg.setAttribute('aSize',new THREE.BufferAttribute(ps,1));pg.setAttribute('aPhase',new THREE.BufferAttribute(ph,1));
-  const pm=new THREE.ShaderMaterial({
-    uniforms:{uTime:{value:0}},
-    vertexShader:`attribute float aSize;attribute float aPhase;uniform float uTime;varying float vA;void main(){vec3 p=position;float t=uTime*.12;p.x+=sin(t*.3+aPhase)*.3;p.y+=cos(t*.2+aPhase*1.3)*.2;p.z+=sin(t*.25+aPhase*.5)*.25;vA=(sin(uTime*1.5+aPhase)*.5+.5)*.7+.2;vec4 mv=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*mv;gl_PointSize=aSize*(180./-mv.z);}`,
-    fragmentShader:`varying float vA;void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;float g=1.-smoothstep(0.,.5,d);g=pow(g,2.);gl_FragColor=vec4(.93,.17,.36,g*vA);}`,
-    transparent:true,blending:THREE.AdditiveBlending,depthWrite:false
+// ── Smooth nav scroll ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
   });
-  scene.add(new THREE.Points(pg,pm));
-
-  const clock=new THREE.Clock();
-  function anim(){
-    requestAnimationFrame(anim);const t=clock.getElapsedTime();
-    mouse.x+=(mouse.tx-mouse.x)*.04;mouse.y+=(mouse.ty-mouse.y)*.04;
-    mat.uniforms.uTime.value=t;mat.uniforms.uMouse.value.set(mouse.x,mouse.y);
-    pm.uniforms.uTime.value=t;
-    mesh.rotation.y=t*.06+mouse.x*.25;mesh.rotation.x=Math.sin(t*.1)*.08+mouse.y*.15;
-    renderer.render(scene,camera);
-  }
-  anim();
-  window.addEventListener('resize',()=>{camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);});
-})();
-
-// ── GSAP ──
-gsap.registerPlugin(ScrollTrigger);
-
-// Hero entrance
-gsap.from('.hero-eyebrow',{opacity:0,y:20,duration:.7,delay:.3});
-gsap.from('h1.hero-h',{opacity:0,y:30,duration:.8,delay:.5});
-gsap.from('.hero-sub',{opacity:0,y:20,duration:.7,delay:.7});
-gsap.from('.hero-actions',{opacity:0,y:20,duration:.6,delay:.9});
-
-// Hero parallax
-gsap.to('.hero-content',{scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:.5},y:-80,opacity:0});
-gsap.to('#hero-canvas',{scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:.5},scale:1.15,opacity:0});
-
-// Counters
-ScrollTrigger.create({trigger:'#stats',start:'top 80%',onEnter:()=>{document.querySelectorAll('.ctr').forEach(el=>{const to=parseInt(el.dataset.to);gsap.to({v:0},{v:to,duration:2,ease:'power2.out',onUpdate(){el.textContent=Math.round(this.targets()[0].v).toLocaleString()}});});},once:true});
-
-// Section reveals
-document.querySelectorAll('.sec').forEach(sec=>{
-  gsap.from(sec.querySelectorAll('.tag,h2,.prob-text,p'),{scrollTrigger:{trigger:sec,start:'top 78%',once:true},y:30,opacity:0,stagger:.1,duration:.6,ease:'power3.out'});
 });
 
-// Problem cards
-gsap.from('.prob-row',{scrollTrigger:{trigger:'.prob-stack',start:'top 78%',once:true},x:20,opacity:0,stagger:.08,duration:.5,ease:'power3.out'});
-
-// Feature cells
-gsap.from('.feat-cell',{scrollTrigger:{trigger:'.feat-grid',start:'top 78%',once:true},y:25,opacity:0,stagger:.06,duration:.5,ease:'power3.out'});
-
-// Bento cards
-gsap.from('.b-card',{scrollTrigger:{trigger:'.bento',start:'top 78%',once:true},y:30,opacity:0,stagger:.06,duration:.6,ease:'power3.out'});
-
-// Table rows
-gsap.from('.cmp tbody tr',{scrollTrigger:{trigger:'.cmp-wrap',start:'top 78%',once:true},x:-15,opacity:0,stagger:.05,duration:.4,ease:'power3.out'});
-
-// Backer logos
-gsap.from('.backer-grid img',{scrollTrigger:{trigger:'.backer-sec',start:'top 82%',once:true},y:12,opacity:0,stagger:.04,duration:.35,ease:'power3.out'});
+// ── Nav blur on scroll ──
+const nav = document.querySelector('nav');
+window.addEventListener('scroll', () => {
+  nav.style.borderBottomColor = window.scrollY > 50 ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.04)';
+});
 </script>
 </body>
 </html>
