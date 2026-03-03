@@ -6,178 +6,166 @@
 <title>Ika — The MPC Network</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-
-<!-- Three.js -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js"></script>
-<!-- GSAP + ScrollTrigger -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#04040A;--bg2:#08081A;--bg3:#0E0E22;
-  --coral:#EE2B5B;--coral-50:rgba(238,43,91,.5);--coral-20:rgba(238,43,91,.2);--coral-10:rgba(238,43,91,.1);--coral-05:rgba(238,43,91,.05);
-  --text:#F2F2FA;--t2:rgba(242,242,250,.55);--t3:rgba(242,242,250,.2);--t4:rgba(242,242,250,.08);
-  --bdr:rgba(242,242,250,.06);--bdr2:rgba(242,242,250,.1);
+  --bg:#050510;--bg2:#0a0a1a;--bg3:#0f0f24;
+  --coral:#EE2B5B;--coral50:rgba(238,43,91,.5);--coral20:rgba(238,43,91,.2);--coral10:rgba(238,43,91,.1);--coral05:rgba(238,43,91,.05);
+  --white:#F4F4FB;--t2:rgba(244,244,251,.55);--t3:rgba(244,244,251,.2);--t4:rgba(244,244,251,.06);
+  --bdr:rgba(244,244,251,.06);
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-.mono{font-family:'JetBrains Mono',monospace}
-::selection{background:var(--coral-20);color:var(--text)}
+body{background:var(--bg);color:var(--white);font-family:'Space Grotesk',system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--coral20);color:#fff}
 
-/* ───── NAV ───── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.875rem 2.5rem;display:flex;align-items:center;justify-content:space-between;background:rgba(4,4,10,.65);backdrop-filter:blur(30px) saturate(1.3);-webkit-backdrop-filter:blur(30px) saturate(1.3);border-bottom:1px solid var(--bdr);transition:all .3s}
-.nav-logo svg{height:26px;width:auto;display:block}
-.nav-links{display:flex;align-items:center;gap:2.25rem;list-style:none}
-.nav-links a{font-size:.8125rem;font-weight:500;color:var(--t2);text-decoration:none;transition:color .25s;letter-spacing:.005em}
-.nav-links a:hover{color:var(--text)}
-.nav-cta{background:var(--coral);color:#fff;font-size:.8125rem;font-weight:600;padding:.5rem 1.35rem;border-radius:8px;text-decoration:none;transition:all .25s;cursor:pointer;letter-spacing:-.005em;border:none}
-.nav-cta:hover{filter:brightness(1.15);transform:translateY(-1px)}
+/* ── Noise overlay ── */
+.noise{position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px}
 
-/* ───── HERO ───── */
-#hero{height:100vh;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
-#hero-canvas{position:absolute;inset:0;z-index:1}
-.hero-overlay{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse 80% 70% at 50% 45%,transparent 30%,var(--bg) 100%);pointer-events:none}
-.hero-content{position:relative;z-index:3;text-align:center;max-width:860px;padding:0 2rem}
-.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.25em;text-transform:uppercase;color:var(--coral);margin-bottom:2.5rem;display:inline-flex;align-items:center;gap:.75rem;background:var(--coral-10);padding:.45rem 1.2rem;border-radius:100px;border:1px solid var(--coral-20)}
-.hero-eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--coral);animation:dotPulse 2s ease-in-out infinite}
-@keyframes dotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
-h1.hero-h{font-size:clamp(4.5rem,11vw,10rem);font-weight:700;line-height:.88;letter-spacing:-.06em;margin-bottom:2rem}
-h1.hero-h .line{display:block;overflow:hidden}
-h1.hero-h .line span{display:inline-block}
-h1.hero-h .dim{color:var(--t3)}
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,16,.6);backdrop-filter:blur(24px) saturate(1.2);-webkit-backdrop-filter:blur(24px) saturate(1.2);border-bottom:1px solid var(--bdr)}
+.nav-logo svg{height:24px;width:auto;display:block}
+.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+.nav-links a{font-size:.8125rem;font-weight:500;color:var(--t2);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.btn-nav{background:var(--coral);color:#fff;font-size:.75rem;font-weight:600;padding:.5rem 1.25rem;border-radius:8px;text-decoration:none;transition:all .2s;border:none;cursor:pointer}
+.btn-nav:hover{filter:brightness(1.12);transform:translateY(-1px)}
+
+/* ── HERO ── */
+#hero{height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;text-align:center}
+#hero-canvas{position:absolute;inset:0;z-index:0}
+/* Gradient orbs (Solana style) */
+.orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
+.orb-1{width:500px;height:500px;background:rgba(238,43,91,.08);top:20%;left:30%;animation:orbFloat 12s ease-in-out infinite}
+.orb-2{width:350px;height:350px;background:rgba(238,43,91,.05);top:50%;right:20%;animation:orbFloat 15s ease-in-out infinite reverse}
+.orb-3{width:200px;height:200px;background:rgba(100,50,200,.04);bottom:20%;left:15%;animation:orbFloat 10s ease-in-out infinite 3s}
+@keyframes orbFloat{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-20px)}66%{transform:translate(-15px,25px)}}
+.hero-overlay{position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse 80% 70% at 50% 45%,transparent 40%,var(--bg) 100%);pointer-events:none}
+.hero-content{position:relative;z-index:2;max-width:780px;padding:0 1.5rem}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--coral);margin-bottom:2rem;display:inline-flex;align-items:center;gap:.65rem;background:var(--coral10);padding:.4rem 1.1rem;border-radius:100px;border:1px solid var(--coral20)}
+.hero-eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--coral);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1.hero-h{font-size:clamp(3.5rem,9vw,7.5rem);font-weight:700;line-height:.9;letter-spacing:-.055em;margin-bottom:1.75rem}
 h1.hero-h .coral{color:var(--coral)}
-.hero-sub{font-size:1.0625rem;font-weight:400;color:var(--t2);line-height:1.75;max-width:480px;margin:0 auto 2.75rem}
-.hero-actions{display:flex;gap:.875rem;justify-content:center;flex-wrap:wrap}
-.btn-p{background:var(--coral);color:#fff;font-size:.875rem;font-weight:600;padding:.875rem 1.75rem;border-radius:8px;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;transition:all .25s;letter-spacing:-.01em;border:none;position:relative;overflow:hidden}
-.btn-p::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 60%);opacity:0;transition:opacity .25s}
-.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(238,43,91,.25)}.btn-p:hover::after{opacity:1}
-.btn-g{background:rgba(255,255,255,.03);color:var(--t2);font-size:.875rem;font-weight:500;padding:.875rem 1.75rem;border-radius:8px;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--bdr2);transition:all .25s}
-.btn-g:hover{color:var(--text);border-color:rgba(242,242,250,.25);background:rgba(255,255,255,.05);transform:translateY(-2px)}
-.chain-row{display:flex;gap:.35rem;flex-wrap:wrap;justify-content:center;margin-top:3.5rem}
-.chain-pill{font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:400;letter-spacing:.1em;padding:.3rem .7rem;border-radius:100px;border:1px solid var(--bdr);color:var(--t3);text-transform:uppercase;transition:all .3s}
-.chain-pill:hover{border-color:var(--coral-20);color:var(--coral-50)}
-.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:3;opacity:.35}
-.scroll-line{width:1px;height:50px;margin:0 auto;overflow:hidden;position:relative}
-.scroll-line::after{content:'';position:absolute;top:-50px;left:0;width:1px;height:50px;background:linear-gradient(to bottom,transparent,var(--coral));animation:scrollDrop 2.5s ease-in-out infinite}
-@keyframes scrollDrop{0%{top:-50px}100%{top:100%}}
+h1.hero-h .dim{color:var(--t3)}
+.hero-sub{font-size:1rem;font-weight:400;color:var(--t2);line-height:1.75;max-width:460px;margin:0 auto 2.5rem}
+.hero-actions{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.btn-p{background:var(--coral);color:#fff;font-size:.875rem;font-weight:600;padding:.8rem 1.6rem;border-radius:8px;text-decoration:none;cursor:pointer;transition:all .2s;border:none;position:relative;overflow:hidden}
+.btn-p:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 8px 30px rgba(238,43,91,.3)}
+.btn-g{background:rgba(255,255,255,.04);color:var(--t2);font-size:.875rem;font-weight:500;padding:.8rem 1.6rem;border-radius:8px;text-decoration:none;cursor:pointer;border:1px solid rgba(255,255,255,.08);transition:all .2s}
+.btn-g:hover{color:var(--white);border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06);transform:translateY(-2px)}
 
-/* ───── STATS ───── */
-#stats{border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);background:var(--bg2);position:relative;overflow:hidden}
-.stats-glow{position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:200px;background:radial-gradient(ellipse,var(--coral-05),transparent 70%);pointer-events:none}
-.stats-grid{max-width:1440px;margin:0 auto;padding:3.5rem 2.5rem;display:grid;grid-template-columns:repeat(4,1fr)}
-.stat{padding:0 2.5rem;border-left:1px solid var(--bdr)}
-.stat:first-child{border-left:none;padding-left:0}
-.stat-n{font-family:'JetBrains Mono',monospace;font-size:clamp(2rem,3.5vw,3.5rem);font-weight:500;letter-spacing:-.04em;color:var(--coral)}
-.stat-l{font-size:.75rem;color:var(--t2);line-height:1.5;margin-top:.35rem;letter-spacing:.01em}
+/* Chain marquee */
+.chain-marquee{position:absolute;bottom:0;left:0;right:0;z-index:2;border-top:1px solid var(--bdr);padding:.75rem 0;overflow:hidden;background:rgba(5,5,16,.5);backdrop-filter:blur(12px)}
+.marquee-track{display:flex;gap:3rem;animation:marquee 30s linear infinite;width:max-content}
+.marquee-track span{font-family:'JetBrains Mono',monospace;font-size:.5625rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);white-space:nowrap;display:flex;align-items:center;gap:.5rem}
+.marquee-track .chain-dot{width:4px;height:4px;border-radius:50%;background:var(--coral50)}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* ───── SECTIONS ───── */
-.sec{padding:8rem 2.5rem}
-.sec-inner{max-width:1200px;margin:0 auto}
-.tag{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--t3);margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem}
-.tag::before{content:'';width:16px;height:1px;background:var(--coral-50)}
-h2.sh{font-size:clamp(2.75rem,5.5vw,5rem);font-weight:700;line-height:.95;letter-spacing:-.045em;margin-bottom:1.5rem}
+/* ── STATS ── */
+#stats{border-bottom:1px solid var(--bdr);background:var(--bg2);position:relative}
+.stats-grid{max-width:1200px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.stat{text-align:center;padding:0 1rem}
+.stat-n{font-family:'JetBrains Mono',monospace;font-size:clamp(1.75rem,3vw,2.75rem);font-weight:500;letter-spacing:-.03em;color:var(--coral)}
+.stat-l{font-size:.6875rem;color:var(--t2);line-height:1.5;margin-top:.25rem}
+
+/* ── SECTIONS ── */
+.sec{padding:6rem 2rem}
+.sec-inner{max-width:1100px;margin:0 auto}
+.tag{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.tag::before{content:'';width:14px;height:1px;background:var(--coral50)}
+h2.sh{font-size:clamp(2.25rem,4.5vw,3.75rem);font-weight:700;line-height:.96;letter-spacing:-.04em;margin-bottom:1.25rem}
 .sep{height:1px;background:var(--bdr)}
 
-/* ───── PROBLEM ───── */
-.problem-layout{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start;margin-top:3.5rem}
-.prob-text p{font-size:1.0625rem;color:var(--t2);line-height:1.75;max-width:420px}
-.prob-stack{display:flex;flex-direction:column;gap:1px;background:var(--bdr);border-radius:16px;overflow:hidden;border:1px solid var(--bdr)}
-.prob-row{display:flex;align-items:flex-start;gap:1rem;padding:1.375rem 1.5rem;background:var(--bg2);transition:background .2s}
+/* ── PROBLEM ── */
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;margin-top:3rem}
+.prob-text{font-size:1rem;color:var(--t2);line-height:1.75;max-width:400px;margin-top:1rem}
+.prob-stack{display:flex;flex-direction:column;gap:1px;background:var(--bdr);border-radius:14px;overflow:hidden;border:1px solid var(--bdr)}
+.prob-row{display:flex;align-items:flex-start;gap:.875rem;padding:1.125rem 1.25rem;background:var(--bg2);transition:background .2s}
 .prob-row:hover{background:var(--bg3)}
-.prob-row.solution{background:var(--coral-05)}
-.prob-row.solution:hover{background:var(--coral-10)}
-.prob-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.prob-row.sol{background:var(--coral05)}
+.prob-row.sol:hover{background:var(--coral10)}
+.prob-ic{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .prob-ic.bad{background:rgba(248,113,113,.06)}.prob-ic.bad svg{stroke:#F87171}
-.prob-ic.good{background:var(--coral-10)}.prob-ic.good svg{stroke:var(--coral)}
-.prob-t{font-size:.875rem;font-weight:600;margin-bottom:.15rem}
-.prob-d{font-size:.75rem;color:var(--t2);line-height:1.6}
+.prob-ic.good{background:var(--coral10)}.prob-ic.good svg{stroke:var(--coral)}
+.prob-t{font-size:.8125rem;font-weight:600;margin-bottom:.1rem}
+.prob-d{font-size:.6875rem;color:var(--t2);line-height:1.55}
 
-/* ───── FEATURES ───── */
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border-radius:20px;overflow:hidden;margin-top:4rem;border:1px solid var(--bdr)}
-.feat-cell{background:var(--bg2);padding:2.75rem 2.25rem;transition:all .35s;position:relative;overflow:hidden}
-.feat-cell::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--coral-20),transparent);opacity:0;transition:opacity .35s}
-.feat-cell:hover{background:var(--bg3)}.feat-cell:hover::before{opacity:1}
-.feat-num{font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.15em;color:var(--t3);margin-bottom:1.5rem;text-transform:uppercase}
-.feat-cell h3{font-size:1.125rem;font-weight:600;margin-bottom:.6rem;letter-spacing:-.02em}
-.feat-cell p{font-size:.8125rem;color:var(--t2);line-height:1.65}
+/* ── FEATURES ── */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border-radius:16px;overflow:hidden;margin-top:3rem;border:1px solid var(--bdr)}
+.feat-cell{background:var(--bg2);padding:2rem 1.75rem;transition:all .3s;position:relative}
+.feat-cell:hover{background:var(--bg3)}
+.feat-num{font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.12em;color:var(--t3);text-transform:uppercase;margin-bottom:1.25rem}
+.feat-cell h3{font-size:1rem;font-weight:600;margin-bottom:.4rem;letter-spacing:-.015em}
+.feat-cell p{font-size:.75rem;color:var(--t2);line-height:1.6}
 
-/* ───── BENTO ───── */
-.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;background:var(--bdr);border-radius:20px;overflow:hidden;margin-top:4rem;border:1px solid var(--bdr)}
-.bento-card{background:var(--bg2);padding:2.75rem 2.25rem;position:relative;overflow:hidden;transition:all .35s}
-.bento-card:hover{background:var(--bg3)}
-.bento-card.b-7{grid-column:span 7}.bento-card.b-5{grid-column:span 5}.bento-card.b-4{grid-column:span 4}
-.bento-tag{font-family:'JetBrains Mono',monospace;font-size:.4375rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--coral);margin-bottom:1rem;display:inline-block;background:var(--coral-10);padding:.3rem .7rem;border-radius:4px}
-.bento-card h3{font-size:1.25rem;font-weight:700;letter-spacing:-.03em;margin-bottom:.5rem}
-.bento-card p{font-size:.8125rem;color:var(--t2);line-height:1.65;max-width:360px}
-.bento-glow{position:absolute;bottom:-80px;right:-80px;width:200px;height:200px;background:radial-gradient(circle,var(--coral-05),transparent 70%);pointer-events:none;border-radius:50%}
+/* ── BENTO ── */
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;background:var(--bdr);border-radius:16px;overflow:hidden;margin-top:3rem;border:1px solid var(--bdr)}
+.b-card{background:var(--bg2);padding:2rem 1.75rem;position:relative;overflow:hidden;transition:all .3s}
+.b-card:hover{background:var(--bg3)}
+.b-7{grid-column:span 7}.b-5{grid-column:span 5}.b-4{grid-column:span 4}.b-6{grid-column:span 6}
+.b-tag{font-family:'JetBrains Mono',monospace;font-size:.4375rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);margin-bottom:.875rem;display:inline-block;background:var(--coral10);padding:.25rem .6rem;border-radius:4px}
+.b-card h3{font-size:1.125rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.35rem}
+.b-card p{font-size:.75rem;color:var(--t2);line-height:1.6;max-width:340px}
+.b-glow{position:absolute;bottom:-60px;right:-60px;width:160px;height:160px;background:radial-gradient(circle,var(--coral05),transparent 70%);pointer-events:none;border-radius:50%}
 
-/* ───── COMPARISON ───── */
-.cmp-wrap{margin-top:3.5rem;border-radius:16px;overflow:hidden;border:1px solid var(--bdr)}
+/* ── TABLE ── */
+.cmp-wrap{margin-top:3rem;border-radius:14px;overflow:hidden;border:1px solid var(--bdr)}
 table.cmp{width:100%;border-collapse:collapse}
-.cmp th{padding:1rem 1.5rem;font-size:.6875rem;font-weight:600;text-align:left;background:var(--bg3);color:var(--t3);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--bdr)}
+.cmp th{padding:.875rem 1.25rem;font-size:.625rem;font-weight:600;text-align:left;background:var(--bg3);color:var(--t3);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--bdr)}
 .cmp th.ik{color:var(--coral)}
-.cmp td{padding:.9rem 1.5rem;font-size:.8125rem;border-bottom:1px solid var(--bdr);color:var(--t2)}
+.cmp td{padding:.75rem 1.25rem;font-size:.8125rem;border-bottom:1px solid var(--bdr);color:var(--t2)}
 .cmp tr:last-child td{border-bottom:none}
-.cmp td.ik{color:var(--text);font-weight:600}
-.cmp tr{transition:background .2s}.cmp tbody tr:hover{background:rgba(255,255,255,.01)}
+.cmp td.ik{color:var(--white);font-weight:600}
+.cmp tbody tr:hover{background:rgba(255,255,255,.01)}
 .chk{color:#4ADE80;font-weight:700}.crs{color:rgba(248,113,113,.6)}
 
-/* ───── BACKERS ───── */
-.backer-sec{background:var(--bg2);padding:5.5rem 2.5rem;text-align:center;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
-.backer-label{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--t3);margin-bottom:3rem}
-.backer-grid{max-width:1000px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2rem 3rem}
-.backer-grid img{height:20px;opacity:.35;transition:all .3s;filter:brightness(0) invert(1)}
-.backer-grid img:hover{opacity:.7;transform:scale(1.05)}
+/* ── BACKERS ── */
+.backer-sec{background:var(--bg2);padding:4.5rem 2rem;text-align:center;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.backer-label{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);margin-bottom:2.5rem}
+.backer-grid{max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:1.5rem 2.5rem}
+.backer-grid img{height:18px;opacity:.35;transition:all .3s;filter:brightness(0) invert(1)}
+.backer-grid img:hover{opacity:.65}
 
-/* ───── CTA ───── */
-#cta{position:relative;overflow:hidden;padding:10rem 2.5rem;text-align:center}
-.cta-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-.cta-ring{position:absolute;border:1px solid var(--bdr);border-radius:50%;opacity:.6}
-.cta-ring:nth-child(1){width:300px;height:300px}.cta-ring:nth-child(2){width:500px;height:500px;border-color:var(--coral-05)}.cta-ring:nth-child(3){width:700px;height:700px}
-.cta-inner{position:relative;z-index:1;max-width:560px;margin:0 auto}
+/* ── CTA ── */
+#cta{padding:8rem 2rem;text-align:center;position:relative;overflow:hidden}
+.cta-orb{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,var(--coral05),transparent 70%);pointer-events:none;border-radius:50%}
+.cta-inner{position:relative;z-index:1;max-width:500px;margin:0 auto}
 
-/* ───── FOOTER ───── */
-footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg)}
-.foot-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-.foot-links{display:flex;gap:1.75rem;list-style:none}
-.foot-links a{font-size:.6875rem;color:var(--t3);text-decoration:none;transition:color .25s;letter-spacing:.01em}
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--bdr);padding:1.25rem 2rem;background:var(--bg)}
+.foot-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.foot-links{display:flex;gap:1.5rem;list-style:none}
+.foot-links a{font-size:.6875rem;color:var(--t3);text-decoration:none;transition:color .2s}
 .foot-links a:hover{color:var(--t2)}
-.foot-c{font-family:'JetBrains Mono',monospace;font-size:.5625rem;color:var(--t3)}
+.foot-c{font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--t3)}
 
-/* ───── RESPONSIVE ───── */
+/* ── RESPONSIVE ── */
 @media(max-width:1024px){
-  .problem-layout,.feat-grid{display:block}
-  .feat-grid{display:grid;grid-template-columns:1fr}
-  .bento-card.b-7,.bento-card.b-5,.bento-card.b-4{grid-column:span 12}
-  .stats-grid{grid-template-columns:repeat(2,1fr);gap:2rem}
-  .problem-layout{display:flex;flex-direction:column;gap:3rem}
+  .problem-grid{grid-template-columns:1fr;gap:2.5rem}
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .b-7,.b-5,.b-4,.b-6{grid-column:span 12}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.5rem}
 }
 @media(max-width:640px){
   .nav-links{display:none}
-  nav{padding:.875rem 1.25rem}
-  h1.hero-h{font-size:clamp(3.25rem,14vw,5rem)}
+  nav{padding:.75rem 1rem}
+  .feat-grid{grid-template-columns:1fr}
   .stats-grid{grid-template-columns:1fr 1fr}
-  .backer-grid{gap:1.5rem 2rem}
-  .backer-grid img{height:16px}
-  .sec{padding:5rem 1.25rem}
+  .backer-grid img{height:14px}
+  .sec{padding:4rem 1.25rem}
 }
 </style>
 </head>
 <body>
+<div class="noise"></div>
 
 <!-- NAV -->
-<nav id="main-nav">
+<nav>
   <a href="#" class="nav-logo">
-    <svg viewBox="0 0 96 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M29.4847 28.9053V19.0107C29.4847 13.5461 25.0548 9.11621 19.5902 9.11621C14.1256 9.11621 9.69568 13.5461 9.69568 19.0107V28.9053" stroke="#EE2B5B" stroke-width="3.904"/>
-      <path d="M29.485 25.6067L29.485 29.4546C29.485 31.5797 31.2078 33.3025 33.3329 33.3025C35.458 33.3025 37.1808 31.5797 37.1808 29.4546L37.1808 25.6068" stroke="#EE2B5B" stroke-width="3.904"/>
-      <path d="M23.6494 38.8841L23.6494 33.0207C23.6494 30.7788 21.832 28.9614 19.5901 28.9614C17.3482 28.9614 15.5308 30.7788 15.5308 33.0207L15.5308 38.8841" stroke="#EE2B5B" stroke-width="3.904"/>
-      <path d="M1.99994 25.6067L1.99994 29.4546C1.99994 31.5797 3.72269 33.3025 5.84781 33.3025C7.97293 33.3025 9.69568 31.5797 9.69568 29.4546L9.69568 25.6068" stroke="#EE2B5B" stroke-width="3.904"/>
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M19.5903 23.4076C21.4118 23.4076 22.8884 21.931 22.8884 20.1095C22.8884 18.2879 21.4118 16.8113 19.5903 16.8113C17.7687 16.8113 16.2921 18.2879 16.2921 20.1095C16.2921 20.4474 16.3429 20.7735 16.4374 21.0806C16.6959 20.5079 17.272 20.1094 17.9411 20.1094C18.8519 20.1094 19.5902 20.8477 19.5902 21.7585C19.5902 22.4276 19.1916 23.0037 18.6189 23.2623C18.926 23.3568 19.2522 23.4076 19.5903 23.4076Z" fill="#EE2B5B"/>
-      <path d="M44.997 39V11.2762H49.6369V39H44.997ZM55.3654 39L55.404 11.2762H60.1016V28.2185L67.7064 18.2072H73.5014L65.4346 28.6036L74.1945 39H68.0529L60.1016 28.9886V39H55.3654ZM81.9374 39.5776C80.4357 39.5776 79.165 39.2952 78.1253 38.7305C77.0857 38.1529 76.2963 37.3892 75.7573 36.4394C75.231 35.4896 74.9679 34.4435 74.9679 33.3012C74.9679 32.3001 75.1348 31.4016 75.4685 30.6059C75.8022 29.7973 76.3156 29.1042 77.0087 28.5266C77.7018 27.9362 78.6002 27.4548 79.7041 27.0826C80.5383 26.8131 81.5138 26.5692 82.6305 26.351C83.7599 26.1328 84.9793 25.9339 86.2885 25.7542C87.6105 25.5617 88.9902 25.3563 90.4278 25.1381L88.772 26.0815C88.7849 24.644 88.464 23.5851 87.8094 22.9048C87.1548 22.2246 86.051 21.8844 84.498 21.8844C83.561 21.8844 82.6561 22.1026 81.7833 22.539C80.9106 22.9754 80.3009 23.7263 79.9543 24.7916L75.7188 23.4631C76.2322 21.7047 77.2076 20.2929 78.6452 19.2276C80.0955 18.1623 82.0465 17.6296 84.498 17.6296C86.3462 17.6296 87.9698 17.9312 89.3689 18.5345C90.7807 19.1377 91.8268 20.126 92.507 21.4994C92.8793 22.231 93.1039 22.9818 93.1809 23.7519C93.2579 24.5092 93.2964 25.3371 93.2964 26.2355V39H89.2341V34.4949L89.9079 35.2265C88.971 36.7282 87.8736 37.832 86.6157 38.5379C85.3707 39.231 83.8113 39.5776 81.9374 39.5776ZM82.8615 35.8811C83.914 35.8811 84.8124 35.695 85.5569 35.3228C86.3013 34.9505 86.8917 34.4494 87.3281 33.9558C87.7773 33.4167 88.0789 32.9098 88.233 32.4349C88.4768 31.8444 88.6116 31.1706 88.6373 30.4133C88.6758 29.6432 88.695 29.0207 88.695 28.5458L90.1197 28.9694C88.7207 29.1876 87.5206 29.3801 86.5195 29.547C85.5183 29.7138 84.6584 29.8743 83.9396 30.0283C83.2209 30.1695 82.5855 30.3299 82.0336 30.5096C81.4946 30.7021 81.0389 30.9267 80.6667 31.1834C80.2945 31.4401 80.0057 31.7353 79.8003 32.0691C79.6078 32.4028 79.5115 32.7942 79.5115 33.2435C79.5115 33.7569 79.6399 34.2125 79.8966 34.6104C80.1533 34.9955 80.5255 35.3035 81.0132 35.5345C81.5138 35.7656 82.1299 35.8811 82.8615 35.8811Z" fill="#EE2B5B"/>
-    </svg>
+    <svg viewBox="0 0 96 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M29.4847 28.9053V19.0107C29.4847 13.5461 25.0548 9.11621 19.5902 9.11621C14.1256 9.11621 9.69568 13.5461 9.69568 19.0107V28.9053" stroke="#EE2B5B" stroke-width="3.904"/><path d="M29.485 25.6067L29.485 29.4546C29.485 31.5797 31.2078 33.3025 33.3329 33.3025C35.458 33.3025 37.1808 31.5797 37.1808 29.4546L37.1808 25.6068" stroke="#EE2B5B" stroke-width="3.904"/><path d="M23.6494 38.8841L23.6494 33.0207C23.6494 30.7788 21.832 28.9614 19.5901 28.9614C17.3482 28.9614 15.5308 30.7788 15.5308 33.0207L15.5308 38.8841" stroke="#EE2B5B" stroke-width="3.904"/><path d="M1.99994 25.6067L1.99994 29.4546C1.99994 31.5797 3.72269 33.3025 5.84781 33.3025C7.97293 33.3025 9.69568 31.5797 9.69568 29.4546L9.69568 25.6068" stroke="#EE2B5B" stroke-width="3.904"/><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5903 23.4076C21.4118 23.4076 22.8884 21.931 22.8884 20.1095C22.8884 18.2879 21.4118 16.8113 19.5903 16.8113C17.7687 16.8113 16.2921 18.2879 16.2921 20.1095C16.2921 20.4474 16.3429 20.7735 16.4374 21.0806C16.6959 20.5079 17.272 20.1094 17.9411 20.1094C18.8519 20.1094 19.5902 20.8477 19.5902 21.7585C19.5902 22.4276 19.1916 23.0037 18.6189 23.2623C18.926 23.3568 19.2522 23.4076 19.5903 23.4076Z" fill="#EE2B5B"/><path d="M44.997 39V11.2762H49.6369V39H44.997ZM55.3654 39L55.404 11.2762H60.1016V28.2185L67.7064 18.2072H73.5014L65.4346 28.6036L74.1945 39H68.0529L60.1016 28.9886V39H55.3654ZM81.9374 39.5776C80.4357 39.5776 79.165 39.2952 78.1253 38.7305C77.0857 38.1529 76.2963 37.3892 75.7573 36.4394C75.231 35.4896 74.9679 34.4435 74.9679 33.3012C74.9679 32.3001 75.1348 31.4016 75.4685 30.6059C75.8022 29.7973 76.3156 29.1042 77.0087 28.5266C77.7018 27.9362 78.6002 27.4548 79.7041 27.0826C80.5383 26.8131 81.5138 26.5692 82.6305 26.351C83.7599 26.1328 84.9793 25.9339 86.2885 25.7542C87.6105 25.5617 88.9902 25.3563 90.4278 25.1381L88.772 26.0815C88.7849 24.644 88.464 23.5851 87.8094 22.9048C87.1548 22.2246 86.051 21.8844 84.498 21.8844C83.561 21.8844 82.6561 22.1026 81.7833 22.539C80.9106 22.9754 80.3009 23.7263 79.9543 24.7916L75.7188 23.4631C76.2322 21.7047 77.2076 20.2929 78.6452 19.2276C80.0955 18.1623 82.0465 17.6296 84.498 17.6296C86.3462 17.6296 87.9698 17.9312 89.3689 18.5345C90.7807 19.1377 91.8268 20.126 92.507 21.4994C92.8793 22.231 93.1039 22.9818 93.1809 23.7519C93.2579 24.5092 93.2964 25.3371 93.2964 26.2355V39H89.2341V34.4949L89.9079 35.2265C88.971 36.7282 87.8736 37.832 86.6157 38.5379C85.3707 39.231 83.8113 39.5776 81.9374 39.5776ZM82.8615 35.8811C83.914 35.8811 84.8124 35.695 85.5569 35.3228C86.3013 34.9505 86.8917 34.4494 87.3281 33.9558C87.7773 33.4167 88.0789 32.9098 88.233 32.4349C88.4768 31.8444 88.6116 31.1706 88.6373 30.4133C88.6758 29.6432 88.695 29.0207 88.695 28.5458L90.1197 28.9694C88.7207 29.1876 87.5206 29.3801 86.5195 29.547C85.5183 29.7138 84.6584 29.8743 83.9396 30.0283C83.2209 30.1695 82.5855 30.3299 82.0336 30.5096C81.4946 30.7021 81.0389 30.9267 80.6667 31.1834C80.2945 31.4401 80.0057 31.7353 79.8003 32.0691C79.6078 32.4028 79.5115 32.7942 79.5115 33.2435C79.5115 33.7569 79.6399 34.2125 79.8966 34.6104C80.1533 34.9955 80.5255 35.3035 81.0132 35.5345C81.5138 35.7656 82.1299 35.8811 82.8615 35.8811Z" fill="#EE2B5B"/></svg>
   </a>
   <ul class="nav-links">
     <li><a href="#how">How It Works</a></li>
@@ -185,78 +173,76 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
     <li><a href="#compare">Compare</a></li>
     <li><a href="https://docs.ika.xyz" target="_blank">Docs</a></li>
   </ul>
-  <a href="https://docs.ika.xyz" class="nav-cta">Start Building →</a>
+  <a href="https://docs.ika.xyz" class="btn-nav">Start Building →</a>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
   <canvas id="hero-canvas"></canvas>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <div class="hero-eyebrow"><span class="dot"></span>Now live on Solana & Sui</div>
-    <h1 class="hero-h">
-      <span class="line"><span>Sign</span></span>
-      <span class="line"><span class="coral">anything.</span></span>
-      <span class="line"><span class="dim">Any chain.</span></span>
-    </h1>
-    <p class="hero-sub">
-      The massively decentralised MPC network. Your Solana program signs transactions on Bitcoin, Ethereum, and every chain. Sub-second. Zero trust.
-    </p>
+    <div class="hero-eyebrow"><span class="dot"></span> Now live on Solana & Sui</div>
+    <h1 class="hero-h">Sign<br><span class="coral">anything.</span><br><span class="dim">Any chain.</span></h1>
+    <p class="hero-sub">The massively decentralised MPC network. Your Solana program signs transactions on Bitcoin, Ethereum, and every chain. Sub-second. Zero trust.</p>
     <div class="hero-actions">
       <a href="https://docs.ika.xyz" class="btn-p">Start Building</a>
       <a href="#" class="btn-g">Read Whitepaper</a>
     </div>
-    <div class="chain-row">
-      <span class="chain-pill">Bitcoin</span>
-      <span class="chain-pill">Ethereum</span>
-      <span class="chain-pill">Solana</span>
-      <span class="chain-pill">Sui</span>
-      <span class="chain-pill">EVM L2s</span>
-      <span class="chain-pill">+ Any ECDSA</span>
+  </div>
+  <!-- Chain marquee (Wormhole style) -->
+  <div class="chain-marquee">
+    <div class="marquee-track">
+      <span><i class="chain-dot"></i> Bitcoin</span>
+      <span><i class="chain-dot"></i> Ethereum</span>
+      <span><i class="chain-dot"></i> Solana</span>
+      <span><i class="chain-dot"></i> Sui</span>
+      <span><i class="chain-dot"></i> Arbitrum</span>
+      <span><i class="chain-dot"></i> Base</span>
+      <span><i class="chain-dot"></i> Optimism</span>
+      <span><i class="chain-dot"></i> Polygon</span>
+      <span><i class="chain-dot"></i> Avalanche</span>
+      <span><i class="chain-dot"></i> Any ECDSA Chain</span>
+      <span><i class="chain-dot"></i> Bitcoin</span>
+      <span><i class="chain-dot"></i> Ethereum</span>
+      <span><i class="chain-dot"></i> Solana</span>
+      <span><i class="chain-dot"></i> Sui</span>
+      <span><i class="chain-dot"></i> Arbitrum</span>
+      <span><i class="chain-dot"></i> Base</span>
+      <span><i class="chain-dot"></i> Optimism</span>
+      <span><i class="chain-dot"></i> Polygon</span>
+      <span><i class="chain-dot"></i> Avalanche</span>
+      <span><i class="chain-dot"></i> Any ECDSA Chain</span>
     </div>
   </div>
-  <div class="scroll-hint"><div class="scroll-line"></div></div>
 </section>
 
 <!-- STATS -->
 <section id="stats">
-  <div class="stats-glow"></div>
   <div class="stats-grid">
-    <div class="stat"><div class="stat-n"><span class="counter" data-to="10000">0</span>x</div><div class="stat-l">Higher throughput<br>than legacy MPC</div></div>
-    <div class="stat"><div class="stat-n" style="color:var(--text)">&lt;<span style="color:var(--coral)">1</span>s</div><div class="stat-l">Signature latency<br>end-to-end</div></div>
-    <div class="stat"><div class="stat-n"><span class="counter" data-to="1000">0</span>+</div><div class="stat-l">Non-collusive<br>signer nodes</div></div>
-    <div class="stat"><div class="stat-n" style="color:var(--text)">0</div><div class="stat-l">Trust assumptions<br>required</div></div>
+    <div class="stat"><div class="stat-n"><span class="ctr" data-to="10000">10,000</span>x</div><div class="stat-l">Higher throughput than legacy MPC</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--white)">&lt;<span style="color:var(--coral)">1</span>s</div><div class="stat-l">Signature latency end-to-end</div></div>
+    <div class="stat"><div class="stat-n"><span class="ctr" data-to="1000">1,000</span>+</div><div class="stat-l">Non-collusive signer nodes</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--white)">0</div><div class="stat-l">Trust assumptions required</div></div>
   </div>
 </section>
 
 <!-- PROBLEM -->
 <section class="sec" id="problem">
   <div class="sec-inner">
-    <div class="problem-layout">
+    <div class="problem-grid">
       <div>
         <div class="tag">The problem</div>
         <h2 class="sh">Cross-chain<br>is <span style="color:rgba(248,113,113,.85)">broken.</span></h2>
-        <p class="prob-text" style="font-size:1.0625rem;color:var(--t2);line-height:1.75;max-width:420px;margin-top:1.25rem">
-          Bridges get hacked. Legacy MPC is slow and centralised. Wrapping loses composability. Builders deserve better infrastructure.
-        </p>
+        <p class="prob-text">Bridges get hacked. Legacy MPC is slow and centralised. Wrapping loses composability. Builders deserve better.</p>
       </div>
       <div class="prob-stack">
-        <div class="prob-row">
-          <div class="prob-ic bad"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
-          <div><div class="prob-t">Bridges</div><div class="prob-d">$2.8B stolen. Wrapped assets, custodial risk, catastrophic exploits.</div></div>
-        </div>
-        <div class="prob-row">
-          <div class="prob-ic bad"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
-          <div><div class="prob-t">Legacy MPC</div><div class="prob-d">30s latency. 4-8 colluding nodes. Unusable for real-time DeFi.</div></div>
-        </div>
-        <div class="prob-row">
-          <div class="prob-ic bad"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
-          <div><div class="prob-t">Centralised Custody</div><div class="prob-d">Back to trusting companies. Defeats decentralised finance entirely.</div></div>
-        </div>
-        <div class="prob-row solution">
-          <div class="prob-ic good"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div><div class="prob-t" style="color:var(--coral)">Ika</div><div class="prob-d">Sub-second. 1,000+ nodes. Non-collusive 2PC-MPC. Built for Solana speed.</div></div>
-        </div>
+        <div class="prob-row"><div class="prob-ic bad"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div><div class="prob-t">Bridges</div><div class="prob-d">$2.8B stolen. Wrapped assets, custodial risk, catastrophic exploits.</div></div></div>
+        <div class="prob-row"><div class="prob-ic bad"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div><div class="prob-t">Legacy MPC</div><div class="prob-d">30s latency. 4-8 colluding nodes. Unusable for real-time DeFi.</div></div></div>
+        <div class="prob-row"><div class="prob-ic bad"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div><div class="prob-t">Centralised Custody</div><div class="prob-d">Back to trusting companies. Defeats decentralised finance entirely.</div></div></div>
+        <div class="prob-row sol"><div class="prob-ic good"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="prob-t" style="color:var(--coral)">Ika</div><div class="prob-d">Sub-second. 1,000+ nodes. Non-collusive 2PC-MPC. Built for Solana speed.</div></div></div>
       </div>
     </div>
   </div>
@@ -269,16 +255,14 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
   <div class="sec-inner">
     <div class="tag">How it works</div>
     <h2 class="sh">Your Solana program.<br><span style="color:var(--coral)">Any chain's key.</span></h2>
-    <p style="font-size:1.0625rem;color:var(--t2);line-height:1.75;max-width:540px;margin-top:.5rem">
-      Ika gives your smart contract a programmable MPC wallet that signs on any chain. No bridges. No wrapping. Sub-second cryptographic signing across 1,000+ non-collusive nodes.
-    </p>
+    <p style="font-size:1rem;color:var(--t2);line-height:1.75;max-width:500px;margin-top:.5rem">Ika gives your smart contract a programmable MPC wallet that signs on any chain. No bridges. No wrapping. Sub-second signing across 1,000+ non-collusive nodes.</p>
     <div class="feat-grid">
-      <div class="feat-cell"><div class="feat-num">01 — Decentralisation</div><h3>Massively Decentralised</h3><p>Scale to thousands of signer nodes without performance loss. No more 4-8 node ceilings.</p></div>
-      <div class="feat-cell"><div class="feat-num">02 — Speed</div><h3>Sub-Second Latency</h3><p>While legacy networks lag 30+ seconds, Ika operates at sub-second speeds. Real-time DeFi.</p></div>
-      <div class="feat-cell"><div class="feat-num">03 — Security</div><h3>Zero-Trust</h3><p>2PC-MPC ensures no subset of validators can collude. Secure in worst-case scenarios.</p></div>
-      <div class="feat-cell"><div class="feat-num">04 — Interop</div><h3>Native Multi-Chain</h3><p>Sign on Bitcoin, Ethereum, Solana, Sui, any ECDSA chain. No bridges. No wrapped assets.</p></div>
-      <div class="feat-cell"><div class="feat-num">05 — Throughput</div><h3>10,000x</h3><p>Parallel signing architecture delivers orders of magnitude beyond any existing MPC network.</p></div>
-      <div class="feat-cell"><div class="feat-num">06 — Control</div><h3>Programmable Custody</h3><p>Recovery, spending limits, multi-party approval — enforced by your smart contract, not a vendor.</p></div>
+      <div class="feat-cell"><div class="feat-num">01 — Decentralisation</div><h3>Massively Decentralised</h3><p>Scale to thousands of signer nodes without performance loss.</p></div>
+      <div class="feat-cell"><div class="feat-num">02 — Speed</div><h3>Sub-Second Latency</h3><p>While legacy networks lag 30+ seconds, Ika operates at sub-second speeds.</p></div>
+      <div class="feat-cell"><div class="feat-num">03 — Security</div><h3>Zero-Trust</h3><p>2PC-MPC ensures no subset of validators can collude.</p></div>
+      <div class="feat-cell"><div class="feat-num">04 — Interop</div><h3>Native Multi-Chain</h3><p>Sign on Bitcoin, Ethereum, Solana, Sui, any ECDSA chain.</p></div>
+      <div class="feat-cell"><div class="feat-num">05 — Throughput</div><h3>10,000x</h3><p>Parallel signing delivers orders of magnitude beyond any existing MPC.</p></div>
+      <div class="feat-cell"><div class="feat-num">06 — Control</div><h3>Programmable Custody</h3><p>Recovery, spending limits, approval flows — enforced by smart contract.</p></div>
     </div>
   </div>
 </section>
@@ -291,13 +275,13 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
     <div class="tag">What you can build</div>
     <h2 class="sh">New primitives.<br><span style="color:var(--t3)">New design space.</span></h2>
     <div class="bento">
-      <div class="bento-card b-7"><div class="bento-tag">Cross-chain</div><h3>Near Intents, rebuilt</h3><p>Cross-chain intent execution at Solana speed. Users express intent, Ika handles signing. Sub-second settlement.</p><div class="bento-glow"></div></div>
-      <div class="bento-card b-5"><div class="bento-tag">Institutional</div><h3>On-chain Fireblocks</h3><p>MPC custody controlled by your Solana program. No vendor. Institutional-grade, fully programmable.</p><div class="bento-glow"></div></div>
-      <div class="bento-card b-5"><div class="bento-tag">Native BTC</div><h3>Lend against real Bitcoin</h3><p>Use native BTC and UTXO assets as collateral in Solana DeFi. No wrapping. Full ownership.</p><div class="bento-glow"></div></div>
-      <div class="bento-card b-7"><div class="bento-tag">Identity</div><h3>On-chain Privy</h3><p>Programmable auth and key management from Solana smart contracts. Social login, key rotation, recovery without a centralised provider.</p><div class="bento-glow"></div></div>
-      <div class="bento-card b-4"><div class="bento-tag">Multi-chain</div><h3>Universal multisig</h3><p>One Solana program as the signer for assets on every chain.</p></div>
-      <div class="bento-card b-4"><div class="bento-tag">AI Safety</div><h3>Agent guardrails</h3><p>Enforce spending limits and approvals for autonomous AI agents.</p></div>
-      <div class="bento-card b-4"><div class="bento-tag">Staking</div><h3>Cross-chain staking</h3><p>Stake any asset to secure any protocol. Fast and secure.</p></div>
+      <div class="b-card b-7"><div class="b-tag">Cross-chain</div><h3>Near Intents, rebuilt</h3><p>Cross-chain intent execution at Solana speed. Users express intent, Ika handles signing.</p><div class="b-glow"></div></div>
+      <div class="b-card b-5"><div class="b-tag">Institutional</div><h3>On-chain Fireblocks</h3><p>MPC custody controlled by your Solana program. No vendor. Fully programmable.</p><div class="b-glow"></div></div>
+      <div class="b-card b-5"><div class="b-tag">Native BTC</div><h3>Lend against real Bitcoin</h3><p>Use native BTC as collateral in Solana DeFi. No wrapping. Full ownership.</p><div class="b-glow"></div></div>
+      <div class="b-card b-7"><div class="b-tag">Identity</div><h3>On-chain Privy</h3><p>Programmable auth and key management from Solana smart contracts.</p><div class="b-glow"></div></div>
+      <div class="b-card b-4"><div class="b-tag">Multi-chain</div><h3>Universal multisig</h3><p>One Solana program as signer for assets on every chain.</p></div>
+      <div class="b-card b-4"><div class="b-tag">AI Safety</div><h3>Agent guardrails</h3><p>Enforce spending limits for autonomous AI agents.</p></div>
+      <div class="b-card b-4"><div class="b-tag">Staking</div><h3>Cross-chain staking</h3><p>Stake any asset to secure any protocol.</p></div>
     </div>
   </div>
 </section>
@@ -346,14 +330,14 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
 
 <!-- CTA -->
 <section id="cta">
-  <div class="cta-bg"><div class="cta-ring"></div><div class="cta-ring"></div><div class="cta-ring"></div></div>
+  <div class="cta-orb"></div>
   <div class="cta-inner">
     <div class="tag" style="justify-content:center">Build the future</div>
-    <h2 class="sh" style="margin-bottom:1.25rem">Ready to build<br>on Ika?</h2>
-    <p style="font-size:1rem;color:var(--t2);line-height:1.75;margin-bottom:3rem;max-width:400px;margin-left:auto;margin-right:auto">Read the docs, join our builder Telegram, or start building cross-chain apps today.</p>
-    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-      <a href="https://docs.ika.xyz" class="btn-p" style="font-size:.9375rem;padding:1rem 2rem">Read the Docs</a>
-      <a href="#" class="btn-g" style="font-size:.9375rem;padding:1rem 2rem">Join Builders TG</a>
+    <h2 class="sh" style="margin-bottom:1rem">Ready to build<br>on Ika?</h2>
+    <p style="font-size:.9375rem;color:var(--t2);line-height:1.75;margin-bottom:2.5rem">Read the docs, join our builder Telegram, or start building cross-chain apps today.</p>
+    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+      <a href="https://docs.ika.xyz" class="btn-p">Read the Docs</a>
+      <a href="#" class="btn-g">Join Builders TG</a>
     </div>
   </div>
 </section>
@@ -361,451 +345,133 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
 <!-- FOOTER -->
 <footer>
   <div class="foot-inner">
-    <a href="#" class="nav-logo">
-      <svg height="20" viewBox="0 0 96 48" fill="none"><path d="M29.4847 28.9053V19.0107C29.4847 13.5461 25.0548 9.11621 19.5902 9.11621C14.1256 9.11621 9.69568 13.5461 9.69568 19.0107V28.9053" stroke="#EE2B5B" stroke-width="3.904"/><path d="M29.485 25.6067L29.485 29.4546C29.485 31.5797 31.2078 33.3025 33.3329 33.3025C35.458 33.3025 37.1808 31.5797 37.1808 29.4546L37.1808 25.6068" stroke="#EE2B5B" stroke-width="3.904"/><path d="M23.6494 38.8841L23.6494 33.0207C23.6494 30.7788 21.832 28.9614 19.5901 28.9614C17.3482 28.9614 15.5308 30.7788 15.5308 33.0207L15.5308 38.8841" stroke="#EE2B5B" stroke-width="3.904"/><path d="M1.99994 25.6067L1.99994 29.4546C1.99994 31.5797 3.72269 33.3025 5.84781 33.3025C7.97293 33.3025 9.69568 31.5797 9.69568 29.4546L9.69568 25.6068" stroke="#EE2B5B" stroke-width="3.904"/><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5903 23.4076C21.4118 23.4076 22.8884 21.931 22.8884 20.1095C22.8884 18.2879 21.4118 16.8113 19.5903 16.8113C17.7687 16.8113 16.2921 18.2879 16.2921 20.1095C16.2921 20.4474 16.3429 20.7735 16.4374 21.0806C16.6959 20.5079 17.272 20.1094 17.9411 20.1094C18.8519 20.1094 19.5902 20.8477 19.5902 21.7585C19.5902 22.4276 19.1916 23.0037 18.6189 23.2623C18.926 23.3568 19.2522 23.4076 19.5903 23.4076Z" fill="#EE2B5B"/><path d="M44.997 39V11.2762H49.6369V39H44.997ZM55.3654 39L55.404 11.2762H60.1016V28.2185L67.7064 18.2072H73.5014L65.4346 28.6036L74.1945 39H68.0529L60.1016 28.9886V39H55.3654ZM81.9374 39.5776C80.4357 39.5776 79.165 39.2952 78.1253 38.7305C77.0857 38.1529 76.2963 37.3892 75.7573 36.4394C75.231 35.4896 74.9679 34.4435 74.9679 33.3012C74.9679 32.3001 75.1348 31.4016 75.4685 30.6059C75.8022 29.7973 76.3156 29.1042 77.0087 28.5266C77.7018 27.9362 78.6002 27.4548 79.7041 27.0826C80.5383 26.8131 81.5138 26.5692 82.6305 26.351C83.7599 26.1328 84.9793 25.9339 86.2885 25.7542C87.6105 25.5617 88.9902 25.3563 90.4278 25.1381L88.772 26.0815C88.7849 24.644 88.464 23.5851 87.8094 22.9048C87.1548 22.2246 86.051 21.8844 84.498 21.8844C83.561 21.8844 82.6561 22.1026 81.7833 22.539C80.9106 22.9754 80.3009 23.7263 79.9543 24.7916L75.7188 23.4631C76.2322 21.7047 77.2076 20.2929 78.6452 19.2276C80.0955 18.1623 82.0465 17.6296 84.498 17.6296C86.3462 17.6296 87.9698 17.9312 89.3689 18.5345C90.7807 19.1377 91.8268 20.126 92.507 21.4994C92.8793 22.231 93.1039 22.9818 93.1809 23.7519C93.2579 24.5092 93.2964 25.3371 93.2964 26.2355V39H89.2341V34.4949L89.9079 35.2265C88.971 36.7282 87.8736 37.832 86.6157 38.5379C85.3707 39.231 83.8113 39.5776 81.9374 39.5776ZM82.8615 35.8811C83.914 35.8811 84.8124 35.695 85.5569 35.3228C86.3013 34.9505 86.8917 34.4494 87.3281 33.9558C87.7773 33.4167 88.0789 32.9098 88.233 32.4349C88.4768 31.8444 88.6116 31.1706 88.6373 30.4133C88.6758 29.6432 88.695 29.0207 88.695 28.5458L90.1197 28.9694C88.7207 29.1876 87.5206 29.3801 86.5195 29.547C85.5183 29.7138 84.6584 29.8743 83.9396 30.0283C83.2209 30.1695 82.5855 30.3299 82.0336 30.5096C81.4946 30.7021 81.0389 30.9267 80.6667 31.1834C80.2945 31.4401 80.0057 31.7353 79.8003 32.0691C79.6078 32.4028 79.5115 32.7942 79.5115 33.2435C79.5115 33.7569 79.6399 34.2125 79.8966 34.6104C80.1533 34.9955 80.5255 35.3035 81.0132 35.5345C81.5138 35.7656 82.1299 35.8811 82.8615 35.8811Z" fill="#EE2B5B"/></svg>
-    </a>
+    <a href="#" class="nav-logo"><svg height="18" viewBox="0 0 96 48" fill="none"><path d="M29.4847 28.9053V19.0107C29.4847 13.5461 25.0548 9.11621 19.5902 9.11621C14.1256 9.11621 9.69568 13.5461 9.69568 19.0107V28.9053" stroke="#EE2B5B" stroke-width="3.904"/><path d="M29.485 25.6067L29.485 29.4546C29.485 31.5797 31.2078 33.3025 33.3329 33.3025C35.458 33.3025 37.1808 31.5797 37.1808 29.4546L37.1808 25.6068" stroke="#EE2B5B" stroke-width="3.904"/><path d="M23.6494 38.8841L23.6494 33.0207C23.6494 30.7788 21.832 28.9614 19.5901 28.9614C17.3482 28.9614 15.5308 30.7788 15.5308 33.0207L15.5308 38.8841" stroke="#EE2B5B" stroke-width="3.904"/><path d="M1.99994 25.6067L1.99994 29.4546C1.99994 31.5797 3.72269 33.3025 5.84781 33.3025C7.97293 33.3025 9.69568 31.5797 9.69568 29.4546L9.69568 25.6068" stroke="#EE2B5B" stroke-width="3.904"/><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5903 23.4076C21.4118 23.4076 22.8884 21.931 22.8884 20.1095C22.8884 18.2879 21.4118 16.8113 19.5903 16.8113C17.7687 16.8113 16.2921 18.2879 16.2921 20.1095C16.2921 20.4474 16.3429 20.7735 16.4374 21.0806C16.6959 20.5079 17.272 20.1094 17.9411 20.1094C18.8519 20.1094 19.5902 20.8477 19.5902 21.7585C19.5902 22.4276 19.1916 23.0037 18.6189 23.2623C18.926 23.3568 19.2522 23.4076 19.5903 23.4076Z" fill="#EE2B5B"/><path d="M44.997 39V11.2762H49.6369V39H44.997ZM55.3654 39L55.404 11.2762H60.1016V28.2185L67.7064 18.2072H73.5014L65.4346 28.6036L74.1945 39H68.0529L60.1016 28.9886V39H55.3654ZM81.9374 39.5776C80.4357 39.5776 79.165 39.2952 78.1253 38.7305C77.0857 38.1529 76.2963 37.3892 75.7573 36.4394C75.231 35.4896 74.9679 34.4435 74.9679 33.3012C74.9679 32.3001 75.1348 31.4016 75.4685 30.6059C75.8022 29.7973 76.3156 29.1042 77.0087 28.5266C77.7018 27.9362 78.6002 27.4548 79.7041 27.0826C80.5383 26.8131 81.5138 26.5692 82.6305 26.351C83.7599 26.1328 84.9793 25.9339 86.2885 25.7542C87.6105 25.5617 88.9902 25.3563 90.4278 25.1381L88.772 26.0815C88.7849 24.644 88.464 23.5851 87.8094 22.9048C87.1548 22.2246 86.051 21.8844 84.498 21.8844C83.561 21.8844 82.6561 22.1026 81.7833 22.539C80.9106 22.9754 80.3009 23.7263 79.9543 24.7916L75.7188 23.4631C76.2322 21.7047 77.2076 20.2929 78.6452 19.2276C80.0955 18.1623 82.0465 17.6296 84.498 17.6296C86.3462 17.6296 87.9698 17.9312 89.3689 18.5345C90.7807 19.1377 91.8268 20.126 92.507 21.4994C92.8793 22.231 93.1039 22.9818 93.1809 23.7519C93.2579 24.5092 93.2964 25.3371 93.2964 26.2355V39H89.2341V34.4949L89.9079 35.2265C88.971 36.7282 87.8736 37.832 86.6157 38.5379C85.3707 39.231 83.8113 39.5776 81.9374 39.5776ZM82.8615 35.8811C83.914 35.8811 84.8124 35.695 85.5569 35.3228C86.3013 34.9505 86.8917 34.4494 87.3281 33.9558C87.7773 33.4167 88.0789 32.9098 88.233 32.4349C88.4768 31.8444 88.6116 31.1706 88.6373 30.4133C88.6758 29.6432 88.695 29.0207 88.695 28.5458L90.1197 28.9694C88.7207 29.1876 87.5206 29.3801 86.5195 29.547C85.5183 29.7138 84.6584 29.8743 83.9396 30.0283C83.2209 30.1695 82.5855 30.3299 82.0336 30.5096C81.4946 30.7021 81.0389 30.9267 80.6667 31.1834C80.2945 31.4401 80.0057 31.7353 79.8003 32.0691C79.6078 32.4028 79.5115 32.7942 79.5115 33.2435C79.5115 33.7569 79.6399 34.2125 79.8966 34.6104C80.1533 34.9955 80.5255 35.3035 81.0132 35.5345C81.5138 35.7656 82.1299 35.8811 82.8615 35.8811Z" fill="#EE2B5B"/></svg></a>
     <ul class="foot-links"><li><a href="https://docs.ika.xyz">Docs</a></li><li><a href="#">Blog</a></li><li><a href="#">GitHub</a></li><li><a href="#">Twitter</a></li><li><a href="#">Telegram</a></li></ul>
     <div class="foot-c">© 2026 Ika Network</div>
   </div>
 </footer>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- THREE.JS HERO — ORGANIC TENTACLE CREATURE      -->
-<!-- ═══════════════════════════════════════════════ -->
 <script>
+// ── Three.js Organic Creature ──
 (function(){
-  // ─── Three.js Setup ───
   const canvas = document.getElementById('hero-canvas');
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  if(!canvas) return;
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.2;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100);
-  camera.position.set(0, 0, 4.5);
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 100);
+  camera.position.set(0, 0, 4);
 
-  // Mouse tracking
-  const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+  const mouse = {x:0, y:0, tx:0, ty:0};
   window.addEventListener('mousemove', e => {
-    mouse.tx = (e.clientX / window.innerWidth - 0.5) * 2;
-    mouse.ty = -(e.clientY / window.innerHeight - 0.5) * 2;
+    mouse.tx = (e.clientX/window.innerWidth - 0.5) * 2;
+    mouse.ty = -(e.clientY/window.innerHeight - 0.5) * 2;
   });
 
-  // ─── Custom Shader Material — Organic Creature ───
-  const vertShader = `
+  // Vertex shader with noise displacement + tentacle protrusions
+  const vs = `
     uniform float uTime;
     uniform vec2 uMouse;
     varying vec3 vNormal;
-    varying vec3 vPosition;
-    varying float vDisplacement;
-    varying vec2 vUv;
+    varying vec3 vPos;
+    varying float vDisp;
+    vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}
+    vec4 mod289(vec4 x){return x-floor(x*(1./289.))*289.;}
+    vec4 permute(vec4 x){return mod289(((x*34.)+1.)*x);}
+    vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-.85373472095314*r;}
+    float snoise(vec3 v){const vec2 C=vec2(1./6.,1./3.);const vec4 D=vec4(0,.5,1.,2.);vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.-g;vec3 i1=min(g,l.zxy);vec3 i2=max(g,l.zxy);vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;i=mod289(i);vec4 p=permute(permute(permute(i.z+vec4(0,i1.z,i2.z,1.))+i.y+vec4(0,i1.y,i2.y,1.))+i.x+vec4(0,i1.x,i2.x,1.));float n_=.142857142857;vec3 ns=n_*D.wyz-D.xzx;vec4 j=p-49.*floor(p*ns.z*ns.z);vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.*x_);vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.-abs(x)-abs(y);vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);vec4 s0=floor(b0)*2.+1.;vec4 s1=floor(b1)*2.+1.;vec4 sh=-step(h,vec4(0));vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;vec4 m=max(.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.);m=m*m;return 42.*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));}
+    void main(){
+      vec3 pos=position;float t=uTime*.25;
+      float n1=snoise(pos*1.5+t)*.3;float n2=snoise(pos*3.+t*1.2)*.12;float n3=snoise(pos*5.5+t*.8)*.06;
+      float d=n1+n2+n3;
+      vec3 dir=normalize(pos);float tent=0.;
+      for(int i=0;i<8;i++){float a=float(i)*.785398;float el=sin(float(i)*1.2)*.6;vec3 td=normalize(vec3(cos(a),el,sin(a)));float al=max(0.,dot(dir,td));al=pow(al,4.);float w=sin(al*12.566+t*(1.+float(i)*.15))*.5+.5;tent+=al*w*.3;}
+      d+=tent;
+      vec3 md=normalize(vec3(uMouse.x,uMouse.y,.3));d+=pow(max(0.,dot(dir,md)),3.)*.15;
+      pos+=normal*d;vDisp=d;vNormal=normalMatrix*normal;vPos=(modelViewMatrix*vec4(pos,1.)).xyz;gl_Position=projectionMatrix*modelViewMatrix*vec4(pos,1.);
+    }`;
 
-    // Simplex noise functions
-    vec3 mod289(vec3 x) { return x - floor(x * (1.0/289.0)) * 289.0; }
-    vec4 mod289(vec4 x) { return x - floor(x * (1.0/289.0)) * 289.0; }
-    vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
-    vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+  const fs = `
+    uniform float uTime;varying vec3 vNormal;varying vec3 vPos;varying float vDisp;
+    void main(){
+      vec3 vd=normalize(-vPos);float fr=1.-max(0.,dot(vd,normalize(vNormal)));fr=pow(fr,2.2);
+      vec3 deep=vec3(.55,.06,.16);vec3 bright=vec3(.93,.17,.36);vec3 hot=vec3(1.,.6,.5);
+      vec3 c=mix(deep,bright,smoothstep(-.15,.3,vDisp));c=mix(c,hot,fr*.65);
+      float pulse=sin(vDisp*8.+uTime*1.5)*.5+.5;vec3 gc=mix(bright,hot,pulse);
+      c=mix(c,gc,smoothstep(.15,.5,vDisp)*.45);c+=bright*2.2*fr*.6;c*=1.25;
+      gl_FragColor=vec4(c,.9+fr*.1);
+    }`;
 
-    float snoise(vec3 v) {
-      const vec2 C = vec2(1.0/6.0, 1.0/3.0);
-      const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
-      vec3 i  = floor(v + dot(v, C.yyy));
-      vec3 x0 = v - i + dot(i, C.xxx);
-      vec3 g = step(x0.yzx, x0.xyz);
-      vec3 l = 1.0 - g;
-      vec3 i1 = min(g.xyz, l.zxy);
-      vec3 i2 = max(g.xyz, l.zxy);
-      vec3 x1 = x0 - i1 + C.xxx;
-      vec3 x2 = x0 - i2 + C.yyy;
-      vec3 x3 = x0 - D.yyy;
-      i = mod289(i);
-      vec4 p = permute(permute(permute(
-        i.z + vec4(0.0, i1.z, i2.z, 1.0))
-        + i.y + vec4(0.0, i1.y, i2.y, 1.0))
-        + i.x + vec4(0.0, i1.x, i2.x, 1.0));
-      float n_ = 0.142857142857;
-      vec3 ns = n_ * D.wyz - D.xzx;
-      vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
-      vec4 x_ = floor(j * ns.z);
-      vec4 y_ = floor(j - 7.0 * x_);
-      vec4 x = x_ *ns.x + ns.yyyy;
-      vec4 y = y_ *ns.x + ns.yyyy;
-      vec4 h = 1.0 - abs(x) - abs(y);
-      vec4 b0 = vec4(x.xy, y.xy);
-      vec4 b1 = vec4(x.zw, y.zw);
-      vec4 s0 = floor(b0)*2.0 + 1.0;
-      vec4 s1 = floor(b1)*2.0 + 1.0;
-      vec4 sh = -step(h, vec4(0.0));
-      vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
-      vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
-      vec3 p0 = vec3(a0.xy,h.x);
-      vec3 p1 = vec3(a0.zw,h.y);
-      vec3 p2 = vec3(a1.xy,h.z);
-      vec3 p3 = vec3(a1.zw,h.w);
-      vec4 norm = taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
-      p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
-      vec4 m = max(0.6 - vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)), 0.0);
-      m = m * m;
-      return 42.0 * dot(m*m, vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
-    }
-
-    void main() {
-      vUv = uv;
-      vec3 pos = position;
-
-      // Multiple octaves of noise for organic displacement
-      float t = uTime * 0.3;
-      float n1 = snoise(pos * 1.5 + t) * 0.35;
-      float n2 = snoise(pos * 3.0 + t * 1.3) * 0.15;
-      float n3 = snoise(pos * 6.0 + t * 0.7) * 0.08;
-      float displacement = n1 + n2 + n3;
-
-      // Tentacle-like protrusions — directional bias
-      vec3 dir = normalize(pos);
-      // Create 8 tentacle directions
-      float tentacle = 0.0;
-      for(int i = 0; i < 8; i++) {
-        float angle = float(i) * 0.785398; // pi/4
-        float elevation = sin(float(i) * 1.2) * 0.6;
-        vec3 tDir = normalize(vec3(cos(angle), elevation, sin(angle)));
-        float alignment = max(0.0, dot(dir, tDir));
-        alignment = pow(alignment, 4.0);
-        float wave = sin(alignment * 6.2832 * 2.0 + t * (1.0 + float(i) * 0.15)) * 0.5 + 0.5;
-        tentacle += alignment * wave * 0.35;
-      }
-
-      displacement += tentacle;
-
-      // Mouse influence — creature reaches toward cursor
-      vec3 mouseDir = normalize(vec3(uMouse.x, uMouse.y, 0.3));
-      float mouseAlign = max(0.0, dot(dir, mouseDir));
-      displacement += pow(mouseAlign, 3.0) * 0.2;
-
-      pos += normal * displacement;
-      vDisplacement = displacement;
-      vNormal = normalMatrix * normal;
-      vPosition = (modelViewMatrix * vec4(pos, 1.0)).xyz;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-    }
-  `;
-
-  const fragShader = `
-    uniform float uTime;
-    varying vec3 vNormal;
-    varying vec3 vPosition;
-    varying float vDisplacement;
-    varying vec2 vUv;
-
-    void main() {
-      // Fresnel — edge glow effect (subsurface scattering vibe)
-      vec3 viewDir = normalize(-vPosition);
-      float fresnel = 1.0 - max(0.0, dot(viewDir, normalize(vNormal)));
-      fresnel = pow(fresnel, 2.5);
-
-      // Base coral color with depth — BRIGHT
-      vec3 coralDeep = vec3(0.6, 0.06, 0.18);     // Mid coral
-      vec3 coralBright = vec3(0.93, 0.17, 0.36);   // #EE2B5B
-      vec3 coralHot = vec3(1.0, 0.6, 0.5);         // Hot highlight
-
-      // Color based on displacement + fresnel
-      vec3 baseColor = mix(coralDeep, coralBright, smoothstep(-0.2, 0.3, vDisplacement));
-      baseColor = mix(baseColor, coralHot, fresnel * 0.7);
-
-      // Pulsing inner glow on tentacle protrusions
-      float pulse = sin(vDisplacement * 8.0 + uTime * 1.5) * 0.5 + 0.5;
-      vec3 glowColor = mix(coralBright, coralHot, pulse);
-      float glowAmount = smoothstep(0.15, 0.5, vDisplacement) * 0.5;
-      baseColor = mix(baseColor, glowColor, glowAmount);
-
-      // Strong fresnel edge emission
-      vec3 edgeGlow = coralBright * 2.5;
-      baseColor += edgeGlow * fresnel * 0.7;
-
-      // Overall brightness boost
-      baseColor *= 1.3;
-
-      float alpha = 0.92 + fresnel * 0.08;
-
-      gl_FragColor = vec4(baseColor, alpha);
-    }
-  `;
-
-  // Create the organism
-  const geo = new THREE.IcosahedronGeometry(1.0, 64);
+  const geo = new THREE.IcosahedronGeometry(1., 48);
   const mat = new THREE.ShaderMaterial({
-    uniforms: {
-      uTime: { value: 0 },
-      uMouse: { value: new THREE.Vector2(0, 0) }
-    },
-    vertexShader: vertShader,
-    fragmentShader: fragShader,
-    transparent: true,
-    side: THREE.DoubleSide,
-    depthWrite: false
+    uniforms:{uTime:{value:0},uMouse:{value:new THREE.Vector2()}},
+    vertexShader:vs, fragmentShader:fs, transparent:true, side:THREE.DoubleSide, depthWrite:false
   });
-  const creature = new THREE.Mesh(geo, mat);
-  scene.add(creature);
+  const mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh);
 
-  // ─── Particle Field — bioluminescent spores ───
-  const particleCount = 600;
-  const pGeo = new THREE.BufferGeometry();
-  const pPos = new Float32Array(particleCount * 3);
-  const pSizes = new Float32Array(particleCount);
-  const pPhases = new Float32Array(particleCount);
-  for(let i = 0; i < particleCount; i++){
-    // Distribute in a sphere shell around creature
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(2 * Math.random() - 1);
-    const r = 1.5 + Math.random() * 3.5;
-    pPos[i*3] = r * Math.sin(phi) * Math.cos(theta);
-    pPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
-    pPos[i*3+2] = r * Math.cos(phi);
-    pSizes[i] = Math.random() * 2.5 + 0.5;
-    pPhases[i] = Math.random() * Math.PI * 2;
-  }
-  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-  pGeo.setAttribute('aSize', new THREE.BufferAttribute(pSizes, 1));
-  pGeo.setAttribute('aPhase', new THREE.BufferAttribute(pPhases, 1));
-
-  const pMat = new THREE.ShaderMaterial({
-    uniforms: { uTime: { value: 0 } },
-    vertexShader: `
-      attribute float aSize;
-      attribute float aPhase;
-      uniform float uTime;
-      varying float vAlpha;
-      void main(){
-        vec3 p = position;
-        // Gentle orbital drift
-        float t = uTime * 0.15;
-        float s = sin(t + aPhase);
-        float c = cos(t + aPhase * 0.7);
-        p.x += sin(t * 0.3 + aPhase) * 0.3;
-        p.y += cos(t * 0.2 + aPhase * 1.3) * 0.2;
-        p.z += sin(t * 0.25 + aPhase * 0.5) * 0.25;
-        // Pulsing alpha
-        vAlpha = (sin(uTime * 1.5 + aPhase) * 0.5 + 0.5) * 0.8 + 0.2;
-        vec4 mv = modelViewMatrix * vec4(p, 1.0);
-        gl_Position = projectionMatrix * mv;
-        gl_PointSize = aSize * (200.0 / -mv.z);
-      }
-    `,
-    fragmentShader: `
-      varying float vAlpha;
-      void main(){
-        float d = length(gl_PointCoord - 0.5);
-        if(d > 0.5) discard;
-        float glow = 1.0 - smoothstep(0.0, 0.5, d);
-        glow = pow(glow, 2.0);
-        vec3 color = vec3(0.93, 0.17, 0.36); // coral
-        gl_FragColor = vec4(color, glow * vAlpha);
-      }
-    `,
-    transparent: true,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
+  // Particles
+  const pc=400;const pg=new THREE.BufferGeometry();const pp=new Float32Array(pc*3);const ps=new Float32Array(pc);const ph=new Float32Array(pc);
+  for(let i=0;i<pc;i++){const th=Math.random()*Math.PI*2;const phi=Math.acos(2*Math.random()-1);const r=1.5+Math.random()*3;pp[i*3]=r*Math.sin(phi)*Math.cos(th);pp[i*3+1]=r*Math.sin(phi)*Math.sin(th);pp[i*3+2]=r*Math.cos(phi);ps[i]=Math.random()*2+.5;ph[i]=Math.random()*6.28;}
+  pg.setAttribute('position',new THREE.BufferAttribute(pp,3));pg.setAttribute('aSize',new THREE.BufferAttribute(ps,1));pg.setAttribute('aPhase',new THREE.BufferAttribute(ph,1));
+  const pm=new THREE.ShaderMaterial({
+    uniforms:{uTime:{value:0}},
+    vertexShader:`attribute float aSize;attribute float aPhase;uniform float uTime;varying float vA;void main(){vec3 p=position;float t=uTime*.12;p.x+=sin(t*.3+aPhase)*.3;p.y+=cos(t*.2+aPhase*1.3)*.2;p.z+=sin(t*.25+aPhase*.5)*.25;vA=(sin(uTime*1.5+aPhase)*.5+.5)*.7+.2;vec4 mv=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*mv;gl_PointSize=aSize*(180./-mv.z);}`,
+    fragmentShader:`varying float vA;void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;float g=1.-smoothstep(0.,.5,d);g=pow(g,2.);gl_FragColor=vec4(.93,.17,.36,g*vA);}`,
+    transparent:true,blending:THREE.AdditiveBlending,depthWrite:false
   });
-  const particles = new THREE.Points(pGeo, pMat);
-  scene.add(particles);
+  scene.add(new THREE.Points(pg,pm));
 
-  // ─── Ambient rings ───
-  for(let i = 0; i < 3; i++){
-    const ringGeo = new THREE.RingGeometry(1.8 + i * 0.7, 1.81 + i * 0.7, 128);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0xEE2B5B,
-      transparent: true,
-      opacity: 0.04 - i * 0.01,
-      side: THREE.DoubleSide
-    });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = Math.PI * 0.5 + i * 0.15;
-    ring.rotation.z = i * 0.3;
-    ring.userData = { speed: 0.08 + i * 0.03, axis: i };
-    scene.add(ring);
+  const clock=new THREE.Clock();
+  function anim(){
+    requestAnimationFrame(anim);const t=clock.getElapsedTime();
+    mouse.x+=(mouse.tx-mouse.x)*.04;mouse.y+=(mouse.ty-mouse.y)*.04;
+    mat.uniforms.uTime.value=t;mat.uniforms.uMouse.value.set(mouse.x,mouse.y);
+    pm.uniforms.uTime.value=t;
+    mesh.rotation.y=t*.06+mouse.x*.25;mesh.rotation.x=Math.sin(t*.1)*.08+mouse.y*.15;
+    renderer.render(scene,camera);
   }
-
-  // ─── Animation Loop ───
-  const clock = new THREE.Clock();
-  function animate(){
-    requestAnimationFrame(animate);
-    const t = clock.getElapsedTime();
-
-    // Smooth mouse
-    mouse.x += (mouse.tx - mouse.x) * 0.04;
-    mouse.y += (mouse.ty - mouse.y) * 0.04;
-
-    // Update uniforms
-    mat.uniforms.uTime.value = t;
-    mat.uniforms.uMouse.value.set(mouse.x, mouse.y);
-    pMat.uniforms.uTime.value = t;
-
-    // Creature slow rotation + mouse tilt
-    creature.rotation.y = t * 0.08 + mouse.x * 0.3;
-    creature.rotation.x = Math.sin(t * 0.12) * 0.1 + mouse.y * 0.2;
-
-    // Rings rotation
-    scene.children.forEach(child => {
-      if(child.userData && child.userData.speed){
-        child.rotation.z += child.userData.speed * 0.01;
-        child.rotation.x += child.userData.speed * 0.005;
-      }
-    });
-
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  // Resize
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
+  anim();
+  window.addEventListener('resize',()=>{camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);});
 })();
 
-// ─── GSAP ScrollTrigger Animations ───
+// ── GSAP ──
 gsap.registerPlugin(ScrollTrigger);
 
-// Hero entrance animation — use 'from' so content is visible if JS fails
-const heroTL = gsap.timeline({ defaults: { ease: 'power3.out' }});
-heroTL
-  .from('.hero-eyebrow', { opacity: 0, y: 20, duration: 0.8, delay: 0.3 })
-  .from('h1.hero-h .line span', { yPercent: 110, opacity: 0, duration: 1, stagger: 0.12, ease: 'power4.out' }, '-=0.4')
-  .from('.hero-sub', { opacity: 0, y: 20, duration: 0.7 }, '-=0.5')
-  .from('.hero-actions', { opacity: 0, y: 20, duration: 0.6 }, '-=0.4')
-  .from('.chain-row', { opacity: 0, y: 15, duration: 0.5 }, '-=0.3');
+// Hero entrance
+gsap.from('.hero-eyebrow',{opacity:0,y:20,duration:.7,delay:.3});
+gsap.from('h1.hero-h',{opacity:0,y:30,duration:.8,delay:.5});
+gsap.from('.hero-sub',{opacity:0,y:20,duration:.7,delay:.7});
+gsap.from('.hero-actions',{opacity:0,y:20,duration:.6,delay:.9});
 
-// Hero parallax on scroll — creature scales down and fades
-gsap.to('#hero-canvas', {
-  scrollTrigger: {
-    trigger: '#hero',
-    start: 'top top',
-    end: 'bottom top',
-    scrub: 0.5
-  },
-  scale: 1.2,
-  opacity: 0,
-  ease: 'none'
-});
-gsap.to('.hero-content', {
-  scrollTrigger: {
-    trigger: '#hero',
-    start: 'top top',
-    end: '60% top',
-    scrub: 0.5
-  },
-  y: -100,
-  opacity: 0,
-  ease: 'none'
+// Hero parallax
+gsap.to('.hero-content',{scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:.5},y:-80,opacity:0});
+gsap.to('#hero-canvas',{scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:.5},scale:1.15,opacity:0});
+
+// Counters
+ScrollTrigger.create({trigger:'#stats',start:'top 80%',onEnter:()=>{document.querySelectorAll('.ctr').forEach(el=>{const to=parseInt(el.dataset.to);gsap.to({v:0},{v:to,duration:2,ease:'power2.out',onUpdate(){el.textContent=Math.round(this.targets()[0].v).toLocaleString()}});});},once:true});
+
+// Section reveals
+document.querySelectorAll('.sec').forEach(sec=>{
+  gsap.from(sec.querySelectorAll('.tag,h2,.prob-text,p'),{scrollTrigger:{trigger:sec,start:'top 78%',once:true},y:30,opacity:0,stagger:.1,duration:.6,ease:'power3.out'});
 });
 
-// Stats counter animation
-const counters = document.querySelectorAll('.counter');
-ScrollTrigger.create({
-  trigger: '#stats',
-  start: 'top 80%',
-  onEnter: () => {
-    counters.forEach(el => {
-      const to = parseInt(el.dataset.to);
-      gsap.to({ val: 0 }, {
-        val: to,
-        duration: 2.5,
-        ease: 'power2.out',
-        onUpdate: function(){ el.textContent = Math.round(this.targets()[0].val).toLocaleString() }
-      });
-    });
-  },
-  once: true
-});
+// Problem cards
+gsap.from('.prob-row',{scrollTrigger:{trigger:'.prob-stack',start:'top 78%',once:true},x:20,opacity:0,stagger:.08,duration:.5,ease:'power3.out'});
 
-// Section reveals with stagger
-document.querySelectorAll('.sec').forEach(sec => {
-  const tag = sec.querySelector('.tag');
-  const h2 = sec.querySelector('h2');
-  const p = sec.querySelector('p');
-  const items = [tag, h2, p].filter(Boolean);
-
-  gsap.from(items, {
-    scrollTrigger: { trigger: sec, start: 'top 75%', once: true },
-    y: 40,
-    opacity: 0,
-    stagger: 0.12,
-    duration: 0.8,
-    ease: 'power3.out'
-  });
-});
-
-// Problem cards stagger
-gsap.from('.prob-row', {
-  scrollTrigger: { trigger: '.prob-stack', start: 'top 75%', once: true },
-  x: 30,
-  opacity: 0,
-  stagger: 0.1,
-  duration: 0.6,
-  ease: 'power3.out'
-});
-
-// Feature grid cells
-gsap.from('.feat-cell', {
-  scrollTrigger: { trigger: '.feat-grid', start: 'top 75%', once: true },
-  y: 30,
-  opacity: 0,
-  stagger: 0.08,
-  duration: 0.6,
-  ease: 'power3.out'
-});
+// Feature cells
+gsap.from('.feat-cell',{scrollTrigger:{trigger:'.feat-grid',start:'top 78%',once:true},y:25,opacity:0,stagger:.06,duration:.5,ease:'power3.out'});
 
 // Bento cards
-gsap.from('.bento-card', {
-  scrollTrigger: { trigger: '.bento', start: 'top 75%', once: true },
-  y: 40,
-  opacity: 0,
-  stagger: 0.08,
-  duration: 0.7,
-  ease: 'power3.out'
-});
+gsap.from('.b-card',{scrollTrigger:{trigger:'.bento',start:'top 78%',once:true},y:30,opacity:0,stagger:.06,duration:.6,ease:'power3.out'});
 
-// Comparison table rows
-gsap.from('.cmp tbody tr', {
-  scrollTrigger: { trigger: '.cmp-wrap', start: 'top 75%', once: true },
-  x: -20,
-  opacity: 0,
-  stagger: 0.06,
-  duration: 0.5,
-  ease: 'power3.out'
-});
+// Table rows
+gsap.from('.cmp tbody tr',{scrollTrigger:{trigger:'.cmp-wrap',start:'top 78%',once:true},x:-15,opacity:0,stagger:.05,duration:.4,ease:'power3.out'});
 
 // Backer logos
-gsap.from('.backer-grid img', {
-  scrollTrigger: { trigger: '.backer-sec', start: 'top 80%', once: true },
-  y: 15,
-  opacity: 0,
-  stagger: 0.05,
-  duration: 0.4,
-  ease: 'power3.out'
-});
-
-// CTA rings expand
-gsap.from('.cta-ring', {
-  scrollTrigger: { trigger: '#cta', start: 'top 80%', once: true },
-  scale: 0.5,
-  opacity: 0,
-  stagger: 0.15,
-  duration: 1.2,
-  ease: 'power2.out'
-});
-
-// Nav background intensity on scroll
-ScrollTrigger.create({
-  start: 50,
-  onUpdate: self => {
-    const nav = document.getElementById('main-nav');
-    if(self.progress > 0) nav.style.borderBottomColor = 'rgba(242,242,250,0.08)';
-    else nav.style.borderBottomColor = 'rgba(242,242,250,0.06)';
-  }
-});
+gsap.from('.backer-grid img',{scrollTrigger:{trigger:'.backer-sec',start:'top 82%',once:true},y:12,opacity:0,stagger:.04,duration:.35,ease:'power3.out'});
 </script>
 </body>
 </html>
