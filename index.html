@@ -17,8 +17,8 @@
   --white:#F4F4FB;--t2:rgba(244,244,251,.55);--t3:rgba(244,244,251,.2);--t4:rgba(244,244,251,.06);
   --bdr:rgba(244,244,251,.06);
 }
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--white);font-family:'Space Grotesk',system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--bg);color:var(--white);font-family:'Space Grotesk',system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;max-width:100vw}
 ::selection{background:var(--coral20);color:#fff}
 
 /* ── Noise overlay ── */
@@ -27,7 +27,7 @@ body{background:var(--bg);color:var(--white);font-family:'Space Grotesk',system-
 /* ── NAV ── */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,16,.6);backdrop-filter:blur(24px) saturate(1.2);-webkit-backdrop-filter:blur(24px) saturate(1.2);border-bottom:1px solid var(--bdr)}
 .nav-logo svg{height:24px;width:auto;display:block}
-.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+.nav-links{display:flex;align-items:center;gap:1.5rem;list-style:none}
 .nav-links a{font-size:.8125rem;font-weight:500;color:var(--t2);text-decoration:none;transition:color .2s}
 .nav-links a:hover{color:var(--white)}
 .btn-nav{background:var(--coral);color:#fff;font-size:.75rem;font-weight:600;padding:.5rem 1.25rem;border-radius:8px;text-decoration:none;transition:all .2s;border:none;cursor:pointer}
@@ -42,7 +42,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.75rem 2rem;display:
 .orb-2{width:350px;height:350px;background:rgba(238,43,91,.05);top:50%;right:20%;animation:orbFloat 15s ease-in-out infinite reverse}
 .orb-3{width:200px;height:200px;background:rgba(100,50,200,.04);bottom:20%;left:15%;animation:orbFloat 10s ease-in-out infinite 3s}
 @keyframes orbFloat{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-20px)}66%{transform:translate(-15px,25px)}}
-.hero-overlay{position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse 80% 70% at 50% 45%,transparent 40%,var(--bg) 100%);pointer-events:none}
+.hero-overlay{position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse 90% 80% at 50% 45%,transparent 50%,var(--bg) 100%);pointer-events:none}
 .hero-content{position:relative;z-index:2;max-width:780px;padding:0 1.5rem}
 .hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--coral);margin-bottom:2rem;display:inline-flex;align-items:center;gap:.65rem;background:var(--coral10);padding:.4rem 1.1rem;border-radius:100px;border:1px solid var(--coral20)}
 .hero-eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--coral);animation:pulse 2s ease-in-out infinite}
@@ -66,21 +66,21 @@ h1.hero-h .dim{color:var(--t3)}
 
 /* ── STATS ── */
 #stats{border-bottom:1px solid var(--bdr);background:var(--bg2);position:relative}
-.stats-grid{max-width:1200px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.stats-grid{max-width:1060px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
 .stat{text-align:center;padding:0 1rem}
 .stat-n{font-family:'JetBrains Mono',monospace;font-size:clamp(1.75rem,3vw,2.75rem);font-weight:500;letter-spacing:-.03em;color:var(--coral)}
 .stat-l{font-size:.6875rem;color:var(--t2);line-height:1.5;margin-top:.25rem}
 
 /* ── SECTIONS ── */
-.sec{padding:6rem 2rem}
-.sec-inner{max-width:1100px;margin:0 auto}
+.sec{padding:6rem 2rem;overflow:hidden}
+.sec-inner{max-width:1060px;margin:0 auto;overflow:hidden}
 .tag{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
 .tag::before{content:'';width:14px;height:1px;background:var(--coral50)}
 h2.sh{font-size:clamp(2.25rem,4.5vw,3.75rem);font-weight:700;line-height:.96;letter-spacing:-.04em;margin-bottom:1.25rem}
 .sep{height:1px;background:var(--bdr)}
 
 /* ── PROBLEM ── */
-.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;margin-top:3rem}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;margin-top:3rem}
 .prob-text{font-size:1rem;color:var(--t2);line-height:1.75;max-width:400px;margin-top:1rem}
 .prob-stack{display:flex;flex-direction:column;gap:1px;background:var(--bdr);border-radius:14px;overflow:hidden;border:1px solid var(--bdr)}
 .prob-row{display:flex;align-items:flex-start;gap:.875rem;padding:1.125rem 1.25rem;background:var(--bg2);transition:background .2s}
@@ -94,7 +94,7 @@ h2.sh{font-size:clamp(2.25rem,4.5vw,3.75rem);font-weight:700;line-height:.96;let
 .prob-d{font-size:.6875rem;color:var(--t2);line-height:1.55}
 
 /* ── FEATURES ── */
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border-radius:16px;overflow:hidden;margin-top:3rem;border:1px solid var(--bdr)}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border-radius:16px;overflow:hidden;margin-top:3rem;border:1px solid var(--bdr);max-width:100%}
 .feat-cell{background:var(--bg2);padding:2rem 1.75rem;transition:all .3s;position:relative}
 .feat-cell:hover{background:var(--bg3)}
 .feat-num{font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.12em;color:var(--t3);text-transform:uppercase;margin-bottom:1.25rem}
@@ -102,7 +102,7 @@ h2.sh{font-size:clamp(2.25rem,4.5vw,3.75rem);font-weight:700;line-height:.96;let
 .feat-cell p{font-size:.75rem;color:var(--t2);line-height:1.6}
 
 /* ── BENTO ── */
-.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;background:var(--bdr);border-radius:16px;overflow:hidden;margin-top:3rem;border:1px solid var(--bdr)}
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;background:var(--bdr);border-radius:16px;overflow:hidden;margin-top:3rem;border:1px solid var(--bdr);max-width:100%}
 .b-card{background:var(--bg2);padding:2rem 1.75rem;position:relative;overflow:hidden;transition:all .3s}
 .b-card:hover{background:var(--bg3)}
 .b-7{grid-column:span 7}.b-5{grid-column:span 5}.b-4{grid-column:span 4}.b-6{grid-column:span 6}
@@ -112,7 +112,8 @@ h2.sh{font-size:clamp(2.25rem,4.5vw,3.75rem);font-weight:700;line-height:.96;let
 .b-glow{position:absolute;bottom:-60px;right:-60px;width:160px;height:160px;background:radial-gradient(circle,var(--coral05),transparent 70%);pointer-events:none;border-radius:50%}
 
 /* ── TABLE ── */
-.cmp-wrap{margin-top:3rem;border-radius:14px;overflow:hidden;border:1px solid var(--bdr)}
+.cmp-wrap{margin-top:3rem;border-radius:14px;overflow:hidden;border:1px solid var(--bdr);max-width:100%}
+table.cmp th,table.cmp td{white-space:nowrap}
 table.cmp{width:100%;border-collapse:collapse}
 .cmp th{padding:.875rem 1.25rem;font-size:.625rem;font-weight:600;text-align:left;background:var(--bg3);color:var(--t3);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--bdr)}
 .cmp th.ik{color:var(--coral)}
@@ -125,7 +126,7 @@ table.cmp{width:100%;border-collapse:collapse}
 /* ── BACKERS ── */
 .backer-sec{background:var(--bg2);padding:4.5rem 2rem;text-align:center;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
 .backer-label{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);margin-bottom:2.5rem}
-.backer-grid{max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:1.5rem 2.5rem}
+.backer-grid{max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:1.5rem 2.5rem;padding:0 1rem}
 .backer-grid img{height:18px;opacity:.35;transition:all .3s;filter:brightness(0) invert(1)}
 .backer-grid img:hover{opacity:.65}
 
@@ -179,6 +180,7 @@ footer{border-top:1px solid var(--bdr);padding:1.25rem 2rem;background:var(--bg)
 <!-- HERO -->
 <section id="hero">
   <canvas id="hero-canvas"></canvas>
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(238,43,91,.12) 0%,transparent 70%);pointer-events:none;z-index:0;filter:blur(30px)"></div>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
@@ -397,14 +399,14 @@ footer{border-top:1px solid var(--bdr);padding:1.25rem 2rem;background:var(--bg)
     uniform float uTime;varying vec3 vNormal;varying vec3 vPos;varying float vDisp;
     void main(){
       vec3 vd=normalize(-vPos);float fr=1.-max(0.,dot(vd,normalize(vNormal)));fr=pow(fr,2.2);
-      vec3 deep=vec3(.55,.06,.16);vec3 bright=vec3(.93,.17,.36);vec3 hot=vec3(1.,.6,.5);
-      vec3 c=mix(deep,bright,smoothstep(-.15,.3,vDisp));c=mix(c,hot,fr*.65);
+      vec3 deep=vec3(.65,.08,.2);vec3 bright=vec3(.93,.17,.36);vec3 hot=vec3(1.,.65,.55);
+      vec3 c=mix(deep,bright,smoothstep(-.2,.25,vDisp));c=mix(c,hot,fr*.7);
       float pulse=sin(vDisp*8.+uTime*1.5)*.5+.5;vec3 gc=mix(bright,hot,pulse);
-      c=mix(c,gc,smoothstep(.15,.5,vDisp)*.45);c+=bright*2.2*fr*.6;c*=1.25;
-      gl_FragColor=vec4(c,.9+fr*.1);
+      c=mix(c,gc,smoothstep(.1,.45,vDisp)*.5);c+=bright*3.*fr*.7;c*=1.5;
+      gl_FragColor=vec4(c,.95);
     }`;
 
-  const geo = new THREE.IcosahedronGeometry(1., 48);
+  const geo = new THREE.IcosahedronGeometry(1.3, 48);
   const mat = new THREE.ShaderMaterial({
     uniforms:{uTime:{value:0},uMouse:{value:new THREE.Vector2()}},
     vertexShader:vs, fragmentShader:fs, transparent:true, side:THREE.DoubleSide, depthWrite:false
@@ -413,8 +415,8 @@ footer{border-top:1px solid var(--bdr);padding:1.25rem 2rem;background:var(--bg)
   scene.add(mesh);
 
   // Particles
-  const pc=400;const pg=new THREE.BufferGeometry();const pp=new Float32Array(pc*3);const ps=new Float32Array(pc);const ph=new Float32Array(pc);
-  for(let i=0;i<pc;i++){const th=Math.random()*Math.PI*2;const phi=Math.acos(2*Math.random()-1);const r=1.5+Math.random()*3;pp[i*3]=r*Math.sin(phi)*Math.cos(th);pp[i*3+1]=r*Math.sin(phi)*Math.sin(th);pp[i*3+2]=r*Math.cos(phi);ps[i]=Math.random()*2+.5;ph[i]=Math.random()*6.28;}
+  const pc=500;const pg=new THREE.BufferGeometry();const pp=new Float32Array(pc*3);const ps=new Float32Array(pc);const ph=new Float32Array(pc);
+  for(let i=0;i<pc;i++){const th=Math.random()*Math.PI*2;const phi=Math.acos(2*Math.random()-1);const r=1.8+Math.random()*3.5;pp[i*3]=r*Math.sin(phi)*Math.cos(th);pp[i*3+1]=r*Math.sin(phi)*Math.sin(th);pp[i*3+2]=r*Math.cos(phi);ps[i]=Math.random()*3+1;ph[i]=Math.random()*6.28;}
   pg.setAttribute('position',new THREE.BufferAttribute(pp,3));pg.setAttribute('aSize',new THREE.BufferAttribute(ps,1));pg.setAttribute('aPhase',new THREE.BufferAttribute(ph,1));
   const pm=new THREE.ShaderMaterial({
     uniforms:{uTime:{value:0}},
