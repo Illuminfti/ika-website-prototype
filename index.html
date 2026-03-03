@@ -325,41 +325,87 @@
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
     /* Marquee */
+    /* Marquee - premium chain ticker */
     .marquee {
-      padding: 2.5rem 0;
+      padding: 1.75rem 0;
       border-top: 1px solid var(--bdr); border-bottom: 1px solid var(--bdr);
-      background: rgba(255,255,255,0.01);
+      background: rgba(255,255,255,0.015);
       overflow: hidden; white-space: nowrap; position: relative; z-index: 10;
     }
-    .mq-track { display: inline-flex; animation: scroll 40s linear infinite; gap: 5rem; padding-right: 5rem; }
-    .chain {
-      font-family: var(--fm); font-size: 0.875rem; letter-spacing: 0.15em;
-      text-transform: uppercase; color: var(--t2); display: flex; align-items: center; gap: 1rem;
+    .marquee::before, .marquee::after {
+      content:''; position:absolute; top:0; bottom:0; width:120px; z-index:2; pointer-events:none;
     }
-    .chain .d { width: 6px; height: 6px; background: var(--c); border-radius: 50%; opacity: 0.5; box-shadow: 0 0 10px var(--c); }
+    .marquee::before { left:0; background:linear-gradient(90deg, var(--bg), transparent); }
+    .marquee::after { right:0; background:linear-gradient(270deg, var(--bg), transparent); }
+    .mq-track { display: inline-flex; animation: scroll 50s linear infinite; gap: 4rem; padding-right: 4rem; }
+    .chain {
+      font-family: var(--fm); font-size: 0.75rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--t3); display: flex; align-items: center; gap: 0.75rem;
+      transition: color .3s;
+    }
+    .chain:hover { color: var(--w); }
+    .chain .d {
+      width: 5px; height: 5px; background: var(--c); border-radius: 50%; opacity: 0.4;
+      box-shadow: 0 0 8px var(--c);
+    }
     @keyframes scroll { to { transform: translateX(-50%); } }
 
-    /* Stats */
-    #stats { padding: 6rem 0 2rem; border-bottom: 1px solid var(--bdr); }
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
-    .stat { text-align: left; border-left: 1px solid var(--bdr); padding-left: 2rem; }
-    .stat-n { font-family: var(--fh); font-size: 3.5rem; font-weight: 600; color: var(--w); line-height: 1; margin-bottom: 1rem; }
-    .stat-l { font-family: var(--fm); font-size: 0.75rem; color: var(--t3); text-transform: uppercase; letter-spacing: 0.1em; }
-
-    /* Problem */
-    .prob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8rem; align-items: center; margin-top: 4rem; }
-    .prob-stack { display: flex; flex-direction: column; gap: 1.5rem; }
-    .prob-row {
-      display: flex; gap: 1.5rem; padding: 2.5rem;
-      background: var(--bg-card); border: 1px solid var(--bdr); border-radius: 24px;
-      backdrop-filter: blur(20px); transition: 0.4s var(--ease);
+    /* Stats - massive numbers */
+    #stats {
+      padding: 8rem 0; position: relative; overflow: hidden;
     }
-    .prob-row:hover { transform: translateX(10px); background: var(--bg-card-hover); border-color: var(--bdr-hover); }
+    #stats::before {
+      content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+      width:800px; height:1px;
+      background: linear-gradient(90deg, transparent, var(--bdr), rgba(238,43,91,.2), var(--bdr), transparent);
+    }
+    #stats::after {
+      content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+      width:800px; height:1px;
+      background: linear-gradient(90deg, transparent, var(--bdr), rgba(238,43,91,.2), var(--bdr), transparent);
+    }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+      max-width: 1320px; margin: 0 auto; padding: 0 3rem;
+    }
+    .stat {
+      text-align: center; padding: 2rem 1.5rem;
+      position: relative;
+    }
+    .stat:not(:last-child)::after {
+      content:''; position:absolute; right:0; top:20%; bottom:20%;
+      width:1px; background:linear-gradient(180deg, transparent, var(--bdr), transparent);
+    }
+    .stat-n {
+      font-family: var(--fh); font-size: clamp(3rem, 5vw, 4.5rem);
+      font-weight: 700; line-height: 1; margin-bottom: 1rem;
+      background: linear-gradient(180deg, var(--w) 30%, var(--t3) 100%);
+      -webkit-background-clip: text; color: transparent;
+    }
+    .stat-l {
+      font-family: var(--fm); font-size: 0.6875rem; color: var(--t3);
+      text-transform: uppercase; letter-spacing: 0.15em;
+    }
+
+    /* Problem - dramatic split */
+    .prob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; margin-top: 4rem; }
+    .prob-stack { display: flex; flex-direction: column; gap: 0; }
+    .prob-row {
+      display: flex; gap: 1.5rem; padding: 2rem 2.5rem;
+      border-left: 2px solid var(--bdr); position: relative;
+      transition: all .4s var(--ease); cursor: default;
+    }
+    .prob-row:hover {
+      border-left-color: var(--c);
+      background: linear-gradient(90deg, rgba(238,43,91,.03), transparent);
+    }
+    .prob-row:last-child { border-left-color: var(--c); }
+    .prob-row:last-child .prob-h { color: var(--c); }
     .prob-ico { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; }
-    .prob-ico.bad { background: rgba(248, 113, 113, 0.1); color: #f87171; }
-    .prob-ico.ok { background: var(--c-dim); color: var(--c); box-shadow: 0 0 20px rgba(238, 43, 91, 0.2); }
-    .prob-h { font-family: var(--fh); font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
-    .prob-d { color: var(--t2); font-size: 1.0625rem; }
+    .prob-ico.bad { background: rgba(248, 113, 113, 0.08); color: #f87171; }
+    .prob-ico.ok { background: var(--c-dim); color: var(--c); box-shadow: 0 0 20px rgba(238, 43, 91, 0.15); }
+    .prob-h { font-family: var(--fh); font-size: 1.375rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .prob-d { color: var(--t2); font-size: 0.9375rem; line-height: 1.6; }
 
     /* Features (3x2) */
     .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 5rem; }
@@ -550,24 +596,22 @@
   </div>
 
   <section id="stats">
-    <div class="wrap">
-      <div class="stats-grid">
-        <div class="stat reveal">
-          <div class="stat-n" data-target="10000" data-suffix="x">0x</div>
-          <div class="stat-l">Higher throughput</div>
-        </div>
-        <div class="stat reveal d-1">
-          <div class="stat-n">&lt;1s</div>
-          <div class="stat-l">Signature latency</div>
-        </div>
-        <div class="stat reveal d-2">
-          <div class="stat-n" data-target="1000" data-suffix="+">0+</div>
-          <div class="stat-l">Signer nodes</div>
-        </div>
-        <div class="stat reveal d-3">
-          <div class="stat-n">0</div>
-          <div class="stat-l">Trust assumptions</div>
-        </div>
+    <div class="stats-grid">
+      <div class="stat reveal">
+        <div class="stat-n" data-target="10000" data-suffix="x">0x</div>
+        <div class="stat-l">Higher throughput</div>
+      </div>
+      <div class="stat reveal d-1">
+        <div class="stat-n">&lt;1s</div>
+        <div class="stat-l">Signature latency</div>
+      </div>
+      <div class="stat reveal d-2">
+        <div class="stat-n" data-target="1000" data-suffix="+">0+</div>
+        <div class="stat-l">Signer nodes</div>
+      </div>
+      <div class="stat reveal d-3">
+        <div class="stat-n">0</div>
+        <div class="stat-l">Trust assumptions</div>
       </div>
     </div>
   </section>
@@ -576,32 +620,43 @@
     <div class="wrap">
       <div class="tag reveal">The problem</div>
       <div class="prob-grid">
-        <div class="reveal d-1">
+        <div class="reveal d-1" style="position:sticky; top:8rem;">
           <h2 class="sh">Cross-chain<br>is <span style="color: var(--c)">broken.</span></h2>
-          <p class="ss">
+          <p class="ss" style="margin-top:1.5rem;">
             Bridges get hacked. Legacy MPC is slow and centralised. Wrapping loses composability. Builders deserve better.
           </p>
+          <div style="margin-top:2.5rem; display:flex; align-items:center; gap:1rem;">
+            <span style="font-family:var(--fh); font-size:2.5rem; font-weight:700; color:#f87171;">$2.8B</span>
+            <span style="font-size:.875rem; color:var(--t3); line-height:1.3;">stolen from bridges<br>since 2020</span>
+          </div>
         </div>
         <div class="prob-stack">
           <div class="prob-row reveal d-2">
             <div class="prob-ico bad"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg></div>
             <div>
               <div class="prob-h">Bridges</div>
-              <div class="prob-d">$2.8B stolen. Wrapped assets, custodial risk, catastrophic exploits.</div>
+              <div class="prob-d">Wrapped assets, custodial risk, catastrophic exploits. Every major bridge has been compromised.</div>
             </div>
           </div>
           <div class="prob-row reveal d-3">
             <div class="prob-ico bad"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg></div>
             <div>
               <div class="prob-h">Legacy MPC</div>
-              <div class="prob-d">30s latency. 4-8 colluding nodes. Unusable for real-time DeFi.</div>
+              <div class="prob-d">30-second latency. 4-8 colluding nodes. A single compromised party breaks everything.</div>
+            </div>
+          </div>
+          <div class="prob-row reveal d-3">
+            <div class="prob-ico bad"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg></div>
+            <div>
+              <div class="prob-h">Light clients</div>
+              <div class="prob-d">Complex, chain-specific implementations. No programmability. Limited chain support.</div>
             </div>
           </div>
           <div class="prob-row reveal d-4">
             <div class="prob-ico ok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
             <div>
-              <div class="prob-h" style="color: var(--c)">Ika</div>
-              <div class="prob-d">Sub-second. 1,000+ nodes. Non-collusive 2PC-MPC. Built for speed.</div>
+              <div class="prob-h">Ika</div>
+              <div class="prob-d">Sub-second. 1,000+ non-colluding nodes. Programmable signing from smart contracts. Zero trust assumptions.</div>
             </div>
           </div>
         </div>
