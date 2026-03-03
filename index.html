@@ -232,13 +232,10 @@ nav {
 }
 
 .hero-content {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
   z-index: 2;
-  max-width: 800px;
-  width: 90%;
+  max-width: 760px;
+  width: 100%;
 }
 
 .hero-pill {
@@ -267,7 +264,7 @@ nav {
 
 h1.hero-title {
   font-family: var(--font-display);
-  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  font-size: clamp(2.5rem, 5.5vw, 4rem);
   font-weight: 800;
   line-height: .88;
   letter-spacing: -.045em;
@@ -393,7 +390,7 @@ h1.hero-title .dim { color: var(--t3); }
 .stat { text-align:center; padding:0 .75rem; }
 .stat-number {
   font-family: var(--font-mono);
-  font-size: clamp(1.75rem, 3vw, 2.75rem);
+  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
   font-weight: 500;
   letter-spacing: -.03em;
   color: var(--coral);
@@ -1031,17 +1028,7 @@ footer .nav-logo svg { height:18px; }
 
 </div><!-- /page-wrap -->
 
-<div id="debug" style="position:fixed;top:60px;left:10px;background:red;color:white;font-size:12px;padding:4px 8px;z-index:10000;font-family:monospace;"></div>
-
 <script>
-// Debug: show page width
-const dbg = document.getElementById('debug');
-function updateDebug() {
-  dbg.textContent = `body:${document.body.scrollWidth} html:${document.documentElement.scrollWidth} vw:${window.innerWidth} hero:${document.getElementById('hero')?.offsetWidth||'?'}`;
-}
-updateDebug();
-window.addEventListener('resize', updateDebug);
-setTimeout(updateDebug, 2000);
 // ── Marquee duplicate for seamless loop ──
 const marquee = document.getElementById('marquee');
 marquee.innerHTML += marquee.innerHTML;
