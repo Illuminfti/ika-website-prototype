@@ -393,11 +393,42 @@
     .cmp .ck { color: #4ade80; margin-right: 10px; } .cmp .cx { color: rgba(248,113,113,0.5); margin-right: 10px; }
 
     /* Backers */
-    .backers { padding: 10rem 0; text-align: center; border-bottom: 1px solid var(--bdr); }
-    .backers-l { font-family: var(--fm); font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--t3); margin-bottom: 4rem; }
-    .backers-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 4rem 5rem; max-width: 1100px; margin: 0 auto; }
-    .backers-grid img { height: 28px; filter: brightness(0) invert(1); opacity: 0.3; transition: 0.4s; }
-    .backers-grid img:hover { opacity: 1; transform: scale(1.05); }
+    .backers {
+      padding: 10rem 0; text-align: center; position: relative;
+      border-top: 1px solid var(--bdr); border-bottom: 1px solid var(--bdr);
+      overflow: hidden;
+    }
+    .backers::before {
+      content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+      width:600px; height:300px; border-radius:50%;
+      background: radial-gradient(circle, rgba(238,43,91,.06) 0%, transparent 70%);
+      filter:blur(60px); pointer-events:none;
+    }
+    .backers-l {
+      font-family: var(--fm); font-size: 0.6875rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--t3); margin-bottom: 4rem;
+      position: relative;
+    }
+    .backers-grid {
+      display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+      gap: 3rem 4.5rem; max-width: 1000px; margin: 0 auto; padding: 0 2rem;
+      position: relative;
+    }
+    .backers-grid a {
+      display: flex; align-items: center; padding: 0.75rem 1.25rem;
+      border-radius: 12px; transition: all .4s var(--ease); cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .backers-grid a:hover {
+      background: rgba(255,255,255,.03);
+      border-color: var(--bdr);
+      transform: translateY(-2px);
+    }
+    .backers-grid img {
+      height: 22px; filter: brightness(0) invert(1); opacity: 0.35;
+      transition: all .4s var(--ease);
+    }
+    .backers-grid a:hover img { opacity: 0.9; filter: brightness(0) invert(1); }
 
     /* CTA */
     .cta { padding: 12rem 0; text-align: center; position: relative; overflow: hidden; }
@@ -442,8 +473,10 @@
       .stat-n { font-size:1.5rem; }
       .cmp td, .cmp th { padding:.6rem .75rem; font-size:.7rem; }
       .prob-stack { font-size:.85rem; }
-      .backers-row { gap:1rem 1.5rem; }
-      .backers-row img { height:14px; }
+      .backers-grid { gap:1.5rem 2rem; }
+      .backers-grid img { height:16px; }
+      .backers-grid a { padding:.5rem .75rem; }
+      .backers { padding:6rem 0; }
       .cta-h { font-size: clamp(1.75rem, 6vw, 2.5rem); }
       .hero-grid { display:none; }
       .hero-scan { display:none; }
@@ -757,15 +790,15 @@
   <section class="backers">
     <div class="backers-l reveal">Backed by</div>
     <div class="backers-grid reveal d-1">
-      <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf79_logo-dcg.svg" alt="DCG">
-      <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf8c_logo-mysten-labs.svg" alt="Mysten Labs">
-      <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf7f_logo-falconx.svg" alt="FalconX">
-      <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf76_logo-big-brain-holdings.svg" alt="Big Brain Holdings">
-      <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf78_logo-blockchange.svg" alt="Blockchange">
-      <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf74_logo-amplify.svg" alt="Amplify">
-      <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf83_logo-liquid2.svg" alt="Liquid2">
-      <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf8e_logo-sui.svg" alt="Sui">
-      <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf7b_logo-dwallet-labs.svg" alt="dWallet Labs">
+      <a href="#"><img src="assets/logo-dcg.png" alt="DCG"></a>
+      <a href="#"><img src="assets/logo-mysten-labs.png" alt="Mysten Labs"></a>
+      <a href="#"><img src="assets/logo-falconX.png" alt="FalconX"></a>
+      <a href="#"><img src="assets/logo-big-brain-holdings.png" alt="Big Brain Holdings"></a>
+      <a href="#"><img src="assets/logo-blockchange.png" alt="Blockchange"></a>
+      <a href="#"><img src="assets/logo-amplify.png" alt="Amplify"></a>
+      <a href="#"><img src="assets/logo-liquid2.png" alt="Liquid2"></a>
+      <a href="#"><img src="assets/logo-sui.png" alt="Sui"></a>
+      <a href="#"><img src="assets/logo-dwallet-labs.png" alt="dWallet Labs"></a>
     </div>
   </section>
 
