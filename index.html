@@ -1,493 +1,427 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ika — Sign anything. Any chain.</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root {
-  --c: #EE2B5B;
-  --c2: #FF4D7A;
-  --c-dim: rgba(238,43,91,.12);
-  --c-glow: rgba(238,43,91,.06);
-  --bg: #08090E;
-  --bg2: #0D0F16;
-  --bg3: #12151E;
-  --surf: rgba(18,21,30,.65);
-  --bdr: rgba(255,255,255,.06);
-  --w: #F2F2F4;
-  --t1: rgba(242,242,244,.85);
-  --t2: rgba(242,242,244,.5);
-  --t3: rgba(242,242,244,.28);
-  --f: 'DM Sans', system-ui, sans-serif;
-  --fm: 'JetBrains Mono', monospace;
-  --ease: cubic-bezier(.25,1,.5,1);
-}
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{overflow-x:hidden}
-body{background:var(--bg);color:var(--w);font-family:var(--f);-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.6}
-a{color:inherit;text-decoration:none;cursor:pointer}
-img{display:block;max-width:100%}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ika | Sign anything. Any chain.</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        brand: '#EE2B5B',
+                        dark: '#08090E',
+                        surface: '#11131A',
+                        surface2: '#1A1D26',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
-/* Grain */
-body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.02;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:128px}
+    <style>
+        body { 
+            background-color: #08090E; 
+            color: #ffffff; 
+            overflow-x: hidden; 
+        }
+        
+        /* Film Grain Overlay */
+        .grain {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 50; opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        
+        /* Ambient Background Orbs */
+        .orb-1 {
+            position: absolute; width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(238,43,91,0.12) 0%, rgba(8,9,14,0) 60%);
+            top: -150px; left: -200px; border-radius: 50%;
+            filter: blur(80px); animation: float 22s infinite ease-in-out alternate; pointer-events: none; z-index: 0;
+        }
+        .orb-2 {
+            position: absolute; width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(238,43,91,0.08) 0%, rgba(8,9,14,0) 60%);
+            bottom: -200px; right: -100px; border-radius: 50%;
+            filter: blur(80px); animation: float 28s infinite ease-in-out alternate-reverse; pointer-events: none; z-index: 0;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(3%, 5%) scale(1.05); }
+            100% { transform: translate(-3%, 8%) scale(0.95); }
+        }
+        
+        /* Typography Scale for Hero */
+        .hero-title { 
+            font-size: clamp(4.5rem, 11vw, 9.5rem); 
+            line-height: 0.92; 
+            letter-spacing: -0.04em; 
+        }
 
-.wrap{max-width:1120px;margin:0 auto;padding:0 2.5rem}
-.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
-.reveal.vis{opacity:1;transform:none}
-
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.75rem 2.5rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,9,14,.75);backdrop-filter:blur(20px) saturate(1.2);border-bottom:1px solid var(--bdr)}
-.logo svg{height:22px;width:auto;display:block}
-.nav-links{display:flex;align-items:center;gap:2.25rem;list-style:none}
-.nav-links a{font-size:.8125rem;font-weight:500;color:var(--t2);transition:color .2s}
-.nav-links a:hover{color:var(--w)}
-.btn-s{background:var(--c);color:#fff;font-size:.75rem;font-weight:600;padding:.5rem 1.25rem;border-radius:8px;border:none;cursor:pointer;transition:all .2s}
-.btn-s:hover{filter:brightness(1.15);transform:translateY(-1px);box-shadow:0 4px 20px rgba(238,43,91,.25)}
-
-/* ── HERO ── */
-#hero{min-height:100vh;position:relative;display:flex;align-items:center;overflow:hidden;padding:7rem 0 5rem}
-.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1120px;margin:0 auto;padding:0 2.5rem}
-.hero-left{position:relative;z-index:2}
-.hero-right{position:relative;z-index:1;display:flex;align-items:center;justify-content:center}
-
-/* Hero visual: animated network of connected chain nodes */
-.hero-visual{width:100%;aspect-ratio:1;position:relative}
-.hero-visual canvas{width:100%;height:100%}
-
-.hero-pill{font-family:var(--fm);font-size:.5625rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--c);display:inline-flex;align-items:center;gap:.6rem;background:var(--c-dim);padding:.4rem 1rem;border-radius:100px;border:1px solid rgba(238,43,91,.18);margin-bottom:2rem}
-.hero-pill .dot{width:5px;height:5px;border-radius:50%;background:var(--c);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-h1.hero-h{font-size:clamp(2.75rem,4.5vw,4.25rem);font-weight:700;line-height:.95;letter-spacing:-.04em;margin-bottom:1.5rem;color:var(--w)}
-h1.hero-h .accent{color:var(--c)}
-h1.hero-h .dim{color:var(--t3)}
-
-.hero-sub{font-size:1rem;color:var(--t2);line-height:1.75;max-width:440px;margin-bottom:2.25rem}
-.hero-actions{display:flex;gap:.75rem;flex-wrap:wrap}
-.btn-p{background:var(--c);color:#fff;font-size:.875rem;font-weight:600;padding:.75rem 1.5rem;border-radius:10px;border:none;cursor:pointer;transition:all .25s var(--ease);position:relative;overflow:hidden}
-.btn-p:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 8px 30px rgba(238,43,91,.3)}
-.btn-p::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);transform:translateX(-100%);transition:transform .5s}
-.btn-p:hover::after{transform:translateX(100%)}
-.btn-o{background:transparent;color:var(--t1);font-size:.875rem;font-weight:500;padding:.75rem 1.5rem;border-radius:10px;border:1px solid var(--bdr);cursor:pointer;transition:all .25s}
-.btn-o:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.15);transform:translateY(-2px)}
-
-/* Gradient orbs */
-.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(100px)}
-.orb-1{width:500px;height:500px;background:radial-gradient(circle,rgba(238,43,91,.1),transparent 70%);top:10%;left:-10%;animation:drift 16s ease-in-out infinite}
-.orb-2{width:350px;height:350px;background:radial-gradient(circle,rgba(80,50,200,.06),transparent 70%);bottom:10%;right:-5%;animation:drift 20s ease-in-out infinite reverse}
-@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-20px)}}
-
-/* ── MARQUEE ── */
-.marquee{width:100%;overflow:hidden;padding:1.25rem 0;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);background:var(--bg2)}
-.marquee-track{display:flex;width:max-content;animation:scroll 35s linear infinite;gap:2.5rem}
-@keyframes scroll{to{transform:translateX(-50%)}}
-.chain{font-family:var(--fm);font-size:.5625rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);white-space:nowrap;display:flex;align-items:center;gap:.45rem}
-.chain .d{width:4px;height:4px;border-radius:50%;background:var(--c);opacity:.35}
-
-/* ── STATS ── */
-#stats{border-bottom:1px solid var(--bdr)}
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;padding:3rem 0}
-.stat{text-align:center;padding:0 .5rem}
-.stat-n{font-family:var(--fm);font-size:clamp(1.5rem,2.5vw,2.25rem);font-weight:500;letter-spacing:-.02em;color:var(--c)}
-.stat-l{font-size:.6875rem;color:var(--t3);margin-top:.2rem;line-height:1.4}
-
-/* ── SECTIONS ── */
-.sec{padding:6rem 0;overflow:hidden}
-.sec+.sec{border-top:1px solid var(--bdr)}
-.tag{font-family:var(--fm);font-size:.5625rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);display:inline-flex;align-items:center;gap:.5rem}
-.tag::before{content:'';width:14px;height:1px;background:var(--c)}
-.sh{font-size:clamp(2rem,4vw,3.25rem);font-weight:700;line-height:.96;letter-spacing:-.035em;margin-top:.75rem}
-.sh .accent{color:var(--c)}
-.sh .dim{color:var(--t3)}
-.ss{font-size:.9375rem;color:var(--t2);line-height:1.7;max-width:500px;margin-top:1rem}
-
-/* ── PROBLEM ── */
-.prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;margin-top:2.5rem}
-.prob-text{font-size:.9375rem;color:var(--t2);line-height:1.75;max-width:400px;margin-top:1rem}
-.prob-stack{display:flex;flex-direction:column;gap:1px;border-radius:14px;overflow:hidden;border:1px solid var(--bdr)}
-.prob-row{display:flex;align-items:flex-start;gap:.875rem;padding:1.125rem 1.25rem;background:var(--surf);backdrop-filter:blur(8px);transition:background .3s}
-.prob-row:hover{background:var(--bg3)}
-.prob-ico{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;flex-shrink:0;margin-top:1px}
-.prob-ico.bad{background:rgba(248,113,113,.08);color:rgba(248,113,113,.65)}
-.prob-ico.ok{background:var(--c-dim);color:var(--c)}
-.prob-h{font-size:.8125rem;font-weight:600;color:var(--t1);margin-bottom:.15rem}
-.prob-d{font-size:.75rem;color:var(--t2);line-height:1.55}
-
-/* ── FEATURES ── */
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border-radius:14px;overflow:hidden;margin-top:2.5rem;border:1px solid var(--bdr)}
-.feat{background:var(--bg2);padding:2rem 1.5rem;transition:background .3s;position:relative}
-.feat:hover{background:var(--bg3)}
-.feat::after{content:'';position:absolute;bottom:0;left:1.5rem;right:1.5rem;height:1px;background:linear-gradient(90deg,transparent,var(--c-glow),transparent);opacity:0;transition:opacity .3s}
-.feat:hover::after{opacity:1}
-.feat-num{font-family:var(--fm);font-size:.5rem;letter-spacing:.12em;color:var(--t3);text-transform:uppercase;margin-bottom:1.25rem}
-.feat-t{font-size:1rem;font-weight:700;margin-bottom:.4rem}
-.feat-d{font-size:.8125rem;color:var(--t2);line-height:1.6}
-
-/* ── BENTO ── */
-.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;background:var(--bdr);border-radius:14px;overflow:hidden;margin-top:2.5rem;border:1px solid var(--bdr)}
-.bc{background:var(--bg2);padding:1.75rem 1.5rem;position:relative;overflow:hidden;transition:all .3s var(--ease)}
-.bc:hover{background:var(--bg3)}
-.bc::before{content:'';position:absolute;bottom:-60px;right:-60px;width:140px;height:140px;background:radial-gradient(circle,var(--c-glow),transparent 70%);border-radius:50%;opacity:0;transition:opacity .4s;pointer-events:none}
-.bc:hover::before{opacity:1}
-.b7{grid-column:span 7}.b5{grid-column:span 5}.b4{grid-column:span 4}.b6{grid-column:span 6}
-.bc-tag{font-family:var(--fm);font-size:.5rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--c-dim);color:var(--c);padding:.2rem .5rem;border-radius:3px;display:inline-block;margin-bottom:.75rem}
-.bc-t{font-size:.9375rem;font-weight:700;margin-bottom:.3rem}
-.bc-d{font-size:.8125rem;color:var(--t2);line-height:1.6}
-
-/* ── TABLE ── */
-.tbl-wrap{margin-top:2.5rem;border-radius:14px;overflow:hidden;border:1px solid var(--bdr)}
-table.cmp{width:100%;border-collapse:collapse}
-.cmp th{padding:.75rem 1.25rem;font-family:var(--fm);font-size:.5625rem;font-weight:600;text-align:left;background:var(--bg3);color:var(--t3);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--bdr)}
-.cmp th.ik{color:var(--c)}
-.cmp td{padding:.75rem 1.25rem;font-size:.8125rem;color:var(--t2);border-bottom:1px solid var(--bdr);background:var(--bg2)}
-.cmp tr:last-child td{border-bottom:none}
-.cmp td:nth-child(2){color:var(--w);font-weight:500}
-.cmp .ck{color:#4ade80}.cmp .cx{color:rgba(248,113,113,.6)}
-
-/* ── BACKERS ── */
-.backers{background:var(--bg2);padding:4rem 2rem;text-align:center;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
-.backers-label{font-family:var(--fm);font-size:.5625rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);margin-bottom:2rem}
-.backers-row{max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:1.25rem 2.25rem}
-.backers-row img{height:16px;opacity:.25;filter:brightness(0) invert(1);transition:all .3s}
-.backers-row img:hover{opacity:.55}
-
-/* ── CTA ── */
-.cta{padding:7rem 2rem;text-align:center;position:relative;overflow:hidden}
-.cta .orb{width:400px;height:400px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(238,43,91,.08),transparent 70%)}
-.cta-tag{font-family:var(--fm);font-size:.5625rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--c);display:inline-flex;align-items:center;gap:.5rem;margin-bottom:1.25rem}
-.cta-tag::before{content:'';width:14px;height:1px;background:var(--c)}
-.cta-h{font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:.96;letter-spacing:-.03em;margin-bottom:.75rem}
-.cta-sub{font-size:.9375rem;color:var(--t2);max-width:420px;margin:0 auto 2rem;line-height:1.7}
-.cta-btns{display:flex;gap:.75rem;justify-content:center;position:relative;z-index:2}
-
-/* ── FOOTER ── */
-footer{border-top:1px solid var(--bdr);padding:1.25rem 2.5rem;display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:var(--t3)}
-.flinks{display:flex;gap:1.5rem;list-style:none}
-.flinks a{color:var(--t2);transition:color .2s}
-.flinks a:hover{color:var(--w)}
-
-/* ── RESPONSIVE ── */
-@media(max-width:768px){
-  .hero-grid{grid-template-columns:1fr;gap:2rem;text-align:center}
-  .hero-sub{margin-left:auto;margin-right:auto}
-  .hero-actions{justify-content:center}
-  .hero-right{display:none}
-  .prob-grid{grid-template-columns:1fr;gap:2rem}
-  .feat-grid{grid-template-columns:1fr}
-  .bento{grid-template-columns:1fr}
-  .b7,.b5,.b4,.b6{grid-column:span 1}
-  .stats-row{grid-template-columns:repeat(2,1fr);gap:1.5rem}
-  .nav-links{display:none}
-}
-</style>
+        /* Marquee specific styles */
+        .marquee-container { 
+            display: flex; overflow: hidden; white-space: nowrap; 
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); 
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); 
+        }
+        .marquee-content { display: flex; animation: scroll 40s linear infinite; width: max-content; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        
+        /* Glass/Bento Panels */
+        .glass-panel { 
+            background: rgba(17, 19, 26, 0.4); 
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255,255,255,0.05); 
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #08090E; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    </style>
 </head>
-<body>
+<body class="antialiased selection:bg-brand/30 selection:text-white relative">
 
-<!-- NAV -->
-<nav>
-  <a href="#" class="logo">
-    <svg viewBox="0 0 698 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M289.5 42h27v116h-27V42ZM385 42h27l-3 60.5 3 55.5h-27l3-55.5L385 42Z" fill="#EE2B5B"/><path d="M451.5 42h27l42.5 56V42h27v116h-27l-42.5-56.5V158h-27V42Z" fill="#F4F4F6"/><path d="M361.5 42l-34 58 34 58h-30.5l-34-58 34-58h30.5Z" fill="#F4F4F6"/><path d="M140.8 100c0-43.1 29.9-66 59.6-66 29.8 0 59.6 22.9 59.6 66s-29.8 66-59.6 66c-29.7 0-59.6-22.9-59.6-66Z" fill="none" stroke="#EE2B5B" stroke-width="24"/><circle cx="200.4" cy="100" r="16" fill="#EE2B5B"/><path d="M0 100c0-55.2 44.8-100 100-100v32c-37.6 0-68 30.4-68 68s30.4 68 68 68v32c-55.2 0-100-44.8-100-100Z" fill="#EE2B5B"/></svg>
-  </a>
-  <ul class="nav-links">
-    <li><a href="#how">How It Works</a></li>
-    <li><a href="#use-cases">Use Cases</a></li>
-    <li><a href="#compare">Compare</a></li>
-    <li><a href="https://docs.ika.xyz" target="_blank">Docs</a></li>
-  </ul>
-  <a href="https://docs.ika.xyz" class="btn-s">Start Building →</a>
-</nav>
+    <!-- Global Overlays -->
+    <div class="grain"></div>
+    <div class="orb-1"></div>
+    <div class="orb-2"></div>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="hero-grid">
-    <div class="hero-left">
-      <div class="hero-pill"><span class="dot"></span> Now live on Solana & Sui</div>
-      <h1 class="hero-h">Sign<br><span class="accent">anything.</span><br><span class="dim">Any chain.</span></h1>
-      <p class="hero-sub">The massively decentralised MPC network. Your Solana program signs transactions on Bitcoin, Ethereum, and every chain. Sub-second. Zero trust.</p>
-      <div class="hero-actions">
-        <a href="https://docs.ika.xyz" class="btn-p">Start Building</a>
-        <a href="#" class="btn-o">Read Whitepaper</a>
-      </div>
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 bg-[#08090E]/80 backdrop-blur-xl border-b border-white/5 transition-all duration-300">
+        <div class="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2">
+                <span class="text-white font-bold text-2xl tracking-tighter">IKA</span>
+            </a>
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-white/60">
+                <a href="#" class="hover:text-white transition-colors">Network</a>
+                <a href="#" class="hover:text-white transition-colors">Developers</a>
+                <a href="#" class="hover:text-white transition-colors">Ecosystem</a>
+                <a href="#" class="hover:text-white transition-colors">Blog</a>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="#" class="text-sm font-medium text-white/80 hover:text-white hidden md:block transition-colors">Log In</a>
+                <a href="#" class="px-5 py-2.5 bg-brand/10 border border-brand/30 text-brand rounded-lg text-sm font-medium hover:bg-brand hover:text-white transition-all duration-300">
+                    Start Building
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center pt-24 pb-12 z-10">
+        <div class="max-w-[1400px] mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Left: Massive Typography -->
+            <div class="lg:col-span-8 flex flex-col justify-center items-start">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-brand/30 bg-brand/10 text-brand text-sm font-medium mb-10 reveal">
+                    <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                    Mainnet is Live
+                </div>
+                <h1 class="hero-title font-semibold text-white mb-8 reveal">
+                    Sign anything.<br>
+                    <span class="text-white/30">Any chain.</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-white/50 max-w-2xl font-light leading-relaxed mb-12 reveal">
+                    Native, non-collusive programmable signing across Bitcoin, Ethereum, Solana, and beyond. The universal abstraction layer built on dWallet Network.
+                </p>
+                <div class="flex flex-wrap gap-4 reveal">
+                    <a href="#" class="px-8 py-4 bg-brand text-white rounded-lg font-medium hover:bg-[#ff3b6b] transition-colors duration-300 text-lg">
+                        Start Building
+                    </a>
+                    <a href="#" class="px-8 py-4 bg-transparent border border-white/10 text-white rounded-lg font-medium hover:bg-white/5 transition-colors duration-300 text-lg">
+                        Read the Docs
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Right: Abstract Elegant Visual -->
+            <div class="lg:col-span-4 relative h-[400px] lg:h-[600px] flex items-center justify-center reveal hidden lg:flex">
+                <div class="relative w-[80%] h-[80%]">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-brand to-transparent rounded-full blur-3xl opacity-30 mix-blend-screen animate-[pulse_8s_ease-in-out_infinite]"></div>
+                    <div class="absolute inset-10 bg-gradient-to-bl from-brand/40 to-[#08090E] rounded-full blur-2xl opacity-50 mix-blend-screen animate-[spin_15s_linear_infinite]"></div>
+                    <div class="absolute inset-20 border border-brand/20 rounded-full animate-[spin_20s_linear_infinite_reverse]"></div>
+                    <div class="absolute inset-0 flex items-center justify-center backdrop-blur-[1px]">
+                        <div class="w-24 h-24 bg-[#11131A] rounded-2xl border border-white/10 flex items-center justify-center shadow-2xl shadow-brand/20 transform rotate-12 animate-[float_6s_ease-in-out_infinite]">
+                            <span class="text-brand font-bold text-3xl tracking-tighter">IKA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- Marquee -->
+    <div class="py-12 border-y border-white/5 relative z-10 overflow-hidden bg-black/40">
+        <div class="marquee-container w-full mx-auto">
+            <div class="marquee-content">
+                <div class="flex gap-16 min-w-max items-center px-8 text-2xl md:text-3xl font-light text-white/30 tracking-widest uppercase">
+                    <span>Bitcoin</span><span>•</span><span>Ethereum</span><span>•</span><span>Solana</span><span>•</span><span>Sui</span><span>•</span><span>Arbitrum</span><span>•</span><span>Base</span><span>•</span><span>Aptos</span><span>•</span><span>Avalanche</span><span>•</span><span>Optimism</span><span>•</span>
+                </div>
+                <div class="flex gap-16 min-w-max items-center px-8 text-2xl md:text-3xl font-light text-white/30 tracking-widest uppercase">
+                    <span>Bitcoin</span><span>•</span><span>Ethereum</span><span>•</span><span>Solana</span><span>•</span><span>Sui</span><span>•</span><span>Arbitrum</span><span>•</span><span>Base</span><span>•</span><span>Aptos</span><span>•</span><span>Avalanche</span><span>•</span><span>Optimism</span><span>•</span>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="hero-right">
-      <canvas id="hero-canvas" width="500" height="500"></canvas>
-    </div>
-  </div>
-</section>
 
-<!-- MARQUEE -->
-<div class="marquee"><div class="marquee-track" id="mq">
-  <span class="chain"><span class="d"></span>Bitcoin</span>
-  <span class="chain"><span class="d"></span>Ethereum</span>
-  <span class="chain"><span class="d"></span>Solana</span>
-  <span class="chain"><span class="d"></span>Sui</span>
-  <span class="chain"><span class="d"></span>Arbitrum</span>
-  <span class="chain"><span class="d"></span>Base</span>
-  <span class="chain"><span class="d"></span>Optimism</span>
-  <span class="chain"><span class="d"></span>Polygon</span>
-  <span class="chain"><span class="d"></span>Avalanche</span>
-  <span class="chain"><span class="d"></span>Any ECDSA Chain</span>
-</div></div>
+    <!-- Stats Section -->
+    <section class="py-24 relative z-10 bg-surface/30">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 divide-y md:divide-y-0 md:divide-x divide-white/10 reveal-stagger">
+                <div class="flex flex-col items-center md:items-start pt-6 md:pt-0">
+                    <div class="text-brand font-mono text-sm tracking-widest uppercase mb-4">Total Value Secured</div>
+                    <div class="text-6xl md:text-8xl font-semibold tracking-tighter"><span class="counter" data-prefix="$" data-target="10" data-suffix="B+">0</span></div>
+                </div>
+                <div class="flex flex-col items-center md:items-start pt-6 md:pt-0 md:pl-16">
+                    <div class="text-brand font-mono text-sm tracking-widest uppercase mb-4">Mainnet Transactions</div>
+                    <div class="text-6xl md:text-8xl font-semibold tracking-tighter"><span class="counter" data-target="100" data-suffix="M+">0</span></div>
+                </div>
+                <div class="flex flex-col items-center md:items-start pt-6 md:pt-0 md:pl-16">
+                    <div class="text-brand font-mono text-sm tracking-widest uppercase mb-4">Supported Networks</div>
+                    <div class="text-6xl md:text-8xl font-semibold tracking-tighter"><span class="counter" data-target="15" data-suffix="+">0</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- STATS -->
-<section id="stats"><div class="wrap">
-  <div class="stats-row">
-    <div class="stat reveal"><div class="stat-n" data-target="10000" data-suffix="x">0x</div><div class="stat-l">Higher throughput than legacy MPC</div></div>
-    <div class="stat reveal"><div class="stat-n">&lt;1s</div><div class="stat-l">Signature latency end-to-end</div></div>
-    <div class="stat reveal"><div class="stat-n" data-target="1000" data-suffix="+">0+</div><div class="stat-l">Non-collusive signer nodes</div></div>
-    <div class="stat reveal"><div class="stat-n">0</div><div class="stat-l">Trust assumptions required</div></div>
-  </div>
-</div></section>
+    <!-- Problem / Bento Section -->
+    <section class="py-32 relative z-10 border-t border-white/5">
+        <div class="max-w-[1400px] mx-auto px-6">
+            
+            <!-- Problem Header -->
+            <div class="mb-24 max-w-4xl reveal">
+                <h2 class="text-5xl md:text-7xl font-semibold tracking-tighter mb-8 leading-[1.1]">
+                    The interoperability trilemma <span class="text-brand">is dead.</span>
+                </h2>
+                <p class="text-2xl text-white/50 font-light leading-relaxed">
+                    Stop compromising between security, extensibility, and speed. Ika introduces a programmable signing primitive that unifies fragmented liquidity natively.
+                </p>
+            </div>
 
-<!-- PROBLEM -->
-<section class="sec" id="problem"><div class="wrap">
-  <div class="prob-grid">
-    <div class="reveal">
-      <div class="tag">The problem</div>
-      <h2 class="sh">Cross-chain<br>is <span class="accent">broken.</span></h2>
-      <p class="prob-text">Bridges get hacked. Legacy MPC is slow and centralised. Wrapping loses composability. Builders deserve better.</p>
-    </div>
-    <div class="prob-stack reveal">
-      <div class="prob-row"><div class="prob-ico bad"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div><div class="prob-h">Bridges</div><div class="prob-d">$2.8B stolen. Wrapped assets, custodial risk, catastrophic exploits.</div></div></div>
-      <div class="prob-row"><div class="prob-ico bad"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div><div class="prob-h">Legacy MPC</div><div class="prob-d">30s latency. 4-8 colluding nodes. Unusable for real-time DeFi.</div></div></div>
-      <div class="prob-row"><div class="prob-ico bad"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div><div class="prob-h">Centralised Custody</div><div class="prob-d">Back to trusting companies. Defeats decentralised finance entirely.</div></div></div>
-      <div class="prob-row"><div class="prob-ico ok"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div><div><div class="prob-h">Ika</div><div class="prob-d">Sub-second. 1,000+ nodes. Non-collusive 2PC-MPC. Built for Solana speed.</div></div></div>
-    </div>
-  </div>
-</div></section>
+            <!-- Bento Grid Features -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal-stagger">
+                <!-- Card 1: Large -->
+                <div class="md:col-span-2 glass-panel rounded-3xl p-10 md:p-14 flex flex-col justify-end min-h-[450px] relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-brand/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-brand/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-4xl font-medium mb-6 tracking-tight">Zero-Trust Architecture</h3>
+                        <p class="text-xl text-white/50 max-w-lg font-light leading-relaxed">No middle-chains, no wrapped tokens, no multisig committees. Ika signs transactions directly on native networks using advanced 2PC-MPC cryptography.</p>
+                    </div>
+                </div>
+                
+                <!-- Card 2: Standard -->
+                <div class="glass-panel rounded-3xl p-10 flex flex-col justify-end min-h-[450px] relative overflow-hidden group">
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-medium mb-6 tracking-tight">Sub-second Finality</h3>
+                        <p class="text-lg text-white/50 font-light leading-relaxed">Experience immediate execution without waiting for bridging confirmations or optimistic challenge periods.</p>
+                    </div>
+                </div>
+                
+                <!-- Card 3: Standard -->
+                <div class="glass-panel rounded-3xl p-10 flex flex-col justify-end min-h-[350px] relative overflow-hidden group">
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-medium mb-6 tracking-tight">Programmable Policies</h3>
+                        <p class="text-lg text-white/50 font-light leading-relaxed">Write custom logic in Move, Rust, or Solidity to define arbitrary signing rules for your autonomous agents.</p>
+                    </div>
+                </div>
+                
+                <!-- Card 4: Wide -->
+                <div class="md:col-span-2 glass-panel rounded-3xl p-10 md:p-14 flex flex-col justify-end min-h-[350px] relative overflow-hidden group">
+                    <div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-10">
+                        <div>
+                            <h3 class="text-4xl font-medium mb-6 tracking-tight">Developer Ready</h3>
+                            <p class="text-xl text-white/50 max-w-lg font-light leading-relaxed">SDKs available out-of-the-box. Deploy universal cross-chain applications today.</p>
+                        </div>
+                        <div class="flex gap-4 mb-2">
+                            <div class="px-6 py-4 rounded-xl bg-surface2 border border-white/10 font-mono text-sm text-white/70 shadow-inner">
+                                npm install @ika.xyz/sdk
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
 
-<!-- HOW IT WORKS -->
-<section class="sec" id="how"><div class="wrap">
-  <div class="reveal">
-    <div class="tag">How it works</div>
-    <h2 class="sh">Your Solana program.<br><span class="accent">Any chain's key.</span></h2>
-    <p class="ss">Ika gives your smart contract a programmable MPC wallet that signs on any chain. No bridges. No wrapping. Sub-second signing across 1,000+ non-collusive nodes.</p>
-  </div>
-  <div class="feat-grid reveal">
-    <div class="feat"><div class="feat-num">01 — Decentralisation</div><div class="feat-t">Massively Decentralised</div><p class="feat-d">Scale to thousands of signer nodes without performance loss.</p></div>
-    <div class="feat"><div class="feat-num">02 — Speed</div><div class="feat-t">Sub-Second Latency</div><p class="feat-d">While legacy networks lag 30+ seconds, Ika operates at sub-second speeds.</p></div>
-    <div class="feat"><div class="feat-num">03 — Security</div><div class="feat-t">Zero-Trust</div><p class="feat-d">2PC-MPC ensures no subset of validators can collude.</p></div>
-    <div class="feat"><div class="feat-num">04 — Interop</div><div class="feat-t">Native Multi-Chain</div><p class="feat-d">Sign on Bitcoin, Ethereum, Solana, Sui, any ECDSA chain.</p></div>
-    <div class="feat"><div class="feat-num">05 — Throughput</div><div class="feat-t">10,000x</div><p class="feat-d">Parallel signing delivers orders of magnitude beyond any existing MPC.</p></div>
-    <div class="feat"><div class="feat-num">06 — Control</div><div class="feat-t">Programmable Custody</div><p class="feat-d">Recovery, spending limits, approval flows — enforced by smart contract.</p></div>
-  </div>
-</div></section>
+    <!-- Comparison Section -->
+    <section class="py-32 relative z-10 bg-surface/40 border-y border-white/5">
+        <div class="max-w-[1200px] mx-auto px-6">
+            <div class="mb-20 reveal">
+                <h2 class="text-5xl md:text-6xl font-semibold tracking-tighter mb-6">A paradigm shift in cross-chain.</h2>
+                <p class="text-2xl text-white/50 font-light">Why Ika makes existing infrastructure obsolete.</p>
+            </div>
+            
+            <div class="overflow-x-auto reveal">
+                <table class="w-full text-left border-collapse min-w-[800px]">
+                    <thead>
+                        <tr class="border-b border-white/10">
+                            <th class="py-8 px-6 text-white/40 font-medium text-xl w-1/4 uppercase tracking-wider text-xs">Feature</th>
+                            <th class="py-8 px-6 font-semibold text-2xl text-brand w-1/4 border-l border-white/5 bg-brand/5">Ika</th>
+                            <th class="py-8 px-6 text-white/40 font-medium text-xl w-1/4 border-l border-white/5 uppercase tracking-wider text-xs">Traditional Bridges</th>
+                            <th class="py-8 px-6 text-white/40 font-medium text-xl w-1/4 border-l border-white/5 uppercase tracking-wider text-xs">Multisigs</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5 text-xl">
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="py-8 px-6 text-white/80 font-light">Security Model</td>
+                            <td class="py-8 px-6 text-white font-medium border-l border-white/5 bg-brand/[0.02]">Non-collusive MPC</td>
+                            <td class="py-8 px-6 text-white/40 font-light border-l border-white/5">Honeypot / Middle-chain</td>
+                            <td class="py-8 px-6 text-white/40 font-light border-l border-white/5">Trusted Committee</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="py-8 px-6 text-white/80 font-light">Wrapped Assets</td>
+                            <td class="py-8 px-6 text-white font-medium border-l border-white/5 bg-brand/[0.02]">None (Native)</td>
+                            <td class="py-8 px-6 text-white/40 font-light border-l border-white/5">Required</td>
+                            <td class="py-8 px-6 text-white/40 font-light border-l border-white/5">N/A</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="py-8 px-6 text-white/80 font-light">Programmability</td>
+                            <td class="py-8 px-6 text-white font-medium border-l border-white/5 bg-brand/[0.02]">Arbitrary Logic</td>
+                            <td class="py-8 px-6 text-white/40 font-light border-l border-white/5">Limited / Static</td>
+                            <td class="py-8 px-6 text-white/40 font-light border-l border-white/5">None</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="py-8 px-6 text-white/80 font-light">Execution Latency</td>
+                            <td class="py-8 px-6 text-white font-medium border-l border-white/5 bg-brand/[0.02]">Sub-second</td>
+                            <td class="py-8 px-6 text-white/40 font-light border-l border-white/5">Minutes to Days</td>
+                            <td class="py-8 px-6 text-white/40 font-light border-l border-white/5">Manual signing</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 
-<!-- USE CASES -->
-<section class="sec" id="use-cases"><div class="wrap">
-  <div class="reveal">
-    <div class="tag">What you can build</div>
-    <h2 class="sh">New primitives.<br><span class="dim">New design space.</span></h2>
-  </div>
-  <div class="bento reveal">
-    <div class="bc b7"><div class="bc-tag">Cross-chain</div><div class="bc-t">Near Intents, rebuilt</div><p class="bc-d">Cross-chain intent execution at Solana speed. Users express intent, Ika handles signing.</p></div>
-    <div class="bc b5"><div class="bc-tag">Institutional</div><div class="bc-t">On-chain Fireblocks</div><p class="bc-d">MPC custody controlled by your Solana program. No vendor. Fully programmable.</p></div>
-    <div class="bc b4"><div class="bc-tag">Native BTC</div><div class="bc-t">Lend against real Bitcoin</div><p class="bc-d">Use native BTC as collateral in Solana DeFi. No wrapping. Full ownership.</p></div>
-    <div class="bc b4"><div class="bc-tag">Identity</div><div class="bc-t">On-chain Privy</div><p class="bc-d">Programmable auth and key management from Solana smart contracts.</p></div>
-    <div class="bc b4"><div class="bc-tag">Multi-chain</div><div class="bc-t">Universal multisig</div><p class="bc-d">One Solana program as signer for assets on every chain.</p></div>
-    <div class="bc b6"><div class="bc-tag">AI Safety</div><div class="bc-t">Agent guardrails</div><p class="bc-d">Enforce spending limits for autonomous AI agents.</p></div>
-    <div class="bc b6"><div class="bc-tag">Staking</div><div class="bc-t">Cross-chain staking</div><p class="bc-d">Stake any asset to secure any protocol.</p></div>
-  </div>
-</div></section>
+    <!-- Backers Section -->
+    <section class="py-32 relative z-10 text-center">
+        <div class="max-w-[1200px] mx-auto px-6 reveal">
+            <div class="text-brand font-mono text-sm tracking-widest uppercase mb-16">Backed by industry leaders</div>
+            <div class="flex flex-wrap justify-center items-center gap-16 md:gap-24 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
+                <span class="text-3xl font-bold tracking-tight font-sans">MYSTEN LABS</span>
+                <span class="text-4xl font-bold tracking-tighter">FALCON<span class="text-white/40">X</span></span>
+                <span class="text-4xl font-black italic tracking-tighter">DCG</span>
+                <span class="text-2xl font-medium tracking-wide">Big Brain Holdings</span>
+                <span class="text-3xl font-semibold">Blockchange</span>
+            </div>
+        </div>
+    </section>
 
-<!-- COMPARE -->
-<section class="sec" id="compare"><div class="wrap">
-  <div class="reveal">
-    <div class="tag">How we compare</div>
-    <h2 class="sh">Not all MPC<br>is <span class="accent">equal.</span></h2>
-  </div>
-  <div class="tbl-wrap reveal">
-    <table class="cmp">
-      <thead><tr><th>Capability</th><th class="ik">Ika</th><th>Legacy MPC</th><th>Bridges</th></tr></thead>
-      <tbody>
-        <tr><td>Latency</td><td>&lt;1 second</td><td>30–120s</td><td>Minutes–hours</td></tr>
-        <tr><td>Throughput</td><td>10,000 TPS</td><td>~1 TPS</td><td>Low</td></tr>
-        <tr><td>Node count</td><td>1,000+</td><td>4–8</td><td>Centralised</td></tr>
-        <tr><td>Zero-trust</td><td><span class="ck">✓</span> Non-collusive</td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td></tr>
-        <tr><td>Solana native</td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td>Partial</td></tr>
-        <tr><td>Wrapping</td><td>Never</td><td>Sometimes</td><td>Always</td></tr>
-        <tr><td>Programmable</td><td><span class="ck">✓</span> Smart contract</td><td>Limited</td><td><span class="cx">✗</span></td></tr>
-      </tbody>
-    </table>
-  </div>
-</div></section>
+    <!-- CTA Section -->
+    <section class="py-32 relative z-10 border-t border-white/5 bg-gradient-to-b from-[#08090E] to-brand/10">
+        <div class="max-w-[1000px] mx-auto px-6 text-center reveal">
+            <h2 class="text-6xl md:text-8xl font-semibold tracking-tighter mb-8">Ready to <span class="text-brand">build?</span></h2>
+            <p class="text-2xl text-white/50 mb-12 font-light">Join the developers building chain-abstracted applications on Ika.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-6">
+                <a href="#" class="px-10 py-5 bg-brand text-white rounded-lg font-medium text-lg hover:bg-[#ff3b6b] transition-all duration-300 hover:scale-105 transform shadow-[0_0_30px_rgba(238,43,91,0.3)]">
+                    Read Documentation
+                </a>
+                <a href="#" class="px-10 py-5 bg-transparent border border-white/20 text-white rounded-lg font-medium text-lg hover:bg-white/10 transition-all duration-300">
+                    Join Community
+                </a>
+            </div>
+        </div>
+    </section>
 
-<!-- BACKERS -->
-<section class="backers">
-  <div class="backers-label">Backed by</div>
-  <div class="backers-row">
-    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf79_logo-dcg.svg" alt="DCG">
-    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf8c_logo-mysten-labs.svg" alt="Mysten Labs">
-    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf7f_logo-falconx.svg" alt="FalconX">
-    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf76_logo-big-brain-holdings.svg" alt="Big Brain Holdings">
-    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf78_logo-blockchange.svg" alt="Blockchange">
-    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf74_logo-amplify.svg" alt="Amplify">
-    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf83_logo-liquid2.svg" alt="Liquid2">
-    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf8e_logo-sui.svg" alt="Sui">
-    <img src="https://cdn.prod.website-files.com/67161f6a7534fbf38021d666/671c5d7e5b42eba881e6cf7b_logo-dwallet-labs.svg" alt="dWallet Labs">
-  </div>
-</section>
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 relative z-10 bg-[#08090E]">
+        <div class="max-w-[1400px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8 text-white/40 text-sm">
+            <div class="flex items-center gap-6">
+                <span class="text-white font-bold text-2xl tracking-tighter">IKA</span>
+                <span class="hidden md:inline-block w-px h-4 bg-white/20"></span>
+                <span>© 2026 Ika Network. All rights reserved.</span>
+            </div>
+            <div class="flex gap-8 font-medium">
+                <a href="#" class="hover:text-white transition-colors">Twitter</a>
+                <a href="#" class="hover:text-white transition-colors">Discord</a>
+                <a href="#" class="hover:text-white transition-colors">GitHub</a>
+                <a href="#" class="hover:text-white transition-colors">Docs</a>
+            </div>
+        </div>
+    </footer>
 
-<!-- CTA -->
-<section class="cta">
-  <div class="orb" style="position:absolute;filter:blur(80px)"></div>
-  <div class="cta-tag">Build the future</div>
-  <h2 class="cta-h">Ready to build on Ika?</h2>
-  <p class="cta-sub">Read the docs, join our builder Telegram, or start building cross-chain apps today.</p>
-  <div class="cta-btns">
-    <a href="https://docs.ika.xyz" class="btn-p">Read the Docs</a>
-    <a href="#" class="btn-o">Join Builders TG</a>
-  </div>
-</section>
+    <!-- Scripts -->
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
 
-<!-- FOOTER -->
-<footer>
-  <a href="#" class="logo"><svg viewBox="0 0 698 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:16px"><path d="M289.5 42h27v116h-27V42ZM385 42h27l-3 60.5 3 55.5h-27l3-55.5L385 42Z" fill="#EE2B5B"/><path d="M451.5 42h27l42.5 56V42h27v116h-27l-42.5-56.5V158h-27V42Z" fill="#F4F4F6"/><path d="M361.5 42l-34 58 34 58h-30.5l-34-58 34-58h30.5Z" fill="#F4F4F6"/><path d="M140.8 100c0-43.1 29.9-66 59.6-66 29.8 0 59.6 22.9 59.6 66s-29.8 66-59.6 66c-29.7 0-59.6-22.9-59.6-66Z" fill="none" stroke="#EE2B5B" stroke-width="24"/><circle cx="200.4" cy="100" r="16" fill="#EE2B5B"/><path d="M0 100c0-55.2 44.8-100 100-100v32c-37.6 0-68 30.4-68 68s30.4 68 68 68v32c-55.2 0-100-44.8-100-100Z" fill="#EE2B5B"/></svg></a>
-  <ul class="flinks"><li><a href="https://docs.ika.xyz">Docs</a></li><li><a href="#">Blog</a></li><li><a href="#">GitHub</a></li><li><a href="#">Twitter</a></li><li><a href="#">Telegram</a></li></ul>
-  <span>© 2026 Ika Network</span>
-</footer>
+        // Standard fade up reveal
+        document.querySelectorAll('.reveal').forEach((el) => {
+            gsap.fromTo(el, 
+                { y: 50, opacity: 0 },
+                { 
+                    y: 0, opacity: 1, 
+                    duration: 1.2, 
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top 85%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+        });
 
-<script>
-// Marquee loop
-const mq=document.getElementById('mq');mq.innerHTML+=mq.innerHTML;
+        // Staggered grid reveal
+        document.querySelectorAll('.reveal-stagger').forEach((container) => {
+            const children = container.children;
+            gsap.fromTo(children,
+                { y: 50, opacity: 0 },
+                {
+                    y: 0, opacity: 1,
+                    duration: 1,
+                    stagger: 0.15,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: container,
+                        start: "top 85%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+        });
 
-// Scroll reveals
-const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis')})},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-
-// Counter animation
-const cobs=new IntersectionObserver(e=>{e.forEach(x=>{if(!x.isIntersecting)return;const el=x.target,t=parseInt(el.dataset.target);if(!t)return;const s=el.dataset.suffix||'';let c=0;const step=Math.ceil(t/50);const timer=setInterval(()=>{c+=step;if(c>=t){c=t;clearInterval(timer)}el.textContent=c.toLocaleString()+s},30);cobs.unobserve(el)})},{threshold:.5});
-document.querySelectorAll('[data-target]').forEach(el=>cobs.observe(el));
-
-// Hero canvas: animated network graph (chain connections)
-(function(){
-  const canvas=document.getElementById('hero-canvas');
-  if(!canvas)return;
-  const ctx=canvas.getContext('2d');
-  const W=500,H=500;
-  canvas.width=W*2;canvas.height=H*2;
-  ctx.scale(2,2);
-
-  // Chain nodes in a circular layout with Ika in center
-  const chains=[
-    {name:'BTC',angle:0,r:160,color:'#F7931A',size:18},
-    {name:'ETH',angle:Math.PI*2/7,r:155,color:'#627EEA',size:18},
-    {name:'SOL',angle:Math.PI*4/7,r:165,color:'#9945FF',size:18},
-    {name:'SUI',angle:Math.PI*6/7,r:150,color:'#4DA2FF',size:16},
-    {name:'ARB',angle:Math.PI*8/7,r:160,color:'#28A0F0',size:14},
-    {name:'BASE',angle:Math.PI*10/7,r:155,color:'#0052FF',size:14},
-    {name:'AVAX',angle:Math.PI*12/7,r:165,color:'#E84142',size:14},
-  ];
-
-  let t=0;
-  function draw(){
-    t+=.008;
-    ctx.clearRect(0,0,W,H);
-
-    const cx=W/2,cy=H/2;
-
-    // Draw connection lines from center to each chain
-    chains.forEach((c,i)=>{
-      const wobble=Math.sin(t*1.5+i*1.2)*8;
-      const x=cx+Math.cos(c.angle+t*.15)*c.r+wobble;
-      const y=cy+Math.sin(c.angle+t*.15)*c.r+Math.cos(t*2+i)*6;
-
-      // Animated line
-      const grad=ctx.createLinearGradient(cx,cy,x,y);
-      const pulse=(Math.sin(t*3+i*0.9)+1)/2;
-      grad.addColorStop(0,`rgba(238,43,91,${.15+pulse*.15})`);
-      grad.addColorStop(1,`rgba(238,43,91,${.03})`);
-
-      ctx.beginPath();
-      ctx.moveTo(cx,cy);
-      // Slight curve for organic feel
-      const mx=(cx+x)/2+Math.sin(t+i)*15;
-      const my=(cy+y)/2+Math.cos(t+i)*15;
-      ctx.quadraticCurveTo(mx,my,x,y);
-      ctx.strokeStyle=grad;
-      ctx.lineWidth=1.5;
-      ctx.stroke();
-
-      // Chain node
-      ctx.beginPath();
-      ctx.arc(x,y,c.size,0,Math.PI*2);
-      ctx.fillStyle=`rgba(${hexToRgb(c.color)},${.12+pulse*.08})`;
-      ctx.fill();
-      ctx.strokeStyle=`rgba(${hexToRgb(c.color)},.35)`;
-      ctx.lineWidth=1;
-      ctx.stroke();
-
-      // Chain label
-      ctx.font='500 9px "JetBrains Mono"';
-      ctx.fillStyle=`rgba(${hexToRgb(c.color)},.7)`;
-      ctx.textAlign='center';
-      ctx.fillText(c.name,x,y+3.5);
-    });
-
-    // Center Ika node
-    const centerPulse=(Math.sin(t*2)+1)/2;
-    // Outer glow
-    const glow=ctx.createRadialGradient(cx,cy,0,cx,cy,40);
-    glow.addColorStop(0,`rgba(238,43,91,${.12+centerPulse*.06})`);
-    glow.addColorStop(1,'rgba(238,43,91,0)');
-    ctx.beginPath();
-    ctx.arc(cx,cy,40,0,Math.PI*2);
-    ctx.fillStyle=glow;
-    ctx.fill();
-
-    // Center node
-    ctx.beginPath();
-    ctx.arc(cx,cy,22,0,Math.PI*2);
-    ctx.fillStyle=`rgba(238,43,91,${.2+centerPulse*.1})`;
-    ctx.fill();
-    ctx.strokeStyle=`rgba(238,43,91,.5)`;
-    ctx.lineWidth=1.5;
-    ctx.stroke();
-
-    // IKA label
-    ctx.font='700 11px "DM Sans"';
-    ctx.fillStyle='rgba(238,43,91,.9)';
-    ctx.textAlign='center';
-    ctx.fillText('IKA',cx,cy+4);
-
-    // Floating particles along connections
-    chains.forEach((c,i)=>{
-      const wobble=Math.sin(t*1.5+i*1.2)*8;
-      const x=cx+Math.cos(c.angle+t*.15)*c.r+wobble;
-      const y=cy+Math.sin(c.angle+t*.15)*c.r+Math.cos(t*2+i)*6;
-
-      const particleT=((t*1.5+i*.5)%1);
-      const px=cx+(x-cx)*particleT;
-      const py=cy+(y-cy)*particleT;
-      const pSize=2+Math.sin(particleT*Math.PI)*2;
-
-      ctx.beginPath();
-      ctx.arc(px,py,pSize,0,Math.PI*2);
-      ctx.fillStyle=`rgba(238,43,91,${.3+Math.sin(particleT*Math.PI)*.3})`;
-      ctx.fill();
-    });
-
-    requestAnimationFrame(draw);
-  }
-
-  function hexToRgb(hex){
-    const r=parseInt(hex.slice(1,3),16);
-    const g=parseInt(hex.slice(3,5),16);
-    const b=parseInt(hex.slice(5,7),16);
-    return `${r},${g},${b}`;
-  }
-
-  draw();
-})();
-
-// Smooth scroll
-document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}})});
-</script>
+        // Animated Number Counters
+        document.querySelectorAll('.counter').forEach(counter => {
+            const target = parseFloat(counter.getAttribute('data-target'));
+            const suffix = counter.getAttribute('data-suffix') || '';
+            const prefix = counter.getAttribute('data-prefix') || '';
+            
+            ScrollTrigger.create({
+                trigger: counter,
+                start: "top 85%",
+                once: true,
+                onEnter: () => {
+                    let obj = { val: 0 };
+                    gsap.to(obj, {
+                        val: target,
+                        duration: 2.5,
+                        ease: "power2.out",
+                        onUpdate: () => {
+                            counter.innerHTML = prefix + Math.floor(obj.val) + suffix;
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
