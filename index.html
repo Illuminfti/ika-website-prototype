@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
 <!-- Three.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js"></script>
 <!-- GSAP + ScrollTrigger -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -38,27 +38,27 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.875rem 2.5rem;displ
 /* ───── HERO ───── */
 #hero{height:100vh;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
 #hero-canvas{position:absolute;inset:0;z-index:1}
-.hero-overlay{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse 70% 60% at 50% 45%,transparent 0%,var(--bg) 100%);pointer-events:none}
+.hero-overlay{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse 80% 70% at 50% 45%,transparent 30%,var(--bg) 100%);pointer-events:none}
 .hero-content{position:relative;z-index:3;text-align:center;max-width:860px;padding:0 2rem}
-.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.25em;text-transform:uppercase;color:var(--coral);margin-bottom:2.5rem;display:inline-flex;align-items:center;gap:.75rem;background:var(--coral-10);padding:.45rem 1.2rem;border-radius:100px;border:1px solid var(--coral-20);opacity:0}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.5625rem;font-weight:500;letter-spacing:.25em;text-transform:uppercase;color:var(--coral);margin-bottom:2.5rem;display:inline-flex;align-items:center;gap:.75rem;background:var(--coral-10);padding:.45rem 1.2rem;border-radius:100px;border:1px solid var(--coral-20)}
 .hero-eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--coral);animation:dotPulse 2s ease-in-out infinite}
 @keyframes dotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
-h1.hero-h{font-size:clamp(4.5rem,11vw,10rem);font-weight:700;line-height:.88;letter-spacing:-.06em;margin-bottom:2rem;opacity:0}
+h1.hero-h{font-size:clamp(4.5rem,11vw,10rem);font-weight:700;line-height:.88;letter-spacing:-.06em;margin-bottom:2rem}
 h1.hero-h .line{display:block;overflow:hidden}
 h1.hero-h .line span{display:inline-block}
 h1.hero-h .dim{color:var(--t3)}
 h1.hero-h .coral{color:var(--coral)}
-.hero-sub{font-size:1.0625rem;font-weight:400;color:var(--t2);line-height:1.75;max-width:480px;margin:0 auto 2.75rem;opacity:0}
-.hero-actions{display:flex;gap:.875rem;justify-content:center;flex-wrap:wrap;opacity:0}
+.hero-sub{font-size:1.0625rem;font-weight:400;color:var(--t2);line-height:1.75;max-width:480px;margin:0 auto 2.75rem}
+.hero-actions{display:flex;gap:.875rem;justify-content:center;flex-wrap:wrap}
 .btn-p{background:var(--coral);color:#fff;font-size:.875rem;font-weight:600;padding:.875rem 1.75rem;border-radius:8px;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;transition:all .25s;letter-spacing:-.01em;border:none;position:relative;overflow:hidden}
 .btn-p::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 60%);opacity:0;transition:opacity .25s}
 .btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(238,43,91,.25)}.btn-p:hover::after{opacity:1}
 .btn-g{background:rgba(255,255,255,.03);color:var(--t2);font-size:.875rem;font-weight:500;padding:.875rem 1.75rem;border-radius:8px;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--bdr2);transition:all .25s}
 .btn-g:hover{color:var(--text);border-color:rgba(242,242,250,.25);background:rgba(255,255,255,.05);transform:translateY(-2px)}
-.chain-row{display:flex;gap:.35rem;flex-wrap:wrap;justify-content:center;margin-top:3.5rem;opacity:0}
+.chain-row{display:flex;gap:.35rem;flex-wrap:wrap;justify-content:center;margin-top:3.5rem}
 .chain-pill{font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:400;letter-spacing:.1em;padding:.3rem .7rem;border-radius:100px;border:1px solid var(--bdr);color:var(--t3);text-transform:uppercase;transition:all .3s}
 .chain-pill:hover{border-color:var(--coral-20);color:var(--coral-50)}
-.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:3;opacity:0}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:3;opacity:.35}
 .scroll-line{width:1px;height:50px;margin:0 auto;overflow:hidden;position:relative}
 .scroll-line::after{content:'';position:absolute;top:-50px;left:0;width:1px;height:50px;background:linear-gradient(to bottom,transparent,var(--coral));animation:scrollDrop 2.5s ease-in-out infinite}
 @keyframes scrollDrop{0%{top:-50px}100%{top:100%}}
@@ -504,31 +504,29 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
       float fresnel = 1.0 - max(0.0, dot(viewDir, normalize(vNormal)));
       fresnel = pow(fresnel, 2.5);
 
-      // Base coral color with depth
-      vec3 coralDeep = vec3(0.45, 0.04, 0.12);   // Dark coral
-      vec3 coralBright = vec3(0.93, 0.17, 0.36);  // #EE2B5B
-      vec3 coralHot = vec3(1.0, 0.55, 0.45);      // Hot highlight
+      // Base coral color with depth — BRIGHT
+      vec3 coralDeep = vec3(0.6, 0.06, 0.18);     // Mid coral
+      vec3 coralBright = vec3(0.93, 0.17, 0.36);   // #EE2B5B
+      vec3 coralHot = vec3(1.0, 0.6, 0.5);         // Hot highlight
 
       // Color based on displacement + fresnel
-      vec3 baseColor = mix(coralDeep, coralBright, smoothstep(-0.1, 0.4, vDisplacement));
-      baseColor = mix(baseColor, coralHot, fresnel * 0.6);
+      vec3 baseColor = mix(coralDeep, coralBright, smoothstep(-0.2, 0.3, vDisplacement));
+      baseColor = mix(baseColor, coralHot, fresnel * 0.7);
 
       // Pulsing inner glow on tentacle protrusions
       float pulse = sin(vDisplacement * 8.0 + uTime * 1.5) * 0.5 + 0.5;
       vec3 glowColor = mix(coralBright, coralHot, pulse);
-      float glowAmount = smoothstep(0.25, 0.6, vDisplacement) * 0.4;
+      float glowAmount = smoothstep(0.15, 0.5, vDisplacement) * 0.5;
       baseColor = mix(baseColor, glowColor, glowAmount);
 
-      // Fresnel edge emission
-      vec3 edgeGlow = coralBright * 1.8;
-      baseColor += edgeGlow * fresnel * 0.5;
+      // Strong fresnel edge emission
+      vec3 edgeGlow = coralBright * 2.5;
+      baseColor += edgeGlow * fresnel * 0.7;
 
-      // Opacity: slight transparency at edges for ethereal feel
-      float alpha = 0.85 + fresnel * 0.15;
+      // Overall brightness boost
+      baseColor *= 1.3;
 
-      // Subtle scanline / micro-texture
-      float scan = sin(vUv.y * 400.0) * 0.02;
-      baseColor += scan;
+      float alpha = 0.92 + fresnel * 0.08;
 
       gl_FragColor = vec4(baseColor, alpha);
     }
@@ -588,7 +586,7 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
         p.y += cos(t * 0.2 + aPhase * 1.3) * 0.2;
         p.z += sin(t * 0.25 + aPhase * 0.5) * 0.25;
         // Pulsing alpha
-        vAlpha = (sin(uTime * 1.5 + aPhase) * 0.5 + 0.5) * 0.6 + 0.1;
+        vAlpha = (sin(uTime * 1.5 + aPhase) * 0.5 + 0.5) * 0.8 + 0.2;
         vec4 mv = modelViewMatrix * vec4(p, 1.0);
         gl_Position = projectionMatrix * mv;
         gl_PointSize = aSize * (200.0 / -mv.z);
@@ -670,16 +668,14 @@ footer{border-top:1px solid var(--bdr);padding:1.5rem 2.5rem;background:var(--bg
 // ─── GSAP ScrollTrigger Animations ───
 gsap.registerPlugin(ScrollTrigger);
 
-// Hero entrance animation
+// Hero entrance animation — use 'from' so content is visible if JS fails
 const heroTL = gsap.timeline({ defaults: { ease: 'power3.out' }});
 heroTL
-  .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.8, delay: 0.3 })
-  .to('h1.hero-h', { opacity: 1, duration: 0 }, '-=0.4')
-  .from('h1.hero-h .line span', { yPercent: 110, duration: 1, stagger: 0.12, ease: 'power4.out' }, '-=0.4')
-  .to('.hero-sub', { opacity: 1, y: 0, duration: 0.7 }, '-=0.5')
-  .to('.hero-actions', { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
-  .to('.chain-row', { opacity: 1, y: 0, duration: 0.5 }, '-=0.3')
-  .to('.scroll-hint', { opacity: 0.35, duration: 0.8 }, '-=0.2');
+  .from('.hero-eyebrow', { opacity: 0, y: 20, duration: 0.8, delay: 0.3 })
+  .from('h1.hero-h .line span', { yPercent: 110, opacity: 0, duration: 1, stagger: 0.12, ease: 'power4.out' }, '-=0.4')
+  .from('.hero-sub', { opacity: 0, y: 20, duration: 0.7 }, '-=0.5')
+  .from('.hero-actions', { opacity: 0, y: 20, duration: 0.6 }, '-=0.4')
+  .from('.chain-row', { opacity: 0, y: 15, duration: 0.5 }, '-=0.3');
 
 // Hero parallax on scroll — creature scales down and fades
 gsap.to('#hero-canvas', {
