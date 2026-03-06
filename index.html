@@ -32,6 +32,14 @@
       --font-mono: "JetBrains Mono", monospace;
 
       --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --scroll: 0px;
+    }
+
+    /* @property for spinning border */
+    @property --angle {
+      syntax: "<angle>";
+      initial-value: 0deg;
+      inherits: false;
     }
 
     /* ═══════════════════════════════════════════
@@ -111,6 +119,20 @@
     .section-light .section-body { color: var(--text-dark-secondary); }
 
     /* ═══════════════════════════════════════════
+       PER-WORD TEXT REVEAL
+    ═══════════════════════════════════════════ */
+    .word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+    }
+    .word.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ═══════════════════════════════════════════
        STICKY NAV
     ═══════════════════════════════════════════ */
     .nav {
@@ -123,11 +145,17 @@
       align-items: center;
       justify-content: space-between;
       padding: 20px 48px;
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border-bottom: 1px solid transparent;
+      transition: background 0.3s, backdrop-filter 0.3s, border-color 0.3s;
+    }
+    .nav.scrolled {
       background: rgba(5, 5, 7, 0.8);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      transition: background 0.3s;
+      border-bottom-color: rgba(255,255,255,0.05);
     }
     .nav-logo img {
       height: 28px;
@@ -206,6 +234,97 @@
     }
 
     /* ═══════════════════════════════════════════
+       SPINNING BORDER BUTTONS
+    ═══════════════════════════════════════════ */
+    .btn-primary {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      background: transparent;
+      padding: 16px 36px;
+      border-radius: 100px;
+      z-index: 0;
+      transition: box-shadow 0.3s, transform 0.3s;
+      overflow: hidden;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 100px;
+      background: conic-gradient(from var(--angle), transparent 0%, var(--brand) 25%, transparent 50%);
+      z-index: -2;
+      animation: spin 3s linear infinite;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      border-radius: 100px;
+      background: var(--brand);
+      z-index: -1;
+      transition: background 0.3s;
+    }
+    .btn-primary:hover::before {
+      animation-duration: 1.5s;
+    }
+    .btn-primary:hover::after {
+      background: var(--brand-light);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 30px rgba(238,43,91,0.3);
+    }
+
+    .btn-secondary {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-white-secondary);
+      padding: 16px 36px;
+      border-radius: 100px;
+      border: none;
+      z-index: 0;
+      overflow: hidden;
+      transition: color 0.3s, box-shadow 0.3s;
+    }
+    .btn-secondary::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 100px;
+      background: conic-gradient(from var(--angle), transparent 0%, rgba(255,255,255,0.4) 25%, transparent 50%);
+      z-index: -2;
+      animation: spin 3s linear infinite;
+    }
+    .btn-secondary::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      border-radius: 100px;
+      background: var(--bg-dark);
+      z-index: -1;
+    }
+    .btn-secondary:hover {
+      color: var(--text-white);
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    }
+    .btn-secondary:hover::before {
+      animation-duration: 1.5s;
+      background: conic-gradient(from var(--angle), transparent 0%, rgba(238,43,91,0.6) 25%, transparent 50%);
+    }
+
+    @keyframes spin {
+      to { --angle: 360deg; }
+    }
+
+    /* ═══════════════════════════════════════════
        HERO
     ═══════════════════════════════════════════ */
     .hero {
@@ -224,6 +343,7 @@
       inset: 0;
       background: url('./assets/hero-bg.png') center / cover no-repeat;
       z-index: 0;
+      will-change: transform;
     }
     .hero-bg::after {
       content: '';
@@ -282,6 +402,14 @@
       max-width: 1000px;
     }
 
+    /* Hero entrance animation initial states */
+    .hero-entrance .hero-bg { opacity: 0; }
+    .hero-entrance .status-pill { opacity: 0; transform: translateY(-20px); }
+    .hero-entrance .hero-sub { opacity: 0; }
+    .hero-entrance .hero-ctas .btn-primary,
+    .hero-entrance .hero-ctas .btn-secondary { opacity: 0; transform: translateY(20px); }
+    .hero-entrance .convergence-line { stroke-dashoffset: 1800; }
+
     .status-pill {
       display: inline-flex;
       align-items: center;
@@ -297,6 +425,7 @@
       width: fit-content;
       background: rgba(238, 43, 91, 0.05);
       margin-bottom: 32px;
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
     }
     .status-dot {
       width: 7px;
@@ -334,6 +463,7 @@
       color: var(--text-white-secondary);
       max-width: 600px;
       margin-bottom: 40px;
+      transition: opacity 0.8s var(--ease-out);
     }
 
     .hero-ctas {
@@ -342,37 +472,9 @@
       align-items: center;
       flex-wrap: wrap;
     }
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      color: white;
-      background: var(--brand);
-      padding: 16px 36px;
-      border-radius: 100px;
-      transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
-    }
-    .btn-primary:hover {
-      background: var(--brand-light);
-      box-shadow: 0 0 40px var(--brand-glow);
-    }
-    .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--text-white-secondary);
-      padding: 16px 36px;
-      border-radius: 100px;
-      border: 1px solid rgba(255,255,255,0.15);
-      transition: color 0.3s, border-color 0.3s;
-    }
-    .btn-secondary:hover {
-      color: var(--text-white);
-      border-color: rgba(255,255,255,0.4);
+    .hero-ctas .btn-primary,
+    .hero-ctas .btn-secondary {
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out), box-shadow 0.3s, color 0.3s;
     }
 
     /* ═══════════════════════════════════════════
@@ -401,6 +503,14 @@
       letter-spacing: -0.02em;
     }
     .metric-value .coral { color: var(--brand); }
+    .metric-value .metric-suffix {
+      display: inline;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .metric-value .metric-suffix.visible {
+      opacity: 1;
+    }
     .metric-label {
       font-size: 0.875rem;
       color: var(--text-white-secondary);
@@ -421,6 +531,13 @@
       border-bottom: 1px solid rgba(0,0,0,0.1);
       padding: 36px 0;
       cursor: default;
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+    }
+    .ika-is-item.slide-in {
+      opacity: 1;
+      transform: translateX(0);
     }
     .ika-is-item-header {
       display: flex;
@@ -455,7 +572,8 @@
       opacity: 0;
     }
     .ika-is-item:hover .ika-is-item-desc,
-    .ika-is-item.active .ika-is-item-desc {
+    .ika-is-item.active .ika-is-item-desc,
+    .ika-is-item.desc-visible .ika-is-item-desc {
       max-height: 100px;
       opacity: 1;
     }
@@ -493,13 +611,35 @@
       margin-top: 64px;
     }
     .bento-card {
+      position: relative;
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.06);
       padding: 48px 40px;
-      transition: background 0.4s;
+      transition: background 0.4s, border-color 0.3s;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    .bento-card.cascade-in {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out), background 0.4s, border-color 0.3s;
+    }
+    .bento-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+      background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(238,43,91,0.06), transparent 40%);
+      pointer-events: none;
     }
     .bento-card:hover {
       background: rgba(255,255,255,0.06);
+      border-color: rgba(238,43,91,0.3);
+    }
+    .bento-card:hover::before {
+      opacity: 1;
     }
     .bento-card-title {
       font-family: var(--font-heading);
@@ -555,10 +695,20 @@
       color: var(--brand);
       font-weight: 600;
       background: rgba(238, 43, 91, 0.04);
+      text-shadow: 0 0 20px rgba(238,43,91,0.15);
     }
     .comparison-table th.col-ika {
       color: var(--brand);
       background: rgba(238, 43, 91, 0.06);
+    }
+    .comparison-table tbody tr {
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+    }
+    .comparison-table tbody tr.row-visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     /* ═══════════════════════════════════════════
@@ -570,10 +720,32 @@
       border-bottom: 1px solid rgba(255,255,255,0.06);
       padding: 32px 0;
       overflow: hidden;
+      position: relative;
+    }
+    .chains-marquee::before,
+    .chains-marquee::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 120px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .chains-marquee::before {
+      left: 0;
+      background: linear-gradient(to right, var(--bg-dark), transparent);
+    }
+    .chains-marquee::after {
+      right: 0;
+      background: linear-gradient(to left, var(--bg-dark), transparent);
     }
     .marquee-track {
       display: flex;
       width: max-content;
+    }
+    .chains-marquee:hover .marquee-track {
+      animation-duration: 60s !important;
     }
     .marquee-content {
       display: flex;
@@ -695,7 +867,7 @@
     }
 
     /* ═══════════════════════════════════════════
-       ANIMATIONS
+       ANIMATIONS (motion-safe)
     ═══════════════════════════════════════════ */
     @media (prefers-reduced-motion: no-preference) {
       .convergence-line {
@@ -718,6 +890,14 @@
       }
       .marquee-track {
         animation: marqueeScroll 25s linear infinite;
+      }
+      .btn-primary::before,
+      .btn-secondary::before {
+        animation: spin 3s linear infinite;
+      }
+      /* Hero parallax */
+      .hero-bg {
+        transform: translateY(calc(var(--scroll) * 0.3));
       }
     }
 
@@ -825,7 +1005,7 @@
   <!-- ═══════════════════════════════════════════
        1. HERO
   ═══════════════════════════════════════════ -->
-  <section class="hero section-dark">
+  <section class="hero section-dark hero-entrance">
     <!-- Background image -->
     <div class="hero-bg"></div>
 
@@ -887,15 +1067,15 @@
     <div class="container">
       <div class="metrics-inner">
         <div class="metric reveal">
-          <div class="metric-value"><span class="coral" data-count="10000">10,000</span>&times;</div>
+          <div class="metric-value"><span class="coral" data-count="10000" data-format="comma">0</span><span class="metric-suffix">&times;</span></div>
           <div class="metric-label">Faster than legacy MPC</div>
         </div>
         <div class="metric reveal reveal-delay-1">
-          <div class="metric-value">&lt; <span class="coral">1</span>s</div>
+          <div class="metric-value">&lt; <span class="coral" data-count="1">0</span><span class="metric-suffix">s</span></div>
           <div class="metric-label">Signing latency</div>
         </div>
         <div class="metric reveal reveal-delay-2">
-          <div class="metric-value"><span class="coral">100</span>+</div>
+          <div class="metric-value"><span class="coral" data-count="100">0</span><span class="metric-suffix">+</span></div>
           <div class="metric-label">Validator nodes</div>
         </div>
       </div>
@@ -909,7 +1089,7 @@
     <div class="container">
       <p class="section-tag reveal">What makes Ika different</p>
       <ul class="ika-is-list">
-        <li class="ika-is-item reveal">
+        <li class="ika-is-item">
           <div class="ika-is-item-header">
             <h3 class="ika-is-item-title">Fast by design</h3>
             <span class="ika-is-item-number">01</span>
@@ -918,7 +1098,7 @@
             <p>Sub-second signatures where legacy MPC takes 30+ seconds</p>
           </div>
         </li>
-        <li class="ika-is-item reveal">
+        <li class="ika-is-item">
           <div class="ika-is-item-header">
             <h3 class="ika-is-item-title">Trustless by proof</h3>
             <span class="ika-is-item-number">02</span>
@@ -927,7 +1107,7 @@
             <p>2PC-MPC: no single party ever holds your key. Mathematically guaranteed.</p>
           </div>
         </li>
-        <li class="ika-is-item reveal">
+        <li class="ika-is-item">
           <div class="ika-is-item-header">
             <h3 class="ika-is-item-title">Scalable without limits</h3>
             <span class="ika-is-item-number">03</span>
@@ -936,7 +1116,7 @@
             <p>Hundreds of nodes signing in parallel. Not the 4-8 node ceiling.</p>
           </div>
         </li>
-        <li class="ika-is-item reveal">
+        <li class="ika-is-item">
           <div class="ika-is-item-header">
             <h3 class="ika-is-item-title">Programmable in Move</h3>
             <span class="ika-is-item-number">04</span>
@@ -945,7 +1125,7 @@
             <p>Write signing policies as smart contracts. Gate, compose, automate.</p>
           </div>
         </li>
-        <li class="ika-is-item reveal">
+        <li class="ika-is-item">
           <div class="ika-is-item-header">
             <h3 class="ika-is-item-title">Native to every chain</h3>
             <span class="ika-is-item-number">05</span>
@@ -964,7 +1144,7 @@
   <section class="problem section-dark">
     <div class="container">
       <p class="section-tag reveal">The problem</p>
-      <h2 class="section-headline reveal">Today's cross-chain<br>is broken.</h2>
+      <h2 class="section-headline reveal word-reveal">Today's cross-chain<br>is broken.</h2>
       <p class="section-body reveal reveal-delay-1">
         Bridges get hacked. Wrapped assets lose their peg. MPC networks max out at 8 nodes and call it decentralized. You're told to trust relayers, validators, and committees with your assets. Then they get exploited, and you lose everything.
       </p>
@@ -977,7 +1157,7 @@
   <section class="solution section-light">
     <div class="container">
       <p class="section-tag reveal">The Ika approach</p>
-      <h2 class="section-headline reveal">Your key never exists<br>in one place.</h2>
+      <h2 class="section-headline reveal word-reveal">Your key never exists<br>in one place.</h2>
       <p class="section-body reveal reveal-delay-1">
         Ika uses 2PC-MPC — a breakthrough in threshold cryptography where no single party, not even Ika, can reconstruct your private key. Ever. You hold one share. The network holds the other across hundreds of nodes. Signing requires both. That's not a feature. That's the architecture.
       </p>
@@ -990,29 +1170,29 @@
   <section class="use-cases section-dark" id="use-cases">
     <div class="container">
       <p class="section-tag reveal">Build with Ika</p>
-      <h2 class="section-headline reveal">What you can build.</h2>
+      <h2 class="section-headline reveal word-reveal">What you can build.</h2>
       <div class="bento-grid">
-        <div class="bento-card reveal">
+        <div class="bento-card">
           <h3 class="bento-card-title">On-chain Fireblocks</h3>
           <p class="bento-card-desc">Enterprise custody without the enterprise. Programmable signing policies in Move.</p>
         </div>
-        <div class="bento-card reveal reveal-delay-1">
+        <div class="bento-card">
           <h3 class="bento-card-title">Native Bitcoin on Sui</h3>
           <p class="bento-card-desc">Not wrapped. Not bridged. Real BTC controlled by Sui smart contracts.</p>
         </div>
-        <div class="bento-card reveal reveal-delay-2">
+        <div class="bento-card">
           <h3 class="bento-card-title">Cross-chain DeFi</h3>
           <p class="bento-card-desc">Lend against assets on any chain. Treat all of crypto as one liquidity pool.</p>
         </div>
-        <div class="bento-card reveal reveal-delay-3">
+        <div class="bento-card">
           <h3 class="bento-card-title">Smart Wallet</h3>
           <p class="bento-card-desc">Account recovery, spending limits, multi-party approval — enforced cryptographically.</p>
         </div>
-        <div class="bento-card reveal reveal-delay-4">
+        <div class="bento-card">
           <h3 class="bento-card-title">AI Agent Guardrails</h3>
           <p class="bento-card-desc">Give AI agents the ability to transact with cryptographic guardrails.</p>
         </div>
-        <div class="bento-card reveal reveal-delay-5">
+        <div class="bento-card">
           <h3 class="bento-card-title">Universal Staking</h3>
           <p class="bento-card-desc">Stake any asset to secure any protocol. Cross-chain staking that works.</p>
         </div>
@@ -1026,7 +1206,7 @@
   <section class="comparison section-light" id="compare">
     <div class="container">
       <p class="section-tag reveal">Why Ika</p>
-      <h2 class="section-headline reveal">Not another bridge.</h2>
+      <h2 class="section-headline reveal word-reveal">Not another bridge.</h2>
       <div class="comparison-table-wrap reveal reveal-delay-1">
         <table class="comparison-table">
           <thead>
@@ -1133,7 +1313,7 @@
   ═══════════════════════════════════════════ -->
   <section class="final-cta section-dark" id="cta">
     <div class="container">
-      <h2 class="section-headline reveal">Build what wasn't<br>possible before.</h2>
+      <h2 class="section-headline reveal word-reveal">Build what wasn't<br>possible before.</h2>
       <p class="section-body reveal reveal-delay-1">
         Your Sui program can now sign transactions on Bitcoin. On Ethereum. On any chain.
       </p>
@@ -1165,10 +1345,52 @@
        JAVASCRIPT
   ═══════════════════════════════════════════ -->
   <script>
-    /* Scroll reveal with IntersectionObserver */
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (!prefersReducedMotion) {
+
+      /* ─── 1. SCROLL VARIABLE FOR PARALLAX ─── */
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            document.documentElement.style.setProperty('--scroll', window.scrollY + 'px');
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+
+      /* ─── 2. NAV SCROLL EFFECT ─── */
+      const nav = document.querySelector('.nav');
+      const navObserverTarget = document.querySelector('.hero');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 100) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }, { passive: true });
+
+      /* ─── 3. HERO ENTRANCE ANIMATION ─── */
+      const hero = document.querySelector('.hero');
+      const heroBg = hero.querySelector('.hero-bg');
+      const statusPill = hero.querySelector('.status-pill');
+      const heroSub = hero.querySelector('.hero-sub');
+      const heroButtons = hero.querySelectorAll('.hero-ctas .btn-primary, .hero-ctas .btn-secondary');
+
+      // Stagger the hero entrance
+      setTimeout(() => { heroBg.style.transition = 'opacity 1.5s var(--ease-out)'; heroBg.style.opacity = '1'; }, 100);
+      setTimeout(() => { statusPill.style.opacity = '1'; statusPill.style.transform = 'translateY(0)'; }, 500);
+      setTimeout(() => { heroSub.style.opacity = '1'; }, 1200);
+      heroButtons.forEach((btn, i) => {
+        setTimeout(() => {
+          btn.style.opacity = '1';
+          btn.style.transform = 'translateY(0)';
+        }, 1500 + i * 150);
+      });
+
+      /* ─── 4. SCROLL REVEAL (IntersectionObserver) ─── */
       const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -1179,12 +1401,183 @@
       }, { threshold: 0.1 });
 
       document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+      /* ─── 5. PER-WORD TEXT REVEAL ─── */
+      document.querySelectorAll('.word-reveal').forEach(headline => {
+        const html = headline.innerHTML;
+        // Split text nodes into words, preserving <br> tags
+        const parts = html.split(/(<br\s*\/?>)/gi);
+        let wordHtml = '';
+        parts.forEach(part => {
+          if (part.match(/<br\s*\/?>/i)) {
+            wordHtml += part;
+          } else {
+            const words = part.trim().split(/\s+/);
+            words.forEach(word => {
+              if (word) {
+                wordHtml += '<span class="word">' + word + '</span> ';
+              }
+            });
+          }
+        });
+        headline.innerHTML = wordHtml.trim();
+      });
+
+      const wordObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const words = entry.target.querySelectorAll('.word');
+            words.forEach((word, i) => {
+              setTimeout(() => word.classList.add('visible'), i * 80);
+            });
+            wordObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      document.querySelectorAll('.word-reveal').forEach(el => wordObserver.observe(el));
+
+      /* ─── 6. IKA IS — SLIDE IN FROM LEFT WITH STAGGER + DESC REVEAL ─── */
+      const ikaItems = document.querySelectorAll('.ika-is-item');
+      const ikaObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Stagger based on index
+            const items = Array.from(ikaItems);
+            const idx = items.indexOf(entry.target);
+            setTimeout(() => {
+              entry.target.classList.add('slide-in');
+            }, idx * 120);
+            // Description reveal 0.4s after slide-in
+            setTimeout(() => {
+              entry.target.classList.add('desc-visible');
+            }, idx * 120 + 400);
+            ikaObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      ikaItems.forEach(item => ikaObserver.observe(item));
+
+      // On mobile, also add active on scroll
+      if (window.innerWidth <= 768) {
+        const ikaActiveObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('active');
+            } else {
+              entry.target.classList.remove('active');
+            }
+          });
+        }, { threshold: 0.6 });
+        ikaItems.forEach(item => ikaActiveObserver.observe(item));
+      }
+
+      /* ─── 7. BENTO CARD CASCADE ─── */
+      const bentoCards = document.querySelectorAll('.bento-card');
+      const bentoObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Find all cards and stagger them
+            bentoCards.forEach((card, i) => {
+              setTimeout(() => card.classList.add('cascade-in'), i * 120);
+            });
+            // Unobserve all after triggering
+            bentoCards.forEach(card => bentoObserver.unobserve(card));
+          }
+        });
+      }, { threshold: 0.1 });
+
+      bentoCards.forEach(card => bentoObserver.observe(card));
+
+      // Bento card mouse-tracking glow
+      bentoCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+          card.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
+        });
+      });
+
+      /* ─── 8. METRICS COUNTER ANIMATION ─── */
+      const counterEls = document.querySelectorAll('[data-count]');
+      const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            const target = parseInt(el.dataset.count, 10);
+            const format = el.dataset.format;
+            const duration = 2000;
+            const startTime = performance.now();
+
+            function easeOutQuart(t) {
+              return 1 - Math.pow(1 - t, 4);
+            }
+
+            function update(currentTime) {
+              const elapsed = currentTime - startTime;
+              const progress = Math.min(elapsed / duration, 1);
+              const easedProgress = easeOutQuart(progress);
+              let current = Math.round(easedProgress * target);
+
+              if (format === 'comma') {
+                el.textContent = current.toLocaleString();
+              } else {
+                el.textContent = current;
+              }
+
+              if (progress < 1) {
+                requestAnimationFrame(update);
+              } else {
+                // Show suffix
+                const suffix = el.parentElement.querySelector('.metric-suffix');
+                if (suffix) suffix.classList.add('visible');
+              }
+            }
+
+            requestAnimationFrame(update);
+            counterObserver.unobserve(el);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      counterEls.forEach(el => counterObserver.observe(el));
+
+      /* ─── 9. COMPARISON TABLE ROW REVEAL ─── */
+      const tableRows = document.querySelectorAll('.comparison-table tbody tr');
+      const tableObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            tableRows.forEach((row, i) => {
+              setTimeout(() => row.classList.add('row-visible'), i * 100);
+            });
+            tableRows.forEach(row => tableObserver.unobserve(row));
+          }
+        });
+      }, { threshold: 0.1 });
+
+      tableRows.forEach(row => tableObserver.observe(row));
+
     } else {
       /* If reduced motion, show everything immediately */
       document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+      document.querySelectorAll('.ika-is-item').forEach(el => {
+        el.classList.add('slide-in');
+        el.classList.add('desc-visible');
+      });
+      document.querySelectorAll('.bento-card').forEach(el => el.classList.add('cascade-in'));
+      document.querySelectorAll('.comparison-table tbody tr').forEach(el => el.classList.add('row-visible'));
+      document.querySelectorAll('[data-count]').forEach(el => {
+        const target = parseInt(el.dataset.count, 10);
+        el.textContent = el.dataset.format === 'comma' ? target.toLocaleString() : target;
+        const suffix = el.parentElement.querySelector('.metric-suffix');
+        if (suffix) suffix.classList.add('visible');
+      });
+      document.querySelector('.hero').classList.remove('hero-entrance');
+      document.querySelector('.nav').classList.add('scrolled');
     }
 
-    /* Mobile nav toggle */
+    /* ─── MOBILE NAV TOGGLE (always active) ─── */
     const navToggle = document.getElementById('navToggle');
     const mobileNav = document.getElementById('mobileNav');
 
@@ -1194,7 +1587,6 @@
       document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
     });
 
-    /* Close mobile nav on link click */
     mobileNav.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         navToggle.classList.remove('active');
@@ -1202,24 +1594,6 @@
         document.body.style.overflow = '';
       });
     });
-
-    /* Ika Is — activate on scroll (mobile) and hover (desktop) */
-    const ikaIsItems = document.querySelectorAll('.ika-is-item');
-    if (!prefersReducedMotion) {
-      const ikaIsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-          } else {
-            entry.target.classList.remove('active');
-          }
-        });
-      }, { threshold: 0.6 });
-
-      if (window.innerWidth <= 768) {
-        ikaIsItems.forEach(item => ikaIsObserver.observe(item));
-      }
-    }
   </script>
 </body>
 </html>
