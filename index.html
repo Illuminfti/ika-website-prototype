@@ -715,11 +715,13 @@
     }
 
     /* Alternate left/right */
-    .timeline-card:nth-child(odd) {
+    .timeline-card:nth-of-type(odd) {
       margin-left: 0;
+      margin-right: auto;
     }
-    .timeline-card:nth-child(even) {
+    .timeline-card:nth-of-type(even) {
       margin-left: auto;
+      margin-right: 0;
     }
 
     .timeline-card-header {
