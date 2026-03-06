@@ -2045,31 +2045,31 @@
         });
 
         // IKA node — pulsing
-        const ika = ikaPos();
+        const ikaNode = ikaPos();
         const pulse = 22 + Math.sin(t * 0.045) * 6;
         const pulseA = Math.max(0, Math.sin(t * 0.045) * 0.35 + 0.1);
         // Outer glow
-        const ikaGlow = ctx.createRadialGradient(ika.x, ika.y, 0, ika.x, ika.y, 72);
+        const ikaGlow = ctx.createRadialGradient(ikaNode.x, ikaNode.y, 0, ikaNode.x, ikaNode.y, 72);
         ikaGlow.addColorStop(0, 'rgba(238,43,91,0.3)');
         ikaGlow.addColorStop(0.5, 'rgba(238,43,91,0.08)');
         ikaGlow.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.beginPath(); ctx.arc(ika.x, ika.y, 72, 0, Math.PI * 2);
+        ctx.beginPath(); ctx.arc(ikaNode.x, ikaNode.y, 72, 0, Math.PI * 2);
         ctx.fillStyle = ikaGlow; ctx.fill();
         // Pulse ring
-        ctx.beginPath(); ctx.arc(ika.x, ika.y, pulse, 0, Math.PI * 2);
+        ctx.beginPath(); ctx.arc(ikaNode.x, ikaNode.y, pulse, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(238,43,91,${pulseA.toFixed(2)})`;
         ctx.lineWidth = 1.5; ctx.stroke();
         // Core
-        ctx.beginPath(); ctx.arc(ika.x, ika.y, 9, 0, Math.PI * 2);
+        ctx.beginPath(); ctx.arc(ikaNode.x, ikaNode.y, 9, 0, Math.PI * 2);
         ctx.fillStyle = '#EE2B5B'; ctx.fill();
         // Ring around core
-        ctx.beginPath(); ctx.arc(ika.x, ika.y, 14, 0, Math.PI * 2);
+        ctx.beginPath(); ctx.arc(ikaNode.x, ikaNode.y, 14, 0, Math.PI * 2);
         ctx.strokeStyle = 'rgba(238,43,91,0.4)'; ctx.lineWidth = 1; ctx.stroke();
         // Label
         ctx.font = '700 12px "Satoshi", sans-serif';
         ctx.fillStyle = 'rgba(255,255,255,0.9)';
         ctx.textAlign = 'center';
-        ctx.fillText('IKA', ika.x, ika.y + 32);
+        ctx.fillText('IKA', ikaNode.x, ikaNode.y + 32);
 
         t++;
         animFrame = requestAnimationFrame(draw);
