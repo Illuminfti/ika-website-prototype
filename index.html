@@ -407,12 +407,14 @@
     .hero-canvas-wrapper {
       position: relative;
       height: 100vh;
+      min-height: 600px;
       overflow: hidden;
     }
 
     #heroCanvas {
       width: 100%;
       height: 100%;
+      min-height: 600px;
       display: block;
     }
     /* Layer 1: Base gradient (deep) */
@@ -1916,10 +1918,12 @@
 
       function resize() {
         const wrapper = canvas.parentElement;
-        W = canvas.width = wrapper.offsetWidth;
-        H = canvas.height = wrapper.offsetHeight;
+        // Fallback to explicit half-viewport if offsetWidth is 0
+        W = canvas.width = wrapper.offsetWidth || Math.floor(window.innerWidth * 0.5);
+        H = canvas.height = wrapper.offsetHeight || window.innerHeight;
       }
-      resize();
+      // Delay resize to ensure layout is computed
+      setTimeout(resize, 50);
       const ro = new ResizeObserver(resize);
       ro.observe(canvas.parentElement);
 
@@ -1983,14 +1987,14 @@
         chains.forEach(chain => {
           const n = nodePos(chain);
           const grad = ctx.createLinearGradient(n.x, n.y, ika.x, ika.y);
-          grad.addColorStop(0, hexAlpha(chain.color, 0.12));
-          grad.addColorStop(0.6, hexAlpha(chain.color, 0.25));
-          grad.addColorStop(1, 'rgba(238,43,91,0.35)');
+          grad.addColorStop(0, hexAlpha(chain.color, 0.22));
+          grad.addColorStop(0.6, hexAlpha(chain.color, 0.4));
+          grad.addColorStop(1, 'rgba(238,43,91,0.55)');
           ctx.beginPath();
           ctx.moveTo(n.x, n.y);
           ctx.lineTo(ika.x, ika.y);
           ctx.strokeStyle = grad;
-          ctx.lineWidth = 1;
+          ctx.lineWidth = 1.5;
           ctx.stroke();
         });
 
@@ -2028,7 +2032,7 @@
           ctx.beginPath(); ctx.arc(n.x, n.y, 28, 0, Math.PI * 2);
           ctx.fillStyle = halo; ctx.fill();
           // Node dot
-          ctx.beginPath(); ctx.arc(n.x, n.y, 4, 0, Math.PI * 2);
+          ctx.beginPath(); ctx.arc(n.x, n.y, 5, 0, Math.PI * 2);
           ctx.fillStyle = chain.color; ctx.fill();
           // Label
           ctx.font = '500 10px "JetBrains Mono", monospace';
@@ -2069,13 +2073,18 @@
         animFrame = requestAnimationFrame(draw);
       }
 
-      if (!prefersReducedMotion) {
-        draw();
-      } else {
-        // Draw static frame for reduced-motion users
-        draw();
-        cancelAnimationFrame(animFrame);
-      }
+      // Wait for layout, then start
+      setTimeout(() => {
+        resize();
+        if (!prefersReducedMotion) {
+          draw();
+        } else {
+          // One static frame
+          draw();
+          // Cancel the next rAF queued inside draw()
+          setTimeout(() => cancelAnimationFrame(animFrame), 16);
+        }
+      }, 80);
     })();
 
     /* ─── MOBILE NAV TOGGLE (always active) ─── */
