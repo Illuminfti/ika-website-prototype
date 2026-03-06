@@ -7,6 +7,9 @@
   <meta name="description" content="The fastest MPC network. Your Solana program signs transactions on Bitcoin, Ethereum, and every chain in under a second.">
   <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- GSAP + ScrollTrigger for premium scroll animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
   <style>
     /* ═══════════════════════════════════════════
        DESIGN TOKENS
@@ -105,13 +108,13 @@
     .section-headline {
       font-family: var(--font-heading);
       font-weight: 700;
-      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      font-size: clamp(2.8rem, 4.5vw, 4rem);
       line-height: 1.1;
       letter-spacing: -0.03em;
       margin-bottom: 24px;
     }
     .section-body {
-      font-size: 1.125rem;
+      font-size: 1.3rem;
       line-height: 1.7;
       max-width: 680px;
     }
@@ -565,7 +568,7 @@
     .hero-headline {
       font-family: var(--font-heading);
       font-weight: 700;
-      font-size: clamp(3.5rem, 5.5vw, 5.5rem);
+      font-size: clamp(4rem, 6.5vw, 6.5rem);
       line-height: 1;
       letter-spacing: -0.03em;
       margin-bottom: 28px;
@@ -580,7 +583,7 @@
 
     .hero-tagline {
       font-family: var(--font-body);
-      font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+      font-size: clamp(1.25rem, 1.8vw, 1.55rem);
       color: rgba(255,255,255,0.55);
       max-width: 520px;
       margin-top: 16px;
@@ -589,7 +592,7 @@
     }
 
     .hero-sub {
-      font-size: 1rem;
+      font-size: 1.15rem;
       line-height: 1.7;
       color: var(--text-white-secondary);
       max-width: 480px;
@@ -628,7 +631,7 @@
     }
     .metric-value {
       font-family: var(--font-heading);
-      font-size: clamp(1.25rem, 2vw, 1.75rem);
+      font-size: clamp(1.5rem, 2.3vw, 2rem);
       font-weight: 700;
       color: var(--text-white);
       letter-spacing: -0.02em;
@@ -670,14 +673,14 @@
     .timeline-intro-headline {
       font-family: var(--font-heading);
       font-weight: 700;
-      font-size: clamp(3rem, 6vw, 6rem);
+      font-size: clamp(3.5rem, 7vw, 7rem);
       line-height: 1;
       letter-spacing: -0.04em;
       color: #fff;
       margin-bottom: 20px;
     }
     .timeline-intro-sub {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       color: var(--text-white-secondary);
     }
 
@@ -757,14 +760,14 @@
     .timeline-text-title {
       font-family: var(--font-heading);
       font-weight: 700;
-      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      font-size: clamp(1.85rem, 3vw, 2.5rem);
       line-height: 1.1;
       letter-spacing: -0.02em;
       color: #fff;
       margin-bottom: 16px;
     }
     .timeline-text-desc {
-      font-size: 1rem;
+      font-size: 1.15rem;
       line-height: 1.7;
       color: var(--text-white-secondary);
     }
@@ -955,12 +958,12 @@
     .bento-card-title {
       font-family: var(--font-heading);
       font-weight: 600;
-      font-size: 1.5rem;
+      font-size: 1.7rem;
       margin-bottom: 12px;
       letter-spacing: -0.01em;
     }
     .bento-card-desc {
-      font-size: 1rem;
+      font-size: 1.15rem;
       color: var(--text-white-secondary);
       line-height: 1.6;
     }
@@ -1983,175 +1986,269 @@
         });
       }, 3000);
 
-      /* ─── 4. SCROLL REVEAL (IntersectionObserver) ─── */
-      const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.1 });
+      /* ─── 4. GSAP SCROLL ANIMATIONS ─── */
+      function initGSAP() {
+        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+          // Fallback: show everything if GSAP fails to load
+          document.querySelectorAll('.reveal, .timeline-row, .bento-card').forEach(el => {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+          });
+          return;
+        }
 
-      document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+        gsap.registerPlugin(ScrollTrigger);
 
-      /* ─── 5. PER-LETTER TEXT REVEAL ─── */
-      document.querySelectorAll('.char-reveal').forEach(el => {
-        const html = el.innerHTML;
-        const parts = html.split(/(<br\s*\/?>)/gi);
-        el.innerHTML = '';
-        let charIndex = 0;
-        parts.forEach(part => {
-          if (part.match(/<br\s*\/?>/i)) {
-            el.appendChild(document.createElement('br'));
-          } else {
-            part.split('').forEach(char => {
-              const span = document.createElement('span');
-              if (char === ' ') {
-                span.className = 'char char-space';
-                span.innerHTML = '&nbsp;';
-              } else {
-                span.className = 'char';
-                span.textContent = char;
-              }
-              span.style.transitionDelay = (charIndex * 25) + 'ms';
-              el.appendChild(span);
-              charIndex++;
-            });
-          }
-        });
-      });
-
-      const charObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll('.char').forEach(ch => {
-              ch.classList.add('visible');
-            });
-            charObserver.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.15 });
-
-      document.querySelectorAll('.char-reveal').forEach(el => {
-        // Skip hero headline — it animates on page load, not scroll
-        if (el.closest('.hero')) return;
-        charObserver.observe(el);
-      });
-
-      /* ─── 6. TIMELINE ROWS — FADE IN ON SCROLL ─── */
-      const timelineRows = document.querySelectorAll('.timeline-row');
-      const timelineObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            timelineObserver.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.1 });
-      timelineRows.forEach(row => timelineObserver.observe(row));
-
-      /* ─── 7. BENTO CARD CASCADE ─── */
-      const bentoCards = document.querySelectorAll('.bento-card');
-      const bentoObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            bentoCards.forEach((card, i) => {
-              setTimeout(() => card.classList.add('cascade-in'), i * 150);
-            });
-            bentoCards.forEach(card => bentoObserver.unobserve(card));
-          }
-        });
-      }, { threshold: 0.1 });
-
-      bentoCards.forEach(card => bentoObserver.observe(card));
-
-      // Bento card mouse-tracking glow
-      bentoCards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-          const rect = card.getBoundingClientRect();
-          card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
-          card.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
-        });
-      });
-
-      /* ─── 8. METRICS COUNTER ANIMATION ─── */
-      const counterEls = document.querySelectorAll('[data-count]');
-      const counterObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const el = entry.target;
-            const target = parseInt(el.dataset.count, 10);
-            const format = el.dataset.format;
-            const duration = 2000;
-            const startTime = performance.now();
-
-            function easeOutQuart(t) {
-              return 1 - Math.pow(1 - t, 4);
-            }
-
-            function update(currentTime) {
-              const elapsed = currentTime - startTime;
-              const progress = Math.min(elapsed / duration, 1);
-              const easedProgress = easeOutQuart(progress);
-              let current = Math.round(easedProgress * target);
-
-              if (format === 'comma') {
-                el.textContent = current.toLocaleString();
-              } else {
-                el.textContent = current;
-              }
-
-              if (progress < 1) {
-                requestAnimationFrame(update);
-              } else {
-                const suffix = el.parentElement.querySelector('.metric-suffix');
-                if (suffix) suffix.classList.add('visible');
+        // ─── REVEAL elements: fade up with scrub ───
+        gsap.utils.toArray('.reveal').forEach(el => {
+          gsap.fromTo(el,
+            { opacity: 0, y: 40 },
+            {
+              opacity: 1, y: 0,
+              duration: 1,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 85%',
+                end: 'top 55%',
+                scrub: 0.8,
               }
             }
-
-            requestAnimationFrame(update);
-            counterObserver.unobserve(el);
-          }
+          );
         });
-      }, { threshold: 0.5 });
 
-      counterEls.forEach(el => counterObserver.observe(el));
-
-      /* ─── 9. COMPARISON TABLE ROW REVEAL ─── */
-      const tableRows = document.querySelectorAll('.comparison-table tbody tr');
-      const tableObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            tableRows.forEach((row, i) => {
-              setTimeout(() => row.classList.add('row-visible'), i * 100);
-            });
-            tableRows.forEach(row => tableObserver.unobserve(row));
-          }
-        });
-      }, { threshold: 0.1 });
-
-      tableRows.forEach(row => tableObserver.observe(row));
-
-      /* ─── 10. TECHNICAL DIAGRAM REVEAL ─── */
-      const techDiagram = document.getElementById('techDiagram');
-      if (techDiagram) {
-        const diagramObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-              diagramObserver.unobserve(entry.target);
+        // ─── PER-LETTER TEXT REVEAL with scroll-scrub ───
+        document.querySelectorAll('.char-reveal').forEach(el => {
+          if (el.closest('.hero')) return;
+          const html = el.innerHTML;
+          const parts = html.split(/(<br\s*\/?>)/gi);
+          el.innerHTML = '';
+          const chars = [];
+          parts.forEach(part => {
+            if (part.match(/<br\s*\/?>/i)) {
+              el.appendChild(document.createElement('br'));
+            } else {
+              part.split('').forEach(char => {
+                const span = document.createElement('span');
+                if (char === ' ') {
+                  span.className = 'char char-space';
+                  span.innerHTML = '&nbsp;';
+                } else {
+                  span.className = 'char';
+                  span.textContent = char;
+                }
+                span.style.opacity = '0';
+                span.style.transform = 'translateY(20px)';
+                el.appendChild(span);
+                chars.push(span);
+              });
             }
           });
-        }, { threshold: 0.2 });
-        diagramObserver.observe(techDiagram);
+
+          // Scrub-linked: characters reveal as user scrolls
+          gsap.to(chars, {
+            opacity: 1,
+            y: 0,
+            stagger: 0.02,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 80%',
+              end: 'top 40%',
+              scrub: 1,
+            }
+          });
+        });
+
+        // ─── TIMELINE ROWS: alternating slide-in from sides ───
+        gsap.utils.toArray('.timeline-row').forEach((row, i) => {
+          const isOdd = i % 2 === 0;
+          const text = row.querySelector('.timeline-text');
+          const card = row.querySelector('.timeline-card');
+
+          // Text slides in from its side
+          gsap.fromTo(text,
+            { opacity: 0, x: isOdd ? -60 : 60 },
+            {
+              opacity: 1, x: 0,
+              duration: 1,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: row,
+                start: 'top 80%',
+                end: 'top 45%',
+                scrub: 0.6,
+              }
+            }
+          );
+
+          // Card slides in from opposite side
+          gsap.fromTo(card,
+            { opacity: 0, x: isOdd ? 60 : -60, scale: 0.95 },
+            {
+              opacity: 1, x: 0, scale: 1,
+              duration: 1,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: row,
+                start: 'top 80%',
+                end: 'top 45%',
+                scrub: 0.6,
+              }
+            }
+          );
+        });
+
+        // ─── BENTO CARDS: staggered cascade with different origins ───
+        const bentoCards = gsap.utils.toArray('.bento-card');
+        bentoCards.forEach((card, i) => {
+          const origins = [
+            { x: -40, y: 30 },
+            { x: 40, y: 30 },
+            { x: -30, y: 40 },
+            { x: 30, y: 40 },
+            { x: -40, y: 20 },
+            { x: 40, y: 20 },
+          ];
+          const o = origins[i % origins.length];
+
+          gsap.fromTo(card,
+            { opacity: 0, x: o.x, y: o.y, scale: 0.92 },
+            {
+              opacity: 1, x: 0, y: 0, scale: 1,
+              duration: 0.8,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 85%',
+                end: 'top 60%',
+                scrub: 0.5,
+              }
+            }
+          );
+        });
+
+        // Bento card mouse-tracking glow
+        bentoCards.forEach(card => {
+          card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+            card.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
+          });
+        });
+
+        // ─── METRICS COUNTER (keep IntersectionObserver — counters don't scrub well) ───
+        const counterEls = document.querySelectorAll('[data-count]');
+        const counterObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const el = entry.target;
+              const target = parseInt(el.dataset.count, 10);
+              const format = el.dataset.format;
+              const duration = 2000;
+              const startTime = performance.now();
+              function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+              function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                let current = Math.round(easeOutQuart(progress) * target);
+                el.textContent = format === 'comma' ? current.toLocaleString() : current;
+                if (progress < 1) requestAnimationFrame(update);
+                else { const suffix = el.parentElement.querySelector('.metric-suffix'); if (suffix) suffix.classList.add('visible'); }
+              }
+              requestAnimationFrame(update);
+              counterObserver.unobserve(el);
+            }
+          });
+        }, { threshold: 0.5 });
+        counterEls.forEach(el => counterObserver.observe(el));
+
+        // ─── COMPARISON TABLE ROWS: staggered slide-in ───
+        const tableRows = gsap.utils.toArray('.comparison-table tbody tr');
+        tableRows.forEach((row, i) => {
+          gsap.fromTo(row,
+            { opacity: 0, y: 20, x: -20 },
+            {
+              opacity: 1, y: 0, x: 0,
+              duration: 0.6,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: row,
+                start: 'top 88%',
+                end: 'top 70%',
+                scrub: 0.4,
+              }
+            }
+          );
+        });
+
+        // ─── TECH DIAGRAM ───
+        const techDiagram = document.getElementById('techDiagram');
+        if (techDiagram) {
+          gsap.fromTo(techDiagram,
+            { opacity: 0, scale: 0.9 },
+            {
+              opacity: 1, scale: 1,
+              duration: 1,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: techDiagram,
+                start: 'top 80%',
+                end: 'top 50%',
+                scrub: 0.6,
+              }
+            }
+          );
+        }
+
+        // ─── HERO PARALLAX: content moves slower than scroll ───
+        const heroContent = document.querySelector('.hero-content');
+        if (heroContent) {
+          gsap.to(heroContent, {
+            y: 80,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.hero',
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true,
+            }
+          });
+        }
+
+        // ─── SECTION TAGS: slide in from left ───
+        gsap.utils.toArray('.section-tag').forEach(tag => {
+          gsap.fromTo(tag,
+            { opacity: 0, x: -30 },
+            {
+              opacity: 1, x: 0,
+              duration: 0.6,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: tag,
+                start: 'top 85%',
+                end: 'top 65%',
+                scrub: 0.5,
+              }
+            }
+          );
+        });
+
+      } // end initGSAP
+
+      // Wait for GSAP to load (deferred scripts)
+      if (typeof gsap !== 'undefined') {
+        initGSAP();
+      } else {
+        window.addEventListener('load', initGSAP);
       }
 
     } else {
       /* If reduced motion, show everything immediately */
       document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
       document.querySelectorAll('.timeline-row').forEach(el => {
-        el.classList.add('visible');
+        el.style.opacity = '1';
+        el.style.transform = 'none';
       });
       document.querySelectorAll('.bento-card').forEach(el => el.classList.add('cascade-in'));
       document.querySelectorAll('.comparison-table tbody tr').forEach(el => el.classList.add('row-visible'));
