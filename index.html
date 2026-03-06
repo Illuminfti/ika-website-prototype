@@ -2130,8 +2130,10 @@
     }
 
     /* ─── HERO: Three.js morphing blob ─── */
-    (function initHeroBlob() {
-      if (typeof THREE === 'undefined') return;
+    let heroBlobInitialized = false;
+    function initHeroBlob() {
+      if (heroBlobInitialized || typeof THREE === 'undefined') return;
+      heroBlobInitialized = true;
       const canvas = document.getElementById('heroBlob');
       if (!canvas) return;
 
@@ -2356,7 +2358,17 @@
         else if (!document.hidden && !prefersReducedMotion) animate();
       });
 
-      return; // skip old canvas code below
+    } // end initHeroBlob
+
+    // Call after deferred scripts load
+    if (typeof THREE !== 'undefined') {
+      initHeroBlob();
+    } else {
+      window.addEventListener('DOMContentLoaded', initHeroBlob);
+      window.addEventListener('load', initHeroBlob); // fallback
+    }
+
+    (function() { return; // skip old canvas code below
       const ctx = canvas.getContext('2d');
       let W, H, animFrame;
 
