@@ -105,8 +105,8 @@
     .section-headline {
       font-family: var(--font-heading);
       font-weight: 700;
-      font-size: clamp(4rem, 8vw, 7rem);
-      line-height: 1;
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      line-height: 1.1;
       letter-spacing: -0.03em;
       margin-bottom: 24px;
     }
@@ -298,13 +298,13 @@
       font-weight: 600;
       color: white;
       background: transparent;
-      padding: 16px 36px;
+      padding: 14px 32px;
       border-radius: 50px;
       z-index: 0;
       transition: box-shadow 0.3s, transform 0.3s ease;
       overflow: hidden;
       cursor: pointer;
-      box-shadow: 0 0 32px rgba(238,43,91,0.45), 0 0 60px rgba(238,43,91,0.15);
+      box-shadow: 0 0 24px rgba(238,43,91,0.35), 0 0 48px rgba(238,43,91,0.12);
     }
     .btn-primary::before {
       content: '';
@@ -409,7 +409,6 @@
       right: 0;
       width: 55%;
       height: 100%;
-      pointer-events: none;
       z-index: 1;
     }
 
@@ -525,8 +524,8 @@
     .hero-content {
       position: relative;
       z-index: 10;
-      padding: 160px 48px 80px;
-      max-width: 700px;
+      padding: 0 48px;
+      max-width: 640px;
     }
 
     /* Hero entrance animation initial states — only when motion is OK */
@@ -565,10 +564,10 @@
     .hero-headline {
       font-family: var(--font-heading);
       font-weight: 700;
-      font-size: clamp(6rem, 14vw, 12rem);
-      line-height: 0.9;
-      letter-spacing: -0.04em;
-      margin-bottom: 32px;
+      font-size: clamp(3.5rem, 5.5vw, 5.5rem);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 28px;
     }
     /* Line wrappers removed — headline renders directly */
     .hero-headline .gradient-text {
@@ -580,20 +579,20 @@
 
     .hero-tagline {
       font-family: var(--font-body);
-      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-      color: rgba(255,255,255,0.6);
-      max-width: 600px;
-      margin-top: 24px;
-      margin-bottom: 16px;
+      font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+      color: rgba(255,255,255,0.55);
+      max-width: 520px;
+      margin-top: 16px;
+      margin-bottom: 12px;
       letter-spacing: -0.01em;
     }
 
     .hero-sub {
-      font-size: 1.125rem;
+      font-size: 1rem;
       line-height: 1.7;
       color: var(--text-white-secondary);
-      max-width: 600px;
-      margin-bottom: 40px;
+      max-width: 480px;
+      margin-bottom: 32px;
       transition: opacity 0.8s var(--ease-out);
     }
 
@@ -628,7 +627,7 @@
     }
     .metric-value {
       font-family: var(--font-heading);
-      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-size: clamp(1.25rem, 2vw, 1.75rem);
       font-weight: 700;
       color: var(--text-white);
       letter-spacing: -0.02em;
@@ -660,7 +659,7 @@
     }
     .ika-is-item {
       border-bottom: 1px solid rgba(0,0,0,0.1);
-      padding: 36px 0;
+      padding: 28px 0;
       cursor: default;
       opacity: 0;
       transform: translateX(-30px);
@@ -679,9 +678,9 @@
     .ika-is-item-title {
       font-family: var(--font-heading);
       font-weight: 600;
-      font-size: clamp(3.5rem, 7vw, 5.5rem);
-      line-height: 1.1;
-      letter-spacing: -0.03em;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
       color: var(--text-dark);
       transition: color 0.4s var(--ease-out);
     }
