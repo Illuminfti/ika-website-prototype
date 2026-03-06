@@ -304,7 +304,7 @@
       transition: box-shadow 0.3s, transform 0.3s ease;
       overflow: hidden;
       cursor: pointer;
-      box-shadow: 0 0 20px rgba(238,43,91,0.3);
+      box-shadow: 0 0 32px rgba(238,43,91,0.45), 0 0 60px rgba(238,43,91,0.15);
     }
     .btn-primary::before {
       content: '';
@@ -388,11 +388,32 @@
     .hero {
       position: relative;
       min-height: 100vh;
-      display: block;
+      display: flex;
+      align-items: center;
       overflow: hidden;
-      padding-top: 160px;
-      padding-bottom: 80px;
       background: #000;
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+      min-height: 100vh;
+      align-items: center;
+    }
+
+    .hero-canvas-wrapper {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #heroCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
     /* Layer 1: Base gradient (deep) */
     .hero::before {
@@ -501,8 +522,7 @@
     .hero-content {
       position: relative;
       z-index: 10;
-      padding: 0 48px;
-      max-width: 1000px;
+      padding: 160px 40px 80px 48px;
     }
 
     /* Hero entrance animation initial states — only when motion is OK */
@@ -788,6 +808,23 @@
     .bento-card:hover::before {
       opacity: 1;
     }
+    .bento-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(238,43,91,0.08);
+      border: 1px solid rgba(238,43,91,0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .bento-card:hover .bento-icon {
+      background: rgba(238,43,91,0.15);
+      border-color: rgba(238,43,91,0.4);
+    }
+
     .bento-card-title {
       font-family: var(--font-heading);
       font-weight: 600;
@@ -1092,14 +1129,16 @@
     ═══════════════════════════════════════════ */
     @media (max-width: 1024px) {
       .container { padding: 0 32px; }
-      .hero-content { padding: 0 32px; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-canvas-wrapper { display: none; }
+      .hero-content { padding: 160px 32px 80px; }
       .bento-grid { grid-template-columns: repeat(2, 1fr); }
       .metrics-inner { gap: 48px; }
     }
 
     @media (max-width: 768px) {
       .container { padding: 0 24px; }
-      .hero-content { padding: 0 24px; }
+      .hero-content { padding: 140px 24px 60px; }
       .nav-links { display: none !important; }
       .nav-hamburger { display: flex; }
       .bento-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1234,26 +1273,32 @@
     <!-- Floating orbs for depth -->
     <div class="hero-orb-1"></div>
     <div class="hero-orb-2"></div>
-    <!-- Hero content -->
-    <div class="hero-content">
-      <div class="status-pill">
-        <span class="status-dot"></span>
-        NOW LIVE ON SOLANA
+    <!-- Hero grid: text left, canvas right -->
+    <div class="hero-grid">
+      <div class="hero-content">
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          NOW LIVE ON SOLANA
+        </div>
+
+        <h1 class="hero-headline">
+          Every chain<br><span class="gradient-text">is yours.</span>
+        </h1>
+
+        <p class="hero-tagline">Programmable signatures. Any chain. Sub-second.</p>
+
+        <p class="hero-sub">
+          Your Solana program signs Bitcoin, Ethereum, and any chain in under a second. No bridges. Just cryptography.
+        </p>
+
+        <div class="hero-ctas">
+          <a href="#cta" class="btn-primary">Start Building &rarr;</a>
+          <a href="https://docs.ika.network" target="_blank" rel="noopener" class="btn-secondary">Read the Docs</a>
+        </div>
       </div>
-
-      <h1 class="hero-headline">
-        Every chain<br><span class="gradient-text">is yours.</span>
-      </h1>
-
-      <p class="hero-tagline">Programmable signatures. Any chain. Sub-second.</p>
-
-      <p class="hero-sub">
-        Your Solana program signs Bitcoin, Ethereum, and any chain in under a second. No bridges. Just cryptography.
-      </p>
-
-      <div class="hero-ctas">
-        <a href="#cta" class="btn-primary">Start Building &rarr;</a>
-        <a href="https://docs.ika.network" target="_blank" rel="noopener" class="btn-secondary">Read the Docs</a>
+      <!-- Canvas visualization: animated cross-chain network -->
+      <div class="hero-canvas-wrapper">
+        <canvas id="heroCanvas"></canvas>
       </div>
     </div>
   </section>
@@ -1414,26 +1459,44 @@
       <h2 class="section-headline reveal char-reveal">What you can build.</h2>
       <div class="bento-grid">
         <div class="bento-card">
+          <div class="bento-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="12" width="20" height="14" rx="3" stroke="#EE2B5B" stroke-width="1.5"/><path d="M9 12V8a5 5 0 0 1 10 0v4" stroke="#EE2B5B" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="18" r="2" fill="#EE2B5B"/></svg>
+          </div>
           <h3 class="bento-card-title">On-chain Fireblocks</h3>
           <p class="bento-card-desc">Enterprise custody without the enterprise. Programmable signing policies in Move.</p>
         </div>
         <div class="bento-card">
+          <div class="bento-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="8" cy="14" r="4" stroke="#EE2B5B" stroke-width="1.5"/><circle cx="20" cy="14" r="4" stroke="#EE2B5B" stroke-width="1.5"/><path d="M12 14h4" stroke="#EE2B5B" stroke-width="1.5" stroke-linecap="round"/><path d="M4 14H2M24 14h2" stroke="#EE2B5B" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
           <h3 class="bento-card-title">Native Bitcoin on Solana</h3>
           <p class="bento-card-desc">Not wrapped. Not bridged. Real BTC controlled by Solana smart contracts.</p>
         </div>
         <div class="bento-card">
+          <div class="bento-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><polygon points="14,3 25,9 25,19 14,25 3,19 3,9" stroke="#EE2B5B" stroke-width="1.5" fill="none"/><circle cx="14" cy="14" r="3" fill="#EE2B5B"/><line x1="14" y1="3" x2="14" y2="11" stroke="#EE2B5B" stroke-width="1" opacity="0.5"/><line x1="14" y1="17" x2="14" y2="25" stroke="#EE2B5B" stroke-width="1" opacity="0.5"/></svg>
+          </div>
           <h3 class="bento-card-title">Cross-chain DeFi</h3>
           <p class="bento-card-desc">Lend against assets on any chain. Treat all of crypto as one liquidity pool.</p>
         </div>
         <div class="bento-card">
+          <div class="bento-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="8" width="22" height="16" rx="3" stroke="#EE2B5B" stroke-width="1.5"/><path d="M3 13h22" stroke="#EE2B5B" stroke-width="1.5"/><circle cx="8" cy="18" r="1.5" fill="#EE2B5B"/><rect x="12" y="17" width="8" height="2" rx="1" fill="#EE2B5B" opacity="0.4"/></svg>
+          </div>
           <h3 class="bento-card-title">Smart Wallet</h3>
           <p class="bento-card-desc">Account recovery, spending limits, multi-party approval — enforced cryptographically.</p>
         </div>
         <div class="bento-card">
+          <div class="bento-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="5" stroke="#EE2B5B" stroke-width="1.5"/><path d="M14 3v3M14 22v3M3 14h3M22 14h3" stroke="#EE2B5B" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/><path d="M6.5 6.5l2 2M19.5 19.5l2 2M19.5 6.5l-2 2M6.5 21.5l2-2" stroke="#EE2B5B" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/></svg>
+          </div>
           <h3 class="bento-card-title">AI Agent Guardrails</h3>
           <p class="bento-card-desc">Give AI agents the ability to transact with cryptographic guardrails.</p>
         </div>
         <div class="bento-card">
+          <div class="bento-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><ellipse cx="14" cy="8" rx="9" ry="4" stroke="#EE2B5B" stroke-width="1.5"/><path d="M5 8v6c0 2.2 4 4 9 4s9-1.8 9-4V8" stroke="#EE2B5B" stroke-width="1.5"/><path d="M5 14v6c0 2.2 4 4 9 4s9-1.8 9-4v-6" stroke="#EE2B5B" stroke-width="1.5"/></svg>
+          </div>
           <h3 class="bento-card-title">Universal Staking</h3>
           <p class="bento-card-desc">Stake any asset to secure any protocol. Cross-chain staking that works.</p>
         </div>
@@ -1843,6 +1906,177 @@
       const td = document.getElementById('techDiagram');
       if (td) td.classList.add('visible');
     }
+
+    /* ─── HERO CANVAS: CROSS-CHAIN NETWORK ─── */
+    (function initHeroCanvas() {
+      const canvas = document.getElementById('heroCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let W, H, animFrame;
+
+      function resize() {
+        const wrapper = canvas.parentElement;
+        W = canvas.width = wrapper.offsetWidth;
+        H = canvas.height = wrapper.offsetHeight;
+      }
+      resize();
+      const ro = new ResizeObserver(resize);
+      ro.observe(canvas.parentElement);
+
+      const chains = [
+        { name: 'BTC',  color: '#F7931A', ax: 0.72, ay: 0.22 },
+        { name: 'ETH',  color: '#627EEA', ax: 0.88, ay: 0.38 },
+        { name: 'SOL',  color: '#9945FF', ax: 0.82, ay: 0.62 },
+        { name: 'SUI',  color: '#4DA2FF', ax: 0.65, ay: 0.78 },
+        { name: 'ARB',  color: '#28A0F0', ax: 0.30, ay: 0.72 },
+        { name: 'AVAX', color: '#E84142', ax: 0.18, ay: 0.50 },
+        { name: 'DOT',  color: '#E6007A', ax: 0.28, ay: 0.28 },
+        { name: 'BASE', color: '#0052FF', ax: 0.52, ay: 0.18 },
+      ];
+      const IKA_AX = 0.52, IKA_AY = 0.50;
+
+      // Particles per connection
+      const particles = [];
+      chains.forEach((chain, i) => {
+        for (let p = 0; p < 4; p++) {
+          particles.push({
+            ci: i,
+            t: Math.random(),
+            speed: 0.0018 + Math.random() * 0.0022,
+            size: 1.5 + Math.random() * 2,
+            opacity: 0.5 + Math.random() * 0.5,
+          });
+        }
+      });
+
+      let mouseX = IKA_AX, mouseY = IKA_AY;
+      canvas.parentElement.addEventListener('mousemove', e => {
+        const r = canvas.getBoundingClientRect();
+        mouseX = (e.clientX - r.left) / W;
+        mouseY = (e.clientY - r.top) / H;
+      });
+
+      let t = 0;
+
+      function nodePos(chain) {
+        const dx = (mouseX - IKA_AX) * 0.04;
+        const dy = (mouseY - IKA_AY) * 0.04;
+        return {
+          x: (chain.ax + dx) * W,
+          y: (chain.ay + dy) * H,
+        };
+      }
+      function ikaPos() {
+        return { x: IKA_AX * W, y: IKA_AY * H };
+      }
+
+      function hexAlpha(hex, a) {
+        // Convert 0-1 alpha to hex suffix
+        return hex + Math.round(a * 255).toString(16).padStart(2, '0');
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        const ika = ikaPos();
+
+        // Connection lines
+        chains.forEach(chain => {
+          const n = nodePos(chain);
+          const grad = ctx.createLinearGradient(n.x, n.y, ika.x, ika.y);
+          grad.addColorStop(0, hexAlpha(chain.color, 0.12));
+          grad.addColorStop(0.6, hexAlpha(chain.color, 0.25));
+          grad.addColorStop(1, 'rgba(238,43,91,0.35)');
+          ctx.beginPath();
+          ctx.moveTo(n.x, n.y);
+          ctx.lineTo(ika.x, ika.y);
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        });
+
+        // Particles
+        particles.forEach(p => {
+          p.t += p.speed;
+          if (p.t > 1) p.t = 0;
+          const chain = chains[p.ci];
+          const n = nodePos(chain);
+          const ik = ikaPos();
+          const x = n.x + (ik.x - n.x) * p.t;
+          const y = n.y + (ik.y - n.y) * p.t;
+          // Fade near endpoints
+          const fade = p.t < 0.12 ? p.t / 0.12 : p.t > 0.82 ? (1 - p.t) / 0.18 : 1;
+          const a = p.opacity * fade;
+          // Glow
+          const gr = ctx.createRadialGradient(x, y, 0, x, y, p.size * 4);
+          gr.addColorStop(0, hexAlpha(chain.color, a * 0.5));
+          gr.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.beginPath(); ctx.arc(x, y, p.size * 4, 0, Math.PI * 2);
+          ctx.fillStyle = gr; ctx.fill();
+          // Core dot
+          ctx.beginPath(); ctx.arc(x, y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = hexAlpha(chain.color, a);
+          ctx.fill();
+        });
+
+        // Chain nodes
+        chains.forEach(chain => {
+          const n = nodePos(chain);
+          // Glow halo
+          const halo = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 28);
+          halo.addColorStop(0, hexAlpha(chain.color, 0.2));
+          halo.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.beginPath(); ctx.arc(n.x, n.y, 28, 0, Math.PI * 2);
+          ctx.fillStyle = halo; ctx.fill();
+          // Node dot
+          ctx.beginPath(); ctx.arc(n.x, n.y, 4, 0, Math.PI * 2);
+          ctx.fillStyle = chain.color; ctx.fill();
+          // Label
+          ctx.font = '500 10px "JetBrains Mono", monospace';
+          ctx.fillStyle = hexAlpha(chain.color, 0.8);
+          ctx.textAlign = 'center';
+          const ldy = chain.ay < IKA_AY ? -14 : 18;
+          ctx.fillText(chain.name, n.x, n.y + ldy);
+        });
+
+        // IKA node — pulsing
+        const ika = ikaPos();
+        const pulse = 22 + Math.sin(t * 0.045) * 6;
+        const pulseA = Math.max(0, Math.sin(t * 0.045) * 0.35 + 0.1);
+        // Outer glow
+        const ikaGlow = ctx.createRadialGradient(ika.x, ika.y, 0, ika.x, ika.y, 72);
+        ikaGlow.addColorStop(0, 'rgba(238,43,91,0.3)');
+        ikaGlow.addColorStop(0.5, 'rgba(238,43,91,0.08)');
+        ikaGlow.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.beginPath(); ctx.arc(ika.x, ika.y, 72, 0, Math.PI * 2);
+        ctx.fillStyle = ikaGlow; ctx.fill();
+        // Pulse ring
+        ctx.beginPath(); ctx.arc(ika.x, ika.y, pulse, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(238,43,91,${pulseA.toFixed(2)})`;
+        ctx.lineWidth = 1.5; ctx.stroke();
+        // Core
+        ctx.beginPath(); ctx.arc(ika.x, ika.y, 9, 0, Math.PI * 2);
+        ctx.fillStyle = '#EE2B5B'; ctx.fill();
+        // Ring around core
+        ctx.beginPath(); ctx.arc(ika.x, ika.y, 14, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(238,43,91,0.4)'; ctx.lineWidth = 1; ctx.stroke();
+        // Label
+        ctx.font = '700 12px "Satoshi", sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.textAlign = 'center';
+        ctx.fillText('IKA', ika.x, ika.y + 32);
+
+        t++;
+        animFrame = requestAnimationFrame(draw);
+      }
+
+      if (!prefersReducedMotion) {
+        draw();
+      } else {
+        // Draw static frame for reduced-motion users
+        draw();
+        cancelAnimationFrame(animFrame);
+      }
+    })();
 
     /* ─── MOBILE NAV TOGGLE (always active) ─── */
     const navToggle = document.getElementById('navToggle');
