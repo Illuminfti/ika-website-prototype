@@ -652,18 +652,40 @@
        IKA IS — VERTICAL TIMELINE (Sui-style)
     ═══════════════════════════════════════════ */
     .ika-is {
-      padding: 120px 0;
+      padding: 100px 0 140px;
       background: var(--bg-dark);
       color: var(--text-white);
       overflow: hidden;
     }
-    .ika-is .section-tag { color: var(--text-white-secondary); }
-    .ika-is .section-headline { color: var(--text-white); }
+
+    /* Big centered headline like sui.io */
+    .timeline-intro {
+      text-align: center;
+      margin-bottom: 100px;
+    }
+    .timeline-intro .section-tag {
+      color: var(--text-white-secondary);
+      margin-bottom: 20px;
+    }
+    .timeline-intro-headline {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: clamp(3rem, 6vw, 6rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .timeline-intro-sub {
+      font-size: 1.1rem;
+      color: var(--text-white-secondary);
+    }
 
     .timeline-wrapper {
       position: relative;
-      max-width: 1100px;
-      margin: 80px auto 0;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
     }
 
     /* Center dotted line */
@@ -675,120 +697,146 @@
       width: 1px;
       background: repeating-linear-gradient(
         to bottom,
-        rgba(255,255,255,0.2) 0px,
-        rgba(255,255,255,0.2) 4px,
-        transparent 4px,
-        transparent 12px
+        rgba(255,255,255,0.18) 0px,
+        rgba(255,255,255,0.18) 5px,
+        transparent 5px,
+        transparent 14px
       );
       transform: translateX(-50%);
     }
 
-    /* Scroll indicator on the line */
+    /* Sticky scroll indicator */
     .timeline-indicator {
       position: sticky;
       top: 50vh;
+      left: 0;
+      width: 100%;
+      height: 0;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .timeline-indicator::before {
+      content: '';
+      position: absolute;
       left: 50%;
+      top: 0;
       width: 10px;
       height: 10px;
       background: #fff;
-      transform: translateX(-50%);
-      z-index: 5;
-      pointer-events: none;
+      transform: translate(-50%, -50%);
     }
 
-    /* Timeline cards */
-    .timeline-card {
-      position: relative;
-      width: 46%;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 32px;
+    /* Each row: text on one side, card on the other */
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      gap: 0;
+      align-items: center;
       margin-bottom: 80px;
       opacity: 0;
-      transform: translateY(40px);
+      transform: translateY(32px);
       transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
     }
-    .timeline-card.visible {
+    .timeline-row.visible {
       opacity: 1;
       transform: translateY(0);
     }
 
-    /* Alternate left/right */
-    .timeline-card:nth-of-type(odd) {
-      margin-left: 0;
-      margin-right: auto;
+    /* Text side */
+    .timeline-text {
+      padding: 0 40px;
     }
-    .timeline-card:nth-of-type(even) {
-      margin-left: auto;
-      margin-right: 0;
+    .timeline-text-number {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--brand);
+      margin-bottom: 16px;
+      display: block;
+    }
+    .timeline-text-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .timeline-text-desc {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--text-white-secondary);
     }
 
+    /* Center connector dot */
+    .timeline-dot {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .timeline-dot::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      border: 2px solid rgba(255,255,255,0.2);
+      flex-shrink: 0;
+    }
+
+    /* Card side */
+    .timeline-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+    }
     .timeline-card-header {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
-    .timeline-card-number {
+    .timeline-card-num {
       font-family: var(--font-mono);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      color: var(--text-white);
-      background: rgba(255,255,255,0.08);
-      padding: 4px 10px;
+      color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.06);
+      padding: 3px 8px;
       border-radius: 4px;
     }
     .timeline-card-label {
       font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--text-white-secondary);
+      color: rgba(255,255,255,0.35);
     }
-
-    /* SVG illustration area */
     .timeline-card-illustration {
       width: 100%;
-      height: 200px;
+      height: 220px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 24px;
-      background: rgba(255,255,255,0.015);
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.01);
     }
     .timeline-card-illustration svg {
-      width: 180px;
-      height: 180px;
+      width: 200px;
+      height: 200px;
     }
 
-    /* Feature name at bottom */
-    .timeline-card-feature {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-    }
-    .timeline-card-feature-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      background: rgba(238,43,91,0.1);
-      border: 1px solid rgba(238,43,91,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .timeline-card-feature-name {
-      font-family: var(--font-body);
-      font-size: 1rem;
-      color: var(--text-white-secondary);
-    }
+    /* Alternate: odd rows → text LEFT, card RIGHT
+                  even rows → card LEFT, text RIGHT */
+    .timeline-row:nth-of-type(odd) .timeline-text { order: 1; text-align: right; }
+    .timeline-row:nth-of-type(odd) .timeline-dot  { order: 2; }
+    .timeline-row:nth-of-type(odd) .timeline-card { order: 3; }
+
+    .timeline-row:nth-of-type(even) .timeline-card { order: 1; }
+    .timeline-row:nth-of-type(even) .timeline-dot  { order: 2; }
+    .timeline-row:nth-of-type(even) .timeline-text { order: 3; text-align: left; }
 
     /* ═══════════════════════════════════════════
        PROBLEM SECTION
@@ -1220,9 +1268,11 @@
       .hero-canvas-wrapper { display: none; }
       .nav-links { display: none !important; }
       .nav-hamburger { display: flex; }
-      .timeline-line, .timeline-indicator { display: none; }
-      .timeline-card { width: 100%; margin-left: 0 !important; margin-bottom: 32px; }
-      .timeline-card:nth-child(even) { margin-left: 0; }
+      .timeline-line, .timeline-indicator, .timeline-dot { display: none; }
+      .timeline-row { grid-template-columns: 1fr; gap: 24px; margin-bottom: 48px; }
+      .timeline-row .timeline-text,
+      .timeline-row .timeline-card { order: unset !important; text-align: left !important; }
+      .timeline-row:nth-of-type(even) .timeline-card { order: -1 !important; }
       .bento-grid { grid-template-columns: repeat(2, 1fr); }
       .metrics-inner { gap: 32px; }
       .backer-logos { gap: 32px 48px; }
@@ -1411,170 +1461,201 @@
   ═══════════════════════════════════════════ -->
   <section class="ika-is" id="ika-is">
     <div class="container">
-      <p class="section-tag reveal" style="text-align:center;">Innovation, engineered.</p>
-      <h2 class="section-headline reveal char-reveal" style="text-align:center;">The Ika Stack</h2>
-      <p class="section-body reveal" style="text-align:center;margin:0 auto 0;">A composable signing infrastructure for builders</p>
+      <div class="timeline-intro reveal">
+        <p class="section-tag">Innovation, engineered.</p>
+        <h2 class="timeline-intro-headline char-reveal">The Ika Stack.</h2>
+        <p class="timeline-intro-sub">A composable signing infrastructure for every chain.</p>
+      </div>
 
       <div class="timeline-wrapper">
         <div class="timeline-line"></div>
         <div class="timeline-indicator"></div>
 
-        <!-- Card 1: Speed -->
-        <div class="timeline-card">
-          <div class="timeline-card-header">
-            <span class="timeline-card-number">01</span>
-            <span class="timeline-card-label">Sub-second signing</span>
+        <!-- Row 1: text LEFT, card RIGHT -->
+        <div class="timeline-row">
+          <div class="timeline-text">
+            <span class="timeline-text-number">01 — SUB-SECOND SIGNING</span>
+            <h3 class="timeline-text-title">Fast<br>by design.</h3>
+            <p class="timeline-text-desc">Sub-second signatures where legacy MPC takes 30+ seconds. Not a little faster — 10,000× faster.</p>
           </div>
-          <div class="timeline-card-illustration">
-            <svg viewBox="0 0 180 180" fill="none">
-              <circle cx="90" cy="90" r="60" stroke="rgba(238,43,91,0.3)" stroke-width="1"/>
-              <circle cx="90" cy="90" r="40" stroke="rgba(238,43,91,0.2)" stroke-width="1"/>
-              <circle cx="90" cy="90" r="20" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
-              <line x1="90" y1="90" x2="90" y2="40" stroke="#EE2B5B" stroke-width="2" stroke-linecap="round">
-                <animateTransform attributeName="transform" type="rotate" from="0 90 90" to="360 90 90" dur="2s" repeatCount="indefinite"/>
-              </line>
-              <line x1="90" y1="90" x2="120" y2="90" stroke="rgba(238,43,91,0.5)" stroke-width="1.5" stroke-linecap="round">
-                <animateTransform attributeName="transform" type="rotate" from="0 90 90" to="360 90 90" dur="8s" repeatCount="indefinite"/>
-              </line>
-              <circle cx="90" cy="90" r="4" fill="#EE2B5B"/>
-              <text x="90" y="160" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono" font-size="10">&lt; 1 SECOND</text>
-            </svg>
-          </div>
-          <div class="timeline-card-feature">
-            <div class="timeline-card-feature-icon">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v6l4 2" stroke="#EE2B5B" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-card-header">
+              <span class="timeline-card-num">01</span>
+              <span class="timeline-card-label">Sub-second signing</span>
             </div>
-            <span class="timeline-card-feature-name">Fast by design</span>
+            <div class="timeline-card-illustration">
+              <svg viewBox="0 0 200 200" fill="none">
+                <circle cx="100" cy="100" r="70" stroke="rgba(238,43,91,0.18)" stroke-width="1"/>
+                <circle cx="100" cy="100" r="50" stroke="rgba(238,43,91,0.12)" stroke-width="1"/>
+                <circle cx="100" cy="100" r="30" stroke="rgba(238,43,91,0.1)" stroke-width="1"/>
+                <!-- Sweep hand -->
+                <g transform-origin="100 100">
+                  <line x1="100" y1="100" x2="100" y2="38" stroke="#EE2B5B" stroke-width="2" stroke-linecap="round">
+                    <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="1.5s" repeatCount="indefinite"/>
+                  </line>
+                </g>
+                <!-- Minute hand -->
+                <line x1="100" y1="100" x2="136" y2="100" stroke="rgba(238,43,91,0.4)" stroke-width="1.5" stroke-linecap="round">
+                  <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="12s" repeatCount="indefinite"/>
+                </line>
+                <circle cx="100" cy="100" r="4" fill="#EE2B5B"/>
+                <!-- Tick marks -->
+                <line x1="100" y1="32" x2="100" y2="40" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                <line x1="168" y1="100" x2="160" y2="100" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                <line x1="32" y1="100" x2="40" y2="100" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                <line x1="100" y1="168" x2="100" y2="160" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                <text x="100" y="185" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="JetBrains Mono" font-size="9">&lt; 1 SECOND</text>
+              </svg>
+            </div>
           </div>
         </div>
 
-        <!-- Card 2: Trustless -->
-        <div class="timeline-card">
-          <div class="timeline-card-header">
-            <span class="timeline-card-number">02</span>
-            <span class="timeline-card-label">Zero-trust cryptography</span>
-          </div>
-          <div class="timeline-card-illustration">
-            <svg viewBox="0 0 180 180" fill="none">
-              <!-- Two key halves that never meet -->
-              <rect x="30" y="60" width="50" height="60" rx="4" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.05)"/>
-              <rect x="100" y="60" width="50" height="60" rx="4" stroke="rgba(98,126,234,0.4)" stroke-width="1" fill="rgba(98,126,234,0.05)"/>
-              <text x="55" y="95" text-anchor="middle" fill="rgba(238,43,91,0.6)" font-family="JetBrains Mono" font-size="9">SHARE A</text>
-              <text x="125" y="95" text-anchor="middle" fill="rgba(98,126,234,0.6)" font-family="JetBrains Mono" font-size="9">SHARE B</text>
-              <!-- Dashed line between (never connected) -->
-              <line x1="82" y1="90" x2="98" y2="90" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="3 3"/>
-              <!-- Lock icon above -->
-              <rect x="77" y="30" width="26" height="20" rx="3" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
-              <path d="M85 30V24a5 5 0 0 1 10 0v6" stroke="rgba(255,255,255,0.3)" stroke-width="1" fill="none"/>
-              <text x="90" y="160" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono" font-size="10">2PC-MPC</text>
-            </svg>
-          </div>
-          <div class="timeline-card-feature">
-            <div class="timeline-card-feature-icon">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="2" stroke="#EE2B5B" stroke-width="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2" stroke="#EE2B5B" stroke-width="1.5"/></svg>
+        <!-- Row 2: card LEFT, text RIGHT -->
+        <div class="timeline-row">
+          <div class="timeline-card">
+            <div class="timeline-card-header">
+              <span class="timeline-card-num">02</span>
+              <span class="timeline-card-label">Zero-trust cryptography</span>
             </div>
-            <span class="timeline-card-feature-name">Trustless by proof</span>
+            <div class="timeline-card-illustration">
+              <svg viewBox="0 0 200 200" fill="none">
+                <rect x="25" y="70" width="62" height="70" rx="5" stroke="rgba(238,43,91,0.35)" stroke-width="1" fill="rgba(238,43,91,0.04)"/>
+                <rect x="113" y="70" width="62" height="70" rx="5" stroke="rgba(98,126,234,0.35)" stroke-width="1" fill="rgba(98,126,234,0.04)"/>
+                <text x="56" y="107" text-anchor="middle" fill="rgba(238,43,91,0.55)" font-family="JetBrains Mono" font-size="8.5">SHARE</text>
+                <text x="56" y="118" text-anchor="middle" fill="rgba(238,43,91,0.55)" font-family="JetBrains Mono" font-size="8.5">A</text>
+                <text x="144" y="107" text-anchor="middle" fill="rgba(98,126,234,0.55)" font-family="JetBrains Mono" font-size="8.5">SHARE</text>
+                <text x="144" y="118" text-anchor="middle" fill="rgba(98,126,234,0.55)" font-family="JetBrains Mono" font-size="8.5">B</text>
+                <!-- Gap in the middle -->
+                <line x1="89" y1="105" x2="111" y2="105" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="4 4"/>
+                <!-- Lock above -->
+                <rect x="84" y="28" width="32" height="24" rx="4" stroke="rgba(255,255,255,0.25)" stroke-width="1.2"/>
+                <path d="M92 28v-6a8 8 0 0 1 16 0v6" stroke="rgba(255,255,255,0.25)" stroke-width="1.2" fill="none"/>
+                <circle cx="100" cy="40" r="3" fill="rgba(255,255,255,0.35)"/>
+                <text x="100" y="175" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono" font-size="9">2PC-MPC PROTOCOL</text>
+              </svg>
+            </div>
+          </div>
+          <div class="timeline-dot"></div>
+          <div class="timeline-text">
+            <span class="timeline-text-number">02 — ZERO-TRUST CRYPTOGRAPHY</span>
+            <h3 class="timeline-text-title">Trustless<br>by proof.</h3>
+            <p class="timeline-text-desc">No single party ever holds your key — not even Ika. 2PC-MPC splits it mathematically. Reconstructing it is impossible.</p>
           </div>
         </div>
 
-        <!-- Card 3: Scalable -->
-        <div class="timeline-card">
-          <div class="timeline-card-header">
-            <span class="timeline-card-number">03</span>
-            <span class="timeline-card-label">Parallel node network</span>
+        <!-- Row 3: text LEFT, card RIGHT -->
+        <div class="timeline-row">
+          <div class="timeline-text">
+            <span class="timeline-text-number">03 — PARALLEL NODE NETWORK</span>
+            <h3 class="timeline-text-title">Scalable<br>without limits.</h3>
+            <p class="timeline-text-desc">Hundreds of nodes signing in parallel. Legacy MPC maxes out at 8 nodes. Ika doesn't have a ceiling.</p>
           </div>
-          <div class="timeline-card-illustration">
-            <svg viewBox="0 0 180 180" fill="none">
-              <!-- Grid of nodes -->
-              <circle cx="40" cy="50" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
-              <circle cx="90" cy="40" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
-              <circle cx="140" cy="50" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
-              <circle cx="30" cy="90" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
-              <circle cx="90" cy="90" r="8" stroke="#EE2B5B" stroke-width="1.5" fill="rgba(238,43,91,0.15)"/>
-              <circle cx="150" cy="90" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
-              <circle cx="40" cy="130" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
-              <circle cx="90" cy="140" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
-              <circle cx="140" cy="130" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
-              <!-- Connection lines -->
-              <line x1="40" y1="50" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
-              <line x1="90" y1="40" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
-              <line x1="140" y1="50" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
-              <line x1="30" y1="90" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
-              <line x1="150" y1="90" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
-              <line x1="40" y1="130" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
-              <line x1="90" y1="140" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
-              <line x1="140" y1="130" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
-              <text x="90" y="168" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono" font-size="10">100+ NODES</text>
-            </svg>
-          </div>
-          <div class="timeline-card-feature">
-            <div class="timeline-card-feature-icon">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="4" cy="8" r="2" stroke="#EE2B5B" stroke-width="1.5"/><circle cx="12" cy="4" r="2" stroke="#EE2B5B" stroke-width="1.5"/><circle cx="12" cy="12" r="2" stroke="#EE2B5B" stroke-width="1.5"/><path d="M6 8h4M6 7l4-2M6 9l4 2" stroke="#EE2B5B" stroke-width="1" opacity="0.5"/></svg>
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-card-header">
+              <span class="timeline-card-num">03</span>
+              <span class="timeline-card-label">Parallel node network</span>
             </div>
-            <span class="timeline-card-feature-name">Scalable without limits</span>
+            <div class="timeline-card-illustration">
+              <svg viewBox="0 0 200 200" fill="none">
+                <circle cx="44" cy="55" r="7" stroke="rgba(238,43,91,0.35)" stroke-width="1" fill="rgba(238,43,91,0.06)"/>
+                <circle cx="100" cy="38" r="7" stroke="rgba(238,43,91,0.35)" stroke-width="1" fill="rgba(238,43,91,0.06)"/>
+                <circle cx="156" cy="55" r="7" stroke="rgba(238,43,91,0.35)" stroke-width="1" fill="rgba(238,43,91,0.06)"/>
+                <circle cx="28" cy="105" r="7" stroke="rgba(238,43,91,0.35)" stroke-width="1" fill="rgba(238,43,91,0.06)"/>
+                <circle cx="172" cy="105" r="7" stroke="rgba(238,43,91,0.35)" stroke-width="1" fill="rgba(238,43,91,0.06)"/>
+                <circle cx="44" cy="155" r="7" stroke="rgba(238,43,91,0.35)" stroke-width="1" fill="rgba(238,43,91,0.06)"/>
+                <circle cx="100" cy="170" r="7" stroke="rgba(238,43,91,0.35)" stroke-width="1" fill="rgba(238,43,91,0.06)"/>
+                <circle cx="156" cy="155" r="7" stroke="rgba(238,43,91,0.35)" stroke-width="1" fill="rgba(238,43,91,0.06)"/>
+                <!-- Center IKA node -->
+                <circle cx="100" cy="104" r="16" stroke="#EE2B5B" stroke-width="1.5" fill="rgba(238,43,91,0.1)"/>
+                <text x="100" y="108" text-anchor="middle" fill="#EE2B5B" font-family="Satoshi" font-size="9" font-weight="700">IKA</text>
+                <!-- Lines from nodes to center -->
+                <line x1="49" y1="59" x2="87" y2="93" stroke="rgba(238,43,91,0.12)" stroke-width="1"/>
+                <line x1="100" y1="45" x2="100" y2="88" stroke="rgba(238,43,91,0.12)" stroke-width="1"/>
+                <line x1="151" y1="59" x2="113" y2="93" stroke="rgba(238,43,91,0.12)" stroke-width="1"/>
+                <line x1="35" y1="105" x2="84" y2="104" stroke="rgba(238,43,91,0.12)" stroke-width="1"/>
+                <line x1="165" y1="105" x2="116" y2="104" stroke="rgba(238,43,91,0.12)" stroke-width="1"/>
+                <line x1="49" y1="151" x2="87" y2="115" stroke="rgba(238,43,91,0.12)" stroke-width="1"/>
+                <line x1="100" y1="163" x2="100" y2="120" stroke="rgba(238,43,91,0.12)" stroke-width="1"/>
+                <line x1="151" y1="151" x2="113" y2="115" stroke="rgba(238,43,91,0.12)" stroke-width="1"/>
+                <text x="100" y="192" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono" font-size="9">100+ NODES</text>
+              </svg>
+            </div>
           </div>
         </div>
 
-        <!-- Card 4: Programmable -->
-        <div class="timeline-card">
-          <div class="timeline-card-header">
-            <span class="timeline-card-number">04</span>
-            <span class="timeline-card-label">Smart contract policies</span>
-          </div>
-          <div class="timeline-card-illustration">
-            <svg viewBox="0 0 180 180" fill="none">
-              <!-- Code block representation -->
-              <rect x="30" y="30" width="120" height="110" rx="6" stroke="rgba(255,255,255,0.1)" stroke-width="1" fill="rgba(255,255,255,0.02)"/>
-              <!-- Code lines -->
-              <rect x="44" y="48" width="40" height="3" rx="1.5" fill="rgba(238,43,91,0.5)"/>
-              <rect x="44" y="58" width="70" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
-              <rect x="54" y="68" width="55" height="3" rx="1.5" fill="rgba(255,255,255,0.1)"/>
-              <rect x="54" y="78" width="45" height="3" rx="1.5" fill="rgba(98,126,234,0.4)"/>
-              <rect x="54" y="88" width="60" height="3" rx="1.5" fill="rgba(255,255,255,0.1)"/>
-              <rect x="44" y="98" width="30" height="3" rx="1.5" fill="rgba(238,43,91,0.5)"/>
-              <rect x="44" y="108" width="50" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
-              <rect x="44" y="118" width="25" height="3" rx="1.5" fill="rgba(238,43,91,0.3)"/>
-              <text x="90" y="162" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono" font-size="10">MOVE SMART CONTRACTS</text>
-            </svg>
-          </div>
-          <div class="timeline-card-feature">
-            <div class="timeline-card-feature-icon">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="#EE2B5B" stroke-width="1.5"/><path d="M5 7l2 2 4-4" stroke="#EE2B5B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <!-- Row 4: card LEFT, text RIGHT -->
+        <div class="timeline-row">
+          <div class="timeline-card">
+            <div class="timeline-card-header">
+              <span class="timeline-card-num">04</span>
+              <span class="timeline-card-label">Smart contract policies</span>
             </div>
-            <span class="timeline-card-feature-name">Programmable in Move</span>
+            <div class="timeline-card-illustration">
+              <svg viewBox="0 0 200 200" fill="none">
+                <rect x="35" y="25" width="130" height="130" rx="8" stroke="rgba(255,255,255,0.08)" stroke-width="1" fill="rgba(255,255,255,0.015)"/>
+                <!-- Terminal bar -->
+                <rect x="35" y="25" width="130" height="20" rx="8" fill="rgba(255,255,255,0.04)"/>
+                <circle cx="51" cy="35" r="3" fill="rgba(255,255,255,0.15)"/>
+                <circle cx="63" cy="35" r="3" fill="rgba(255,255,255,0.1)"/>
+                <circle cx="75" cy="35" r="3" fill="rgba(255,255,255,0.08)"/>
+                <!-- Code lines -->
+                <rect x="50" y="58" width="44" height="3.5" rx="1.5" fill="rgba(238,43,91,0.55)"/>
+                <rect x="50" y="70" width="82" height="3" rx="1.5" fill="rgba(255,255,255,0.12)"/>
+                <rect x="60" y="82" width="66" height="3" rx="1.5" fill="rgba(98,126,234,0.35)"/>
+                <rect x="60" y="94" width="50" height="3" rx="1.5" fill="rgba(255,255,255,0.09)"/>
+                <rect x="60" y="106" width="70" height="3" rx="1.5" fill="rgba(255,255,255,0.09)"/>
+                <rect x="50" y="118" width="34" height="3.5" rx="1.5" fill="rgba(238,43,91,0.4)"/>
+                <rect x="50" y="130" width="56" height="3" rx="1.5" fill="rgba(255,255,255,0.12)"/>
+                <!-- Cursor blink -->
+                <rect x="50" y="143" width="7" height="3" rx="1" fill="rgba(238,43,91,0.6)">
+                  <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+                </rect>
+                <text x="100" y="178" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono" font-size="9">MOVE SMART CONTRACTS</text>
+              </svg>
+            </div>
+          </div>
+          <div class="timeline-dot"></div>
+          <div class="timeline-text">
+            <span class="timeline-text-number">04 — SMART CONTRACT POLICIES</span>
+            <h3 class="timeline-text-title">Programmable<br>in Move.</h3>
+            <p class="timeline-text-desc">Write signing policies as smart contracts. Gate by condition. Compose with other protocols. Automate anything.</p>
           </div>
         </div>
 
-        <!-- Card 5: Native -->
-        <div class="timeline-card">
-          <div class="timeline-card-header">
-            <span class="timeline-card-number">05</span>
-            <span class="timeline-card-label">Real signatures, any chain</span>
+        <!-- Row 5: text LEFT, card RIGHT -->
+        <div class="timeline-row">
+          <div class="timeline-text">
+            <span class="timeline-text-number">05 — REAL SIGNATURES, ANY CHAIN</span>
+            <h3 class="timeline-text-title">Native to<br>every chain.</h3>
+            <p class="timeline-text-desc">Not a bridge. Not a wrapper. Real ECDSA and EdDSA signatures on Bitcoin, Ethereum, Solana, and any chain that has ever existed.</p>
           </div>
-          <div class="timeline-card-illustration">
-            <svg viewBox="0 0 180 180" fill="none">
-              <!-- Chain logos abstracted as circles -->
-              <circle cx="40" cy="60" r="18" stroke="rgba(247,147,26,0.4)" stroke-width="1" fill="rgba(247,147,26,0.05)"/>
-              <text x="40" y="64" text-anchor="middle" fill="rgba(247,147,26,0.6)" font-family="JetBrains Mono" font-size="8">BTC</text>
-              <circle cx="90" cy="40" r="18" stroke="rgba(98,126,234,0.4)" stroke-width="1" fill="rgba(98,126,234,0.05)"/>
-              <text x="90" y="44" text-anchor="middle" fill="rgba(98,126,234,0.6)" font-family="JetBrains Mono" font-size="8">ETH</text>
-              <circle cx="140" cy="60" r="18" stroke="rgba(153,69,255,0.4)" stroke-width="1" fill="rgba(153,69,255,0.05)"/>
-              <text x="140" y="64" text-anchor="middle" fill="rgba(153,69,255,0.6)" font-family="JetBrains Mono" font-size="8">SOL</text>
-              <!-- Central Ika -->
-              <circle cx="90" cy="110" r="22" stroke="#EE2B5B" stroke-width="1.5" fill="rgba(238,43,91,0.08)"/>
-              <text x="90" y="114" text-anchor="middle" fill="#EE2B5B" font-family="Satoshi" font-size="10" font-weight="700">IKA</text>
-              <!-- Arrows down to Ika -->
-              <line x1="50" y1="75" x2="78" y2="95" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-              <line x1="90" y1="58" x2="90" y2="88" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-              <line x1="130" y1="75" x2="102" y2="95" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-              <text x="90" y="160" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono" font-size="10">ECDSA + EdDSA</text>
-            </svg>
-          </div>
-          <div class="timeline-card-feature">
-            <div class="timeline-card-feature-icon">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="4" cy="8" r="2.5" stroke="#EE2B5B" stroke-width="1.5"/><circle cx="12" cy="8" r="2.5" stroke="#EE2B5B" stroke-width="1.5"/><path d="M6.5 8h3" stroke="#EE2B5B" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-card-header">
+              <span class="timeline-card-num">05</span>
+              <span class="timeline-card-label">Real signatures, any chain</span>
             </div>
-            <span class="timeline-card-feature-name">Native to every chain</span>
+            <div class="timeline-card-illustration">
+              <svg viewBox="0 0 200 200" fill="none">
+                <circle cx="44" cy="62" r="22" stroke="rgba(247,147,26,0.3)" stroke-width="1" fill="rgba(247,147,26,0.04)"/>
+                <text x="44" y="66" text-anchor="middle" fill="rgba(247,147,26,0.55)" font-family="JetBrains Mono" font-size="9">BTC</text>
+                <circle cx="100" cy="40" r="22" stroke="rgba(98,126,234,0.3)" stroke-width="1" fill="rgba(98,126,234,0.04)"/>
+                <text x="100" y="44" text-anchor="middle" fill="rgba(98,126,234,0.55)" font-family="JetBrains Mono" font-size="9">ETH</text>
+                <circle cx="156" cy="62" r="22" stroke="rgba(153,69,255,0.3)" stroke-width="1" fill="rgba(153,69,255,0.04)"/>
+                <text x="156" y="66" text-anchor="middle" fill="rgba(153,69,255,0.55)" font-family="JetBrains Mono" font-size="9">SOL</text>
+                <!-- Central IKA -->
+                <circle cx="100" cy="132" r="28" stroke="#EE2B5B" stroke-width="1.5" fill="rgba(238,43,91,0.07)"/>
+                <circle cx="100" cy="132" r="20" stroke="rgba(238,43,91,0.2)" stroke-width="1"/>
+                <text x="100" y="136" text-anchor="middle" fill="#EE2B5B" font-family="Satoshi" font-size="11" font-weight="700">IKA</text>
+                <!-- Connecting lines -->
+                <line x1="55" y1="78" x2="84" y2="113" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
+                <line x1="100" y1="62" x2="100" y2="104" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
+                <line x1="145" y1="78" x2="116" y2="113" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
+                <text x="100" y="185" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono" font-size="9">ECDSA + EdDSA</text>
+              </svg>
+            </div>
           </div>
         </div>
 
@@ -1958,8 +2039,8 @@
         charObserver.observe(el);
       });
 
-      /* ─── 6. TIMELINE CARDS — FADE IN ON SCROLL ─── */
-      const timelineCards = document.querySelectorAll('.timeline-card');
+      /* ─── 6. TIMELINE ROWS — FADE IN ON SCROLL ─── */
+      const timelineRows = document.querySelectorAll('.timeline-row');
       const timelineObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -1967,8 +2048,8 @@
             timelineObserver.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.15 });
-      timelineCards.forEach(card => timelineObserver.observe(card));
+      }, { threshold: 0.1 });
+      timelineRows.forEach(row => timelineObserver.observe(row));
 
       /* ─── 7. BENTO CARD CASCADE ─── */
       const bentoCards = document.querySelectorAll('.bento-card');
@@ -2069,7 +2150,7 @@
     } else {
       /* If reduced motion, show everything immediately */
       document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-      document.querySelectorAll('.timeline-card').forEach(el => {
+      document.querySelectorAll('.timeline-row').forEach(el => {
         el.classList.add('visible');
       });
       document.querySelectorAll('.bento-card').forEach(el => el.classList.add('cascade-in'));
