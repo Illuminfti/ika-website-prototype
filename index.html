@@ -121,15 +121,20 @@
     /* ═══════════════════════════════════════════
        PER-WORD TEXT REVEAL
     ═══════════════════════════════════════════ */
-    .word {
+    .char {
       display: inline-block;
       opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+      transform: translateY(15px);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .word.visible {
+    .char.visible {
       opacity: 1;
       transform: translateY(0);
+    }
+    /* Space characters need to preserve whitespace */
+    .char-space {
+      display: inline-block;
+      width: 0.3em;
     }
 
     /* ═══════════════════════════════════════════
@@ -610,6 +615,7 @@
       height: auto;
     }
     .tech-diagram .diagram-line {
+      stroke: #000;
       stroke-dasharray: 200;
       stroke-dashoffset: 200;
       transition: stroke-dashoffset 1.2s var(--ease-out);
@@ -1005,7 +1011,7 @@
         transform: none;
         transition: none;
       }
-      .word {
+      .char {
         opacity: 1;
         transform: none;
         transition: none;
@@ -1190,7 +1196,7 @@
   <section class="problem section-dark">
     <div class="container">
       <p class="section-tag reveal">The problem</p>
-      <h2 class="section-headline reveal word-reveal">Today's cross-chain<br>is broken.</h2>
+      <h2 class="section-headline reveal char-reveal">Today's cross-chain<br>is broken.</h2>
       <p class="section-body reveal reveal-delay-1">
         Bridges get hacked. Wrapped assets lose their peg. MPC networks max out at 8 nodes and call it decentralized. You're told to trust relayers, validators, and committees with your assets. Then they get exploited, and you lose everything.
       </p>
@@ -1203,7 +1209,7 @@
   <section class="solution section-light">
     <div class="container">
       <p class="section-tag reveal">The Ika approach</p>
-      <h2 class="section-headline reveal word-reveal">Your key never exists<br>in one place.</h2>
+      <h2 class="section-headline reveal char-reveal">Your key never exists<br>in one place.</h2>
       <p class="section-body reveal reveal-delay-1">
         Ika uses 2PC-MPC — a breakthrough in threshold cryptography where no single party, not even Ika, can reconstruct your private key. Ever. You hold one share. The network holds the other across hundreds of nodes. Signing requires both. That's not a feature. That's the architecture.
       </p>
@@ -1213,40 +1219,40 @@
         <svg viewBox="0 0 800 220" fill="none" xmlns="http://www.w3.org/2000/svg">
           <!-- Solana Program box -->
           <g class="diagram-box">
-            <rect x="10" y="80" width="170" height="60" rx="8" stroke="#fff" stroke-width="1" fill="none" />
-            <text x="95" y="115" text-anchor="middle" fill="#fff" font-family="Satoshi, sans-serif" font-size="14" font-weight="500">Solana Program</text>
+            <rect x="10" y="80" width="170" height="60" rx="8" stroke="#000" stroke-width="1" fill="none" />
+            <text x="95" y="115" text-anchor="middle" fill="#000" font-family="Satoshi, sans-serif" font-size="14" font-weight="500">Solana Program</text>
           </g>
           <!-- Arrow from Solana to Ika -->
-          <line x1="180" y1="110" x2="280" y2="110" stroke="#fff" stroke-width="1" class="diagram-line" />
-          <polygon points="278,105 290,110 278,115" fill="#fff" class="diagram-box" style="transition-delay: 0.35s" />
+          <line x1="180" y1="110" x2="280" y2="110" stroke="#000" stroke-width="1" class="diagram-line" />
+          <polygon points="278,105 290,110 278,115" fill="#000" class="diagram-box" style="transition-delay: 0.35s" />
           <!-- Ika Network box (coral) -->
           <g class="diagram-box">
             <rect x="290" y="80" width="170" height="60" rx="8" stroke="var(--brand)" stroke-width="1.5" fill="rgba(238,43,91,0.08)" />
             <text x="375" y="115" text-anchor="middle" fill="var(--brand)" font-family="Satoshi, sans-serif" font-size="14" font-weight="600">Ika Network</text>
           </g>
           <!-- Arrow from Ika to Bitcoin -->
-          <line x1="460" y1="95" x2="580" y2="45" stroke="#fff" stroke-width="1" class="diagram-line" />
-          <polygon points="577,39 590,43 579,50" fill="#fff" class="diagram-box" />
+          <line x1="460" y1="95" x2="580" y2="45" stroke="#000" stroke-width="1" class="diagram-line" />
+          <polygon points="577,39 590,43 579,50" fill="#000" class="diagram-box" />
           <!-- Arrow from Ika to Ethereum -->
-          <line x1="460" y1="110" x2="580" y2="110" stroke="#fff" stroke-width="1" class="diagram-line" />
-          <polygon points="578,105 590,110 578,115" fill="#fff" class="diagram-box" />
+          <line x1="460" y1="110" x2="580" y2="110" stroke="#000" stroke-width="1" class="diagram-line" />
+          <polygon points="578,105 590,110 578,115" fill="#000" class="diagram-box" />
           <!-- Arrow from Ika to Any Chain -->
-          <line x1="460" y1="125" x2="580" y2="175" stroke="#fff" stroke-width="1" class="diagram-line" />
-          <polygon points="579,170 590,177 577,181" fill="#fff" class="diagram-box" />
+          <line x1="460" y1="125" x2="580" y2="175" stroke="#000" stroke-width="1" class="diagram-line" />
+          <polygon points="579,170 590,177 577,181" fill="#000" class="diagram-box" />
           <!-- Bitcoin box -->
           <g class="diagram-box">
-            <rect x="590" y="20" width="140" height="50" rx="8" stroke="#fff" stroke-width="1" fill="none" />
-            <text x="660" y="50" text-anchor="middle" fill="#fff" font-family="Satoshi, sans-serif" font-size="13" font-weight="500">Bitcoin</text>
+            <rect x="590" y="20" width="140" height="50" rx="8" stroke="#000" stroke-width="1" fill="none" />
+            <text x="660" y="50" text-anchor="middle" fill="#000" font-family="Satoshi, sans-serif" font-size="13" font-weight="500">Bitcoin</text>
           </g>
           <!-- Ethereum box -->
           <g class="diagram-box">
-            <rect x="590" y="85" width="140" height="50" rx="8" stroke="#fff" stroke-width="1" fill="none" />
-            <text x="660" y="115" text-anchor="middle" fill="#fff" font-family="Satoshi, sans-serif" font-size="13" font-weight="500">Ethereum</text>
+            <rect x="590" y="85" width="140" height="50" rx="8" stroke="#000" stroke-width="1" fill="none" />
+            <text x="660" y="115" text-anchor="middle" fill="#000" font-family="Satoshi, sans-serif" font-size="13" font-weight="500">Ethereum</text>
           </g>
           <!-- Any Chain box -->
           <g class="diagram-box">
-            <rect x="590" y="150" width="140" height="50" rx="8" stroke="#fff" stroke-width="1" fill="none" />
-            <text x="660" y="180" text-anchor="middle" fill="#fff" font-family="Satoshi, sans-serif" font-size="13" font-weight="500">Any Chain</text>
+            <rect x="590" y="150" width="140" height="50" rx="8" stroke="#000" stroke-width="1" fill="none" />
+            <text x="660" y="180" text-anchor="middle" fill="#000" font-family="Satoshi, sans-serif" font-size="13" font-weight="500">Any Chain</text>
           </g>
         </svg>
       </div>
@@ -1259,7 +1265,7 @@
   <section class="use-cases section-dark" id="use-cases">
     <div class="container">
       <p class="section-tag reveal">Build with Ika</p>
-      <h2 class="section-headline reveal word-reveal">What you can build.</h2>
+      <h2 class="section-headline reveal char-reveal">What you can build.</h2>
       <div class="bento-grid">
         <div class="bento-card">
           <h3 class="bento-card-title">On-chain Fireblocks</h3>
@@ -1295,7 +1301,7 @@
   <section class="comparison section-light" id="compare">
     <div class="container">
       <p class="section-tag reveal">Why Ika</p>
-      <h2 class="section-headline reveal word-reveal">Not another bridge.</h2>
+      <h2 class="section-headline reveal char-reveal">Not another bridge.</h2>
       <div class="comparison-table-wrap reveal reveal-delay-1">
         <table class="comparison-table">
           <thead>
@@ -1402,7 +1408,7 @@
   ═══════════════════════════════════════════ -->
   <section class="final-cta section-dark" id="cta">
     <div class="container">
-      <h2 class="section-headline reveal word-reveal">Build what wasn't<br>possible before.</h2>
+      <h2 class="section-headline reveal char-reveal">Build what wasn't<br>possible before.</h2>
       <p class="section-body reveal reveal-delay-1">
         Your Solana program can now sign transactions on Bitcoin. On Ethereum. On any chain.
       </p>
@@ -1487,39 +1493,45 @@
 
       document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-      /* ─── 5. PER-WORD TEXT REVEAL ─── */
-      document.querySelectorAll('.word-reveal').forEach(headline => {
-        const html = headline.innerHTML;
+      /* ─── 5. PER-LETTER TEXT REVEAL ─── */
+      document.querySelectorAll('.char-reveal').forEach(el => {
+        const html = el.innerHTML;
         const parts = html.split(/(<br\s*\/?>)/gi);
-        let wordHtml = '';
+        el.innerHTML = '';
+        let charIndex = 0;
         parts.forEach(part => {
           if (part.match(/<br\s*\/?>/i)) {
-            wordHtml += part;
+            el.appendChild(document.createElement('br'));
           } else {
-            const words = part.trim().split(/\s+/);
-            words.forEach(word => {
-              if (word) {
-                wordHtml += '<span class="word">' + word + '</span> ';
+            part.split('').forEach(char => {
+              const span = document.createElement('span');
+              if (char === ' ') {
+                span.className = 'char char-space';
+                span.innerHTML = '&nbsp;';
+              } else {
+                span.className = 'char';
+                span.textContent = char;
               }
+              span.style.transitionDelay = (charIndex * 25) + 'ms';
+              el.appendChild(span);
+              charIndex++;
             });
           }
         });
-        headline.innerHTML = wordHtml.trim();
       });
 
-      const wordObserver = new IntersectionObserver((entries) => {
+      const charObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            const words = entry.target.querySelectorAll('.word');
-            words.forEach((word, i) => {
-              setTimeout(() => word.classList.add('visible'), i * 80);
+            entry.target.querySelectorAll('.char').forEach(ch => {
+              ch.classList.add('visible');
             });
-            wordObserver.unobserve(entry.target);
+            charObserver.unobserve(entry.target);
           }
         });
       }, { threshold: 0.15 });
 
-      document.querySelectorAll('.word-reveal').forEach(el => wordObserver.observe(el));
+      document.querySelectorAll('.char-reveal').forEach(el => charObserver.observe(el));
 
       /* ─── 6. IKA IS — SLIDE IN FROM LEFT WITH STAGGER + DESC REVEAL ─── */
       const ikaItems = document.querySelectorAll('.ika-is-item');
