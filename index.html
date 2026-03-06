@@ -736,13 +736,6 @@
       gap: 0;
       align-items: center;
       margin-bottom: 80px;
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
-    }
-    .timeline-row.visible {
-      opacity: 1;
-      transform: translateY(0);
     }
 
     /* Text side */
@@ -907,16 +900,9 @@
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.06);
       padding: 48px 40px;
-      transition: background 0.4s, border-color 0.3s, transform 0.3s ease;
+      transition: background 0.4s, border-color 0.3s;
       overflow: hidden;
-      opacity: 0;
-      transform: translateY(40px);
       cursor: pointer;
-    }
-    .bento-card.cascade-in {
-      opacity: 1;
-      transform: translateY(0);
-      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out), background 0.4s, border-color 0.3s;
     }
     .bento-card::before {
       content: '';
@@ -930,9 +916,6 @@
     .bento-card:hover {
       background: rgba(255,255,255,0.06);
       border-color: rgba(238,43,91,0.3);
-      transform: scale(1.02);
-    }
-    .bento-card.cascade-in:hover {
       transform: scale(1.02);
     }
     .bento-card:hover::before {
@@ -1999,22 +1982,17 @@
 
         gsap.registerPlugin(ScrollTrigger);
 
-        // ─── REVEAL elements: fade up with scrub ───
+        // ─── REVEAL elements: fade up on enter ───
         gsap.utils.toArray('.reveal').forEach(el => {
-          gsap.fromTo(el,
-            { opacity: 0, y: 40 },
-            {
-              opacity: 1, y: 0,
-              duration: 1,
-              ease: 'power3.out',
-              scrollTrigger: {
-                trigger: el,
-                start: 'top 85%',
-                end: 'top 55%',
-                scrub: 0.8,
-              }
+          gsap.set(el, { opacity: 0, y: 40 });
+          ScrollTrigger.create({
+            trigger: el,
+            start: 'top 85%',
+            once: true,
+            onEnter: () => {
+              gsap.to(el, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' });
             }
-          );
+          });
         });
 
         // ─── PER-LETTER TEXT REVEAL with scroll-scrub ───
@@ -2049,13 +2027,26 @@
           gsap.to(chars, {
             opacity: 1,
             y: 0,
-            stagger: 0.02,
+            stagger: 0.03,
+            duration: 0.04,
             ease: 'power2.out',
             scrollTrigger: {
               trigger: el,
-              start: 'top 80%',
-              end: 'top 40%',
-              scrub: 1,
+              start: 'top 82%',
+              end: 'top 35%',
+              scrub: 1.2,
+            }
+          });
+
+          // Safety fallback: if chars still invisible after 3s in viewport, force show
+          ScrollTrigger.create({
+            trigger: el,
+            start: 'top 90%',
+            once: true,
+            onEnter: () => {
+              setTimeout(() => {
+                chars.forEach(c => { if (parseFloat(getComputedStyle(c).opacity) < 0.5) { c.style.opacity = '1'; c.style.transform = 'none'; } });
+              }, 3000);
             }
           });
         });
@@ -2066,66 +2057,39 @@
           const text = row.querySelector('.timeline-text');
           const card = row.querySelector('.timeline-card');
 
-          // Text slides in from its side
-          gsap.fromTo(text,
-            { opacity: 0, x: isOdd ? -60 : 60 },
-            {
-              opacity: 1, x: 0,
-              duration: 1,
-              ease: 'power3.out',
-              scrollTrigger: {
-                trigger: row,
-                start: 'top 80%',
-                end: 'top 45%',
-                scrub: 0.6,
-              }
-            }
-          );
+          gsap.set(text, { opacity: 0, x: isOdd ? -60 : 60 });
+          gsap.set(card, { opacity: 0, x: isOdd ? 60 : -60, scale: 0.95 });
 
-          // Card slides in from opposite side
-          gsap.fromTo(card,
-            { opacity: 0, x: isOdd ? 60 : -60, scale: 0.95 },
-            {
-              opacity: 1, x: 0, scale: 1,
-              duration: 1,
-              ease: 'power3.out',
-              scrollTrigger: {
-                trigger: row,
-                start: 'top 80%',
-                end: 'top 45%',
-                scrub: 0.6,
-              }
+          ScrollTrigger.create({
+            trigger: row,
+            start: 'top 82%',
+            once: true,
+            onEnter: () => {
+              gsap.to(text, { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out' });
+              gsap.to(card, { opacity: 1, x: 0, scale: 1, duration: 0.9, delay: 0.15, ease: 'power3.out' });
             }
-          );
+          });
         });
 
-        // ─── BENTO CARDS: staggered cascade with different origins ───
+        // ─── BENTO CARDS: staggered cascade ───
         const bentoCards = gsap.utils.toArray('.bento-card');
-        bentoCards.forEach((card, i) => {
-          const origins = [
-            { x: -40, y: 30 },
-            { x: 40, y: 30 },
-            { x: -30, y: 40 },
-            { x: 30, y: 40 },
-            { x: -40, y: 20 },
-            { x: 40, y: 20 },
-          ];
-          const o = origins[i % origins.length];
+        // Set initial state
+        gsap.set(bentoCards, { opacity: 0, y: 40 });
 
-          gsap.fromTo(card,
-            { opacity: 0, x: o.x, y: o.y, scale: 0.92 },
-            {
-              opacity: 1, x: 0, y: 0, scale: 1,
-              duration: 0.8,
+        // Trigger when the grid enters viewport — stagger all 6
+        ScrollTrigger.create({
+          trigger: '.bento-grid',
+          start: 'top 80%',
+          once: true,
+          onEnter: () => {
+            gsap.to(bentoCards, {
+              opacity: 1,
+              y: 0,
+              duration: 0.7,
+              stagger: 0.12,
               ease: 'power3.out',
-              scrollTrigger: {
-                trigger: card,
-                start: 'top 85%',
-                end: 'top 60%',
-                scrub: 0.5,
-              }
-            }
-          );
+            });
+          }
         });
 
         // Bento card mouse-tracking glow
@@ -2165,40 +2129,28 @@
 
         // ─── COMPARISON TABLE ROWS: staggered slide-in ───
         const tableRows = gsap.utils.toArray('.comparison-table tbody tr');
-        tableRows.forEach((row, i) => {
-          gsap.fromTo(row,
-            { opacity: 0, y: 20, x: -20 },
-            {
-              opacity: 1, y: 0, x: 0,
-              duration: 0.6,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: row,
-                start: 'top 88%',
-                end: 'top 70%',
-                scrub: 0.4,
-              }
-            }
-          );
+        gsap.set(tableRows, { opacity: 0, y: 20 });
+        ScrollTrigger.create({
+          trigger: '.comparison-table',
+          start: 'top 80%',
+          once: true,
+          onEnter: () => {
+            gsap.to(tableRows, { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out' });
+          }
         });
 
         // ─── TECH DIAGRAM ───
         const techDiagram = document.getElementById('techDiagram');
         if (techDiagram) {
-          gsap.fromTo(techDiagram,
-            { opacity: 0, scale: 0.9 },
-            {
-              opacity: 1, scale: 1,
-              duration: 1,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: techDiagram,
-                start: 'top 80%',
-                end: 'top 50%',
-                scrub: 0.6,
-              }
+          gsap.set(techDiagram, { opacity: 0, scale: 0.9 });
+          ScrollTrigger.create({
+            trigger: techDiagram,
+            start: 'top 82%',
+            once: true,
+            onEnter: () => {
+              gsap.to(techDiagram, { opacity: 1, scale: 1, duration: 0.8, ease: 'power2.out' });
             }
-          );
+          });
         }
 
         // ─── HERO PARALLAX: content moves slower than scroll ───
@@ -2218,20 +2170,15 @@
 
         // ─── SECTION TAGS: slide in from left ───
         gsap.utils.toArray('.section-tag').forEach(tag => {
-          gsap.fromTo(tag,
-            { opacity: 0, x: -30 },
-            {
-              opacity: 1, x: 0,
-              duration: 0.6,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: tag,
-                start: 'top 85%',
-                end: 'top 65%',
-                scrub: 0.5,
-              }
+          gsap.set(tag, { opacity: 0, x: -30 });
+          ScrollTrigger.create({
+            trigger: tag,
+            start: 'top 88%',
+            once: true,
+            onEnter: () => {
+              gsap.to(tag, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' });
             }
-          );
+          });
         });
 
       } // end initGSAP
@@ -2250,7 +2197,7 @@
         el.style.opacity = '1';
         el.style.transform = 'none';
       });
-      document.querySelectorAll('.bento-card').forEach(el => el.classList.add('cascade-in'));
+      document.querySelectorAll('.bento-card').forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
       document.querySelectorAll('.comparison-table tbody tr').forEach(el => el.classList.add('row-visible'));
       document.querySelectorAll('[data-count]').forEach(el => {
         const target = parseInt(el.dataset.count, 10);
