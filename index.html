@@ -162,18 +162,22 @@
       display: block;
     }
     .nav-links {
-      display: flex;
+      display: flex !important;
       align-items: center;
-      gap: 36px;
+      gap: 32px;
+      visibility: visible !important;
+      opacity: 1 !important;
     }
     .nav-links a {
-      font-size: 0.875rem;
-      color: rgba(255,255,255,0.85);
-      transition: color 0.3s;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #fff !important;
+      transition: opacity 0.3s;
       letter-spacing: 0.01em;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+      text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+      opacity: 0.75;
     }
-    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover { opacity: 1; }
     .nav-cta {
       font-size: 0.875rem;
       font-weight: 600;
