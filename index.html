@@ -407,122 +407,171 @@
       padding-top: 18vh;
     }
 
-    .hero-canvas-wrapper {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 55%;
-      height: 100%;
-      z-index: 1;
-    }
+    /* ═══════════════════════════════════════════
+       HERO ABSTRACT ART — CSS-only, brand coral
+    ═══════════════════════════════════════════ */
 
-    #heroCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    /* Layer 1: Base gradient (deep) */
+    /* Layer 1: massive diagonal sweep */
     .hero::before {
       content: '';
       position: absolute;
-      top: -20%;
-      right: -10%;
-      width: 70%;
-      height: 120%;
-      background: radial-gradient(
-        ellipse at 60% 40%,
-        rgba(238, 43, 91, 0.15) 0%,
-        rgba(238, 43, 91, 0.08) 40%,
-        transparent 70%
+      top: -30%;
+      right: -20%;
+      width: 90%;
+      height: 160%;
+      background: conic-gradient(
+        from 200deg at 65% 45%,
+        transparent 0deg,
+        rgba(238, 43, 91, 0.06) 40deg,
+        rgba(238, 43, 91, 0.22) 80deg,
+        rgba(200, 30, 70, 0.18) 120deg,
+        rgba(238, 43, 91, 0.08) 180deg,
+        transparent 240deg
       );
-      filter: blur(80px);
       z-index: 0;
       pointer-events: none;
-      animation: heroGradientPulse 8s ease-in-out infinite alternate;
+      animation: heroSweep 25s linear infinite;
     }
 
-    /* Layer 2: Mid gradient (brighter) */
+    /* Layer 2: hard-edged coral arc */
     .hero::after {
       content: '';
       position: absolute;
-      top: 10%;
-      right: 5%;
-      width: 50%;
-      height: 80%;
+      top: 5%;
+      right: -5%;
+      width: 65%;
+      height: 90%;
       background: radial-gradient(
-        circle at 70% 50%,
-        rgba(255, 107, 153, 0.2) 0%,
-        rgba(238, 43, 91, 0.1) 50%,
-        transparent 70%
+        ellipse at 80% 40%,
+        rgba(238, 43, 91, 0.35) 0%,
+        rgba(238, 43, 91, 0.15) 25%,
+        rgba(238, 43, 91, 0.04) 50%,
+        transparent 65%
       );
-      filter: blur(60px);
       z-index: 0;
       pointer-events: none;
-      animation: heroGradientPulse 10s ease-in-out infinite alternate-reverse;
     }
 
-    /* Floating orbs */
-    .hero-orb-1 {
+    /* Shape 1: large bold arc — hard edge */
+    .hero-shape-1 {
+      position: absolute;
+      top: -10%;
+      right: -5%;
+      width: 600px;
+      height: 600px;
+      border: 2px solid rgba(238, 43, 91, 0.15);
+      border-radius: 50%;
+      z-index: 1;
+      pointer-events: none;
+      animation: heroRotate 40s linear infinite;
+    }
+    .hero-shape-1::before {
+      content: '';
+      position: absolute;
+      top: 15%;
+      left: 15%;
+      width: 70%;
+      height: 70%;
+      border: 1px solid rgba(238, 43, 91, 0.08);
+      border-radius: 50%;
+    }
+
+    /* Shape 2: offset coral fill — organic blob */
+    .hero-shape-2 {
+      position: absolute;
+      top: 15%;
+      right: 8%;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(
+        circle at 40% 40%,
+        rgba(238, 43, 91, 0.5) 0%,
+        rgba(238, 43, 91, 0.2) 40%,
+        transparent 70%
+      );
+      border-radius: 38% 62% 55% 45% / 42% 58% 42% 58%;
+      z-index: 1;
+      pointer-events: none;
+      filter: blur(1px);
+      animation: heroBlobMorph 12s ease-in-out infinite alternate;
+    }
+
+    /* Shape 3: small hot accent */
+    .hero-shape-3 {
+      position: absolute;
+      top: 55%;
+      right: 25%;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(
+        circle,
+        rgba(255, 80, 120, 0.6) 0%,
+        rgba(238, 43, 91, 0.2) 50%,
+        transparent 75%
+      );
+      border-radius: 50%;
+      z-index: 2;
+      pointer-events: none;
+      filter: blur(20px);
+      animation: heroAccentFloat 8s ease-in-out infinite alternate;
+    }
+
+    /* Shape 4: thin geometric ring */
+    .hero-shape-4 {
+      position: absolute;
+      top: 30%;
+      right: 18%;
+      width: 280px;
+      height: 280px;
+      border: 1px solid rgba(238, 43, 91, 0.12);
+      border-radius: 50%;
+      z-index: 1;
+      pointer-events: none;
+      animation: heroRotate 30s linear infinite reverse;
+    }
+
+    /* Shape 5: gradient streak */
+    .hero-shape-5 {
       position: absolute;
       top: 20%;
-      right: 15%;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(
-        circle,
-        rgba(238, 43, 91, 0.4) 0%,
-        rgba(238, 43, 91, 0.1) 50%,
-        transparent 70%
+      right: 0;
+      width: 3px;
+      height: 40%;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(238, 43, 91, 0.5),
+        rgba(238, 43, 91, 0.1),
+        transparent
       );
-      filter: blur(40px);
-      border-radius: 50%;
-      z-index: 1;
+      z-index: 2;
       pointer-events: none;
-      animation: heroOrbFloat1 20s ease-in-out infinite;
+      animation: heroStreakDrift 6s ease-in-out infinite alternate;
     }
 
-    .hero-orb-2 {
-      position: absolute;
-      top: 60%;
-      right: 30%;
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(
-        circle,
-        rgba(255, 107, 153, 0.3) 0%,
-        rgba(238, 43, 91, 0.08) 50%,
-        transparent 70%
-      );
-      filter: blur(50px);
-      border-radius: 50%;
-      z-index: 1;
-      pointer-events: none;
-      animation: heroOrbFloat2 16s ease-in-out infinite;
+    @keyframes heroSweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes heroRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes heroBlobMorph {
+      0% { border-radius: 38% 62% 55% 45% / 42% 58% 42% 58%; transform: scale(1); }
+      50% { border-radius: 55% 45% 40% 60% / 60% 40% 55% 45%; transform: scale(1.05); }
+      100% { border-radius: 42% 58% 62% 38% / 45% 55% 38% 62%; transform: scale(0.98); }
+    }
+    @keyframes heroAccentFloat {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-30px, -20px); }
+    }
+    @keyframes heroStreakDrift {
+      0% { transform: translateX(0) scaleY(1); opacity: 0.6; }
+      100% { transform: translateX(-40px) scaleY(1.2); opacity: 0.3; }
     }
 
-    @keyframes heroGradientPulse {
-      0% {
-        transform: scale(1) translate(0, 0);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1.1) translate(-5%, 5%);
-        opacity: 0.8;
-      }
-    }
-
-    @keyframes heroOrbFloat1 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      25% { transform: translate(-20px, -30px) scale(1.05); }
-      50% { transform: translate(-10px, -50px) scale(0.95); }
-      75% { transform: translate(15px, -35px) scale(1.02); }
-    }
-
-    @keyframes heroOrbFloat2 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(25px, 20px) scale(1.08); }
-      66% { transform: translate(-15px, 35px) scale(0.92); }
-    }
+    /* Old hero keyframes removed — using new abstract art keyframes above */
 
     /* Hero Content */
     .hero-content {
@@ -1242,7 +1291,8 @@
     ═══════════════════════════════════════════ */
     @media (max-width: 1024px) {
       .container { padding: 0 32px; }
-      .hero-canvas-wrapper { width: 45%; opacity: 0.5; }
+      .hero-shape-1, .hero-shape-4 { width: 400px; height: 400px; }
+      .hero-shape-2 { width: 300px; height: 300px; }
       .hero-content { padding: 160px 32px 80px; max-width: 580px; }
       .bento-grid { grid-template-columns: repeat(2, 1fr); }
       .metrics-inner { gap: 48px; }
@@ -1251,7 +1301,10 @@
     @media (max-width: 768px) {
       .container { padding: 0 24px; }
       .hero-content { padding: 140px 24px 60px; max-width: 100%; }
-      .hero-canvas-wrapper { display: none; }
+      .hero-shape-1, .hero-shape-4 { width: 250px; height: 250px; }
+      .hero-shape-2 { width: 200px; height: 200px; right: 0; }
+      .hero-shape-3 { width: 120px; height: 120px; }
+      .hero-shape-5 { display: none; }
       .nav-links { display: none !important; }
       .nav-hamburger { display: flex; }
       .timeline-line, .timeline-indicator, .timeline-dot { display: none; }
@@ -1387,10 +1440,13 @@
        1. HERO
   ═══════════════════════════════════════════ -->
   <section class="hero section-dark hero-entrance">
-    <!-- Floating orbs for depth -->
-    <div class="hero-orb-1"></div>
-    <div class="hero-orb-2"></div>
-    <!-- Hero grid: text left, canvas right -->
+    <!-- Abstract art shapes -->
+    <div class="hero-shape-1"></div>
+    <div class="hero-shape-2"></div>
+    <div class="hero-shape-3"></div>
+    <div class="hero-shape-4"></div>
+    <div class="hero-shape-5"></div>
+    <!-- Hero grid -->
     <div class="hero-grid">
       <div class="hero-content">
         <div class="status-pill">
@@ -1413,10 +1469,7 @@
           <a href="https://docs.ika.network" target="_blank" rel="noopener" class="btn-secondary">Read the Docs</a>
         </div>
       </div>
-      <!-- Canvas visualization: animated cross-chain network -->
-      <div class="hero-canvas-wrapper">
-        <canvas id="heroCanvas"></canvas>
-      </div>
+
     </div>
   </section>
 
@@ -2211,10 +2264,8 @@
       if (td) td.classList.add('visible');
     }
 
-    /* ─── HERO CANVAS: CROSS-CHAIN NETWORK ─── */
-    (function initHeroCanvas() {
-      const canvas = document.getElementById('heroCanvas');
-      if (!canvas) return;
+    /* ─── HERO: Pure CSS abstract art, no canvas ─── */
+    (function() { return; // canvas removed
       const ctx = canvas.getContext('2d');
       let W, H, animFrame;
 
