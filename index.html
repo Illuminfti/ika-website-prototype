@@ -649,70 +649,143 @@
     }
 
     /* ═══════════════════════════════════════════
-       IKA IS — TAGLINE LIST (Sui-style)
+       IKA IS — VERTICAL TIMELINE (Sui-style)
     ═══════════════════════════════════════════ */
     .ika-is {
       padding: 120px 0;
-    }
-    .ika-is-list {
-      list-style: none;
-      border-top: 1px solid rgba(0,0,0,0.1);
-    }
-    .ika-is-item {
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-      padding: 28px 0;
-      cursor: default;
-      opacity: 0;
-      transform: translateX(-30px);
-      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
-    }
-    .ika-is-item.slide-in {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    .ika-is-item-header {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 24px;
-    }
-    .ika-is-item-title {
-      font-family: var(--font-heading);
-      font-weight: 600;
-      font-size: clamp(2rem, 3.5vw, 3rem);
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-      color: var(--text-dark);
-      transition: color 0.4s var(--ease-out);
-    }
-    .ika-is-item:hover .ika-is-item-title,
-    .ika-is-item.active .ika-is-item-title {
-      color: var(--brand);
-    }
-    .ika-is-item-number {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--text-dark-secondary);
-      letter-spacing: 0.1em;
-      flex-shrink: 0;
-    }
-    .ika-is-item-desc {
-      max-height: 0;
+      background: var(--bg-dark);
+      color: var(--text-white);
       overflow: hidden;
-      transition: max-height 0.5s var(--ease-out), opacity 0.4s;
+    }
+    .ika-is .section-tag { color: var(--text-white-secondary); }
+    .ika-is .section-headline { color: var(--text-white); }
+
+    .timeline-wrapper {
+      position: relative;
+      max-width: 1100px;
+      margin: 80px auto 0;
+    }
+
+    /* Center dotted line */
+    .timeline-line {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.2) 0px,
+        rgba(255,255,255,0.2) 4px,
+        transparent 4px,
+        transparent 12px
+      );
+      transform: translateX(-50%);
+    }
+
+    /* Scroll indicator on the line */
+    .timeline-indicator {
+      position: sticky;
+      top: 50vh;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      transform: translateX(-50%);
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    /* Timeline cards */
+    .timeline-card {
+      position: relative;
+      width: 46%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 80px;
       opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
     }
-    .ika-is-item:hover .ika-is-item-desc,
-    .ika-is-item.active .ika-is-item-desc,
-    .ika-is-item.desc-visible .ika-is-item-desc {
-      max-height: 100px;
+    .timeline-card.visible {
       opacity: 1;
+      transform: translateY(0);
     }
-    .ika-is-item-desc p {
+
+    /* Alternate left/right */
+    .timeline-card:nth-child(odd) {
+      margin-left: 0;
+    }
+    .timeline-card:nth-child(even) {
+      margin-left: auto;
+    }
+
+    .timeline-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .timeline-card-number {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-white);
+      background: rgba(255,255,255,0.08);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .timeline-card-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-white-secondary);
+    }
+
+    /* SVG illustration area */
+    .timeline-card-illustration {
+      width: 100%;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      background: rgba(255,255,255,0.015);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .timeline-card-illustration svg {
+      width: 180px;
+      height: 180px;
+    }
+
+    /* Feature name at bottom */
+    .timeline-card-feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       padding-top: 16px;
-      font-size: 1.125rem;
-      color: var(--text-dark-secondary);
-      max-width: 600px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .timeline-card-feature-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: rgba(238,43,91,0.1);
+      border: 1px solid rgba(238,43,91,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .timeline-card-feature-name {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--text-white-secondary);
     }
 
     /* ═══════════════════════════════════════════
@@ -1145,6 +1218,9 @@
       .hero-canvas-wrapper { display: none; }
       .nav-links { display: none !important; }
       .nav-hamburger { display: flex; }
+      .timeline-line, .timeline-indicator { display: none; }
+      .timeline-card { width: 100%; margin-left: 0 !important; margin-bottom: 32px; }
+      .timeline-card:nth-child(even) { margin-left: 0; }
       .bento-grid { grid-template-columns: repeat(2, 1fr); }
       .metrics-inner { gap: 32px; }
       .backer-logos { gap: 32px 48px; }
@@ -1175,7 +1251,7 @@
         gap: 24px;
         align-items: center;
       }
-      .ika-is-item { padding: 24px 0; }
+      .timeline-card { width: 80%; margin-left: 10%; margin-bottom: 40px; }
       .backer-logos img { height: 20px; }
     }
 
@@ -1201,10 +1277,9 @@
         transform: none;
         transition: none;
       }
-      .ika-is-item {
+      .timeline-card {
         opacity: 1;
         transform: none;
-        transition: color 0.4s var(--ease-out);
       }
       .bento-card {
         opacity: 1;
@@ -1332,56 +1407,176 @@
   <!-- ═══════════════════════════════════════════
        3. IKA IS — TAGLINE LIST
   ═══════════════════════════════════════════ -->
-  <section class="ika-is section-light" id="ika-is">
+  <section class="ika-is" id="ika-is">
     <div class="container">
-      <p class="section-tag reveal">What makes Ika different</p>
-      <ul class="ika-is-list">
-        <li class="ika-is-item">
-          <div class="ika-is-item-header">
-            <h3 class="ika-is-item-title">Fast by design</h3>
-            <span class="ika-is-item-number">01</span>
+      <p class="section-tag reveal" style="text-align:center;">Innovation, engineered.</p>
+      <h2 class="section-headline reveal char-reveal" style="text-align:center;">The Ika Stack</h2>
+      <p class="section-body reveal" style="text-align:center;margin:0 auto 0;">A composable signing infrastructure for builders</p>
+
+      <div class="timeline-wrapper">
+        <div class="timeline-line"></div>
+        <div class="timeline-indicator"></div>
+
+        <!-- Card 1: Speed -->
+        <div class="timeline-card">
+          <div class="timeline-card-header">
+            <span class="timeline-card-number">01</span>
+            <span class="timeline-card-label">Sub-second signing</span>
           </div>
-          <div class="ika-is-item-desc">
-            <p>Sub-second signatures where legacy MPC takes 30+ seconds</p>
+          <div class="timeline-card-illustration">
+            <svg viewBox="0 0 180 180" fill="none">
+              <circle cx="90" cy="90" r="60" stroke="rgba(238,43,91,0.3)" stroke-width="1"/>
+              <circle cx="90" cy="90" r="40" stroke="rgba(238,43,91,0.2)" stroke-width="1"/>
+              <circle cx="90" cy="90" r="20" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
+              <line x1="90" y1="90" x2="90" y2="40" stroke="#EE2B5B" stroke-width="2" stroke-linecap="round">
+                <animateTransform attributeName="transform" type="rotate" from="0 90 90" to="360 90 90" dur="2s" repeatCount="indefinite"/>
+              </line>
+              <line x1="90" y1="90" x2="120" y2="90" stroke="rgba(238,43,91,0.5)" stroke-width="1.5" stroke-linecap="round">
+                <animateTransform attributeName="transform" type="rotate" from="0 90 90" to="360 90 90" dur="8s" repeatCount="indefinite"/>
+              </line>
+              <circle cx="90" cy="90" r="4" fill="#EE2B5B"/>
+              <text x="90" y="160" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono" font-size="10">&lt; 1 SECOND</text>
+            </svg>
           </div>
-        </li>
-        <li class="ika-is-item">
-          <div class="ika-is-item-header">
-            <h3 class="ika-is-item-title">Trustless by proof</h3>
-            <span class="ika-is-item-number">02</span>
+          <div class="timeline-card-feature">
+            <div class="timeline-card-feature-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v6l4 2" stroke="#EE2B5B" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <span class="timeline-card-feature-name">Fast by design</span>
           </div>
-          <div class="ika-is-item-desc">
-            <p>2PC-MPC: no single party ever holds your key. Mathematically guaranteed.</p>
+        </div>
+
+        <!-- Card 2: Trustless -->
+        <div class="timeline-card">
+          <div class="timeline-card-header">
+            <span class="timeline-card-number">02</span>
+            <span class="timeline-card-label">Zero-trust cryptography</span>
           </div>
-        </li>
-        <li class="ika-is-item">
-          <div class="ika-is-item-header">
-            <h3 class="ika-is-item-title">Scalable without limits</h3>
-            <span class="ika-is-item-number">03</span>
+          <div class="timeline-card-illustration">
+            <svg viewBox="0 0 180 180" fill="none">
+              <!-- Two key halves that never meet -->
+              <rect x="30" y="60" width="50" height="60" rx="4" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.05)"/>
+              <rect x="100" y="60" width="50" height="60" rx="4" stroke="rgba(98,126,234,0.4)" stroke-width="1" fill="rgba(98,126,234,0.05)"/>
+              <text x="55" y="95" text-anchor="middle" fill="rgba(238,43,91,0.6)" font-family="JetBrains Mono" font-size="9">SHARE A</text>
+              <text x="125" y="95" text-anchor="middle" fill="rgba(98,126,234,0.6)" font-family="JetBrains Mono" font-size="9">SHARE B</text>
+              <!-- Dashed line between (never connected) -->
+              <line x1="82" y1="90" x2="98" y2="90" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="3 3"/>
+              <!-- Lock icon above -->
+              <rect x="77" y="30" width="26" height="20" rx="3" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+              <path d="M85 30V24a5 5 0 0 1 10 0v6" stroke="rgba(255,255,255,0.3)" stroke-width="1" fill="none"/>
+              <text x="90" y="160" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono" font-size="10">2PC-MPC</text>
+            </svg>
           </div>
-          <div class="ika-is-item-desc">
-            <p>Hundreds of nodes signing in parallel. Not the 4-8 node ceiling.</p>
+          <div class="timeline-card-feature">
+            <div class="timeline-card-feature-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="2" stroke="#EE2B5B" stroke-width="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2" stroke="#EE2B5B" stroke-width="1.5"/></svg>
+            </div>
+            <span class="timeline-card-feature-name">Trustless by proof</span>
           </div>
-        </li>
-        <li class="ika-is-item">
-          <div class="ika-is-item-header">
-            <h3 class="ika-is-item-title">Programmable in Move</h3>
-            <span class="ika-is-item-number">04</span>
+        </div>
+
+        <!-- Card 3: Scalable -->
+        <div class="timeline-card">
+          <div class="timeline-card-header">
+            <span class="timeline-card-number">03</span>
+            <span class="timeline-card-label">Parallel node network</span>
           </div>
-          <div class="ika-is-item-desc">
-            <p>Write signing policies as smart contracts. Gate, compose, automate.</p>
+          <div class="timeline-card-illustration">
+            <svg viewBox="0 0 180 180" fill="none">
+              <!-- Grid of nodes -->
+              <circle cx="40" cy="50" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
+              <circle cx="90" cy="40" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
+              <circle cx="140" cy="50" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
+              <circle cx="30" cy="90" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
+              <circle cx="90" cy="90" r="8" stroke="#EE2B5B" stroke-width="1.5" fill="rgba(238,43,91,0.15)"/>
+              <circle cx="150" cy="90" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
+              <circle cx="40" cy="130" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
+              <circle cx="90" cy="140" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
+              <circle cx="140" cy="130" r="6" stroke="rgba(238,43,91,0.4)" stroke-width="1" fill="rgba(238,43,91,0.08)"/>
+              <!-- Connection lines -->
+              <line x1="40" y1="50" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
+              <line x1="90" y1="40" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
+              <line x1="140" y1="50" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
+              <line x1="30" y1="90" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
+              <line x1="150" y1="90" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
+              <line x1="40" y1="130" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
+              <line x1="90" y1="140" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
+              <line x1="140" y1="130" x2="90" y2="90" stroke="rgba(238,43,91,0.15)" stroke-width="1"/>
+              <text x="90" y="168" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono" font-size="10">100+ NODES</text>
+            </svg>
           </div>
-        </li>
-        <li class="ika-is-item">
-          <div class="ika-is-item-header">
-            <h3 class="ika-is-item-title">Native to every chain</h3>
-            <span class="ika-is-item-number">05</span>
+          <div class="timeline-card-feature">
+            <div class="timeline-card-feature-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="4" cy="8" r="2" stroke="#EE2B5B" stroke-width="1.5"/><circle cx="12" cy="4" r="2" stroke="#EE2B5B" stroke-width="1.5"/><circle cx="12" cy="12" r="2" stroke="#EE2B5B" stroke-width="1.5"/><path d="M6 8h4M6 7l4-2M6 9l4 2" stroke="#EE2B5B" stroke-width="1" opacity="0.5"/></svg>
+            </div>
+            <span class="timeline-card-feature-name">Scalable without limits</span>
           </div>
-          <div class="ika-is-item-desc">
-            <p>Not a bridge. Not a wrapper. Real signatures on real chains.</p>
+        </div>
+
+        <!-- Card 4: Programmable -->
+        <div class="timeline-card">
+          <div class="timeline-card-header">
+            <span class="timeline-card-number">04</span>
+            <span class="timeline-card-label">Smart contract policies</span>
           </div>
-        </li>
-      </ul>
+          <div class="timeline-card-illustration">
+            <svg viewBox="0 0 180 180" fill="none">
+              <!-- Code block representation -->
+              <rect x="30" y="30" width="120" height="110" rx="6" stroke="rgba(255,255,255,0.1)" stroke-width="1" fill="rgba(255,255,255,0.02)"/>
+              <!-- Code lines -->
+              <rect x="44" y="48" width="40" height="3" rx="1.5" fill="rgba(238,43,91,0.5)"/>
+              <rect x="44" y="58" width="70" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+              <rect x="54" y="68" width="55" height="3" rx="1.5" fill="rgba(255,255,255,0.1)"/>
+              <rect x="54" y="78" width="45" height="3" rx="1.5" fill="rgba(98,126,234,0.4)"/>
+              <rect x="54" y="88" width="60" height="3" rx="1.5" fill="rgba(255,255,255,0.1)"/>
+              <rect x="44" y="98" width="30" height="3" rx="1.5" fill="rgba(238,43,91,0.5)"/>
+              <rect x="44" y="108" width="50" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+              <rect x="44" y="118" width="25" height="3" rx="1.5" fill="rgba(238,43,91,0.3)"/>
+              <text x="90" y="162" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono" font-size="10">MOVE SMART CONTRACTS</text>
+            </svg>
+          </div>
+          <div class="timeline-card-feature">
+            <div class="timeline-card-feature-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="#EE2B5B" stroke-width="1.5"/><path d="M5 7l2 2 4-4" stroke="#EE2B5B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="timeline-card-feature-name">Programmable in Move</span>
+          </div>
+        </div>
+
+        <!-- Card 5: Native -->
+        <div class="timeline-card">
+          <div class="timeline-card-header">
+            <span class="timeline-card-number">05</span>
+            <span class="timeline-card-label">Real signatures, any chain</span>
+          </div>
+          <div class="timeline-card-illustration">
+            <svg viewBox="0 0 180 180" fill="none">
+              <!-- Chain logos abstracted as circles -->
+              <circle cx="40" cy="60" r="18" stroke="rgba(247,147,26,0.4)" stroke-width="1" fill="rgba(247,147,26,0.05)"/>
+              <text x="40" y="64" text-anchor="middle" fill="rgba(247,147,26,0.6)" font-family="JetBrains Mono" font-size="8">BTC</text>
+              <circle cx="90" cy="40" r="18" stroke="rgba(98,126,234,0.4)" stroke-width="1" fill="rgba(98,126,234,0.05)"/>
+              <text x="90" y="44" text-anchor="middle" fill="rgba(98,126,234,0.6)" font-family="JetBrains Mono" font-size="8">ETH</text>
+              <circle cx="140" cy="60" r="18" stroke="rgba(153,69,255,0.4)" stroke-width="1" fill="rgba(153,69,255,0.05)"/>
+              <text x="140" y="64" text-anchor="middle" fill="rgba(153,69,255,0.6)" font-family="JetBrains Mono" font-size="8">SOL</text>
+              <!-- Central Ika -->
+              <circle cx="90" cy="110" r="22" stroke="#EE2B5B" stroke-width="1.5" fill="rgba(238,43,91,0.08)"/>
+              <text x="90" y="114" text-anchor="middle" fill="#EE2B5B" font-family="Satoshi" font-size="10" font-weight="700">IKA</text>
+              <!-- Arrows down to Ika -->
+              <line x1="50" y1="75" x2="78" y2="95" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+              <line x1="90" y1="58" x2="90" y2="88" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+              <line x1="130" y1="75" x2="102" y2="95" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+              <text x="90" y="160" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono" font-size="10">ECDSA + EdDSA</text>
+            </svg>
+          </div>
+          <div class="timeline-card-feature">
+            <div class="timeline-card-feature-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="4" cy="8" r="2.5" stroke="#EE2B5B" stroke-width="1.5"/><circle cx="12" cy="8" r="2.5" stroke="#EE2B5B" stroke-width="1.5"/><path d="M6.5 8h3" stroke="#EE2B5B" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <span class="timeline-card-feature-name">Native to every chain</span>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
@@ -1761,38 +1956,17 @@
         charObserver.observe(el);
       });
 
-      /* ─── 6. IKA IS — SLIDE IN FROM LEFT WITH STAGGER + DESC REVEAL ─── */
-      const ikaItems = document.querySelectorAll('.ika-is-item');
-      const ikaObserver = new IntersectionObserver((entries) => {
+      /* ─── 6. TIMELINE CARDS — FADE IN ON SCROLL ─── */
+      const timelineCards = document.querySelectorAll('.timeline-card');
+      const timelineObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            const items = Array.from(ikaItems);
-            const idx = items.indexOf(entry.target);
-            setTimeout(() => {
-              entry.target.classList.add('slide-in');
-            }, idx * 120);
-            setTimeout(() => {
-              entry.target.classList.add('desc-visible');
-            }, idx * 120 + 400);
-            ikaObserver.unobserve(entry.target);
+            entry.target.classList.add('visible');
+            timelineObserver.unobserve(entry.target);
           }
         });
       }, { threshold: 0.15 });
-
-      ikaItems.forEach(item => ikaObserver.observe(item));
-
-      if (window.innerWidth <= 768) {
-        const ikaActiveObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('active');
-            } else {
-              entry.target.classList.remove('active');
-            }
-          });
-        }, { threshold: 0.6 });
-        ikaItems.forEach(item => ikaActiveObserver.observe(item));
-      }
+      timelineCards.forEach(card => timelineObserver.observe(card));
 
       /* ─── 7. BENTO CARD CASCADE ─── */
       const bentoCards = document.querySelectorAll('.bento-card');
@@ -1893,9 +2067,8 @@
     } else {
       /* If reduced motion, show everything immediately */
       document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-      document.querySelectorAll('.ika-is-item').forEach(el => {
-        el.classList.add('slide-in');
-        el.classList.add('desc-visible');
+      document.querySelectorAll('.timeline-card').forEach(el => {
+        el.classList.add('visible');
       });
       document.querySelectorAll('.bento-card').forEach(el => el.classList.add('cascade-in'));
       document.querySelectorAll('.comparison-table tbody tr').forEach(el => el.classList.add('row-visible'));
