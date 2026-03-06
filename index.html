@@ -2132,8 +2132,10 @@
     /* ─── HERO: Three.js morphing blob ─── */
     let heroBlobInitialized = false;
     function initHeroBlob() {
-      if (heroBlobInitialized || typeof THREE === 'undefined') return;
+      if (heroBlobInitialized) return;
+      if (typeof THREE === 'undefined') { console.warn('THREE not loaded'); return; }
       heroBlobInitialized = true;
+      console.log('initHeroBlob: starting');
       const canvas = document.getElementById('heroBlob');
       if (!canvas) return;
 
@@ -2142,19 +2144,29 @@
       const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
       camera.position.z = 4.5;
 
-      const renderer = new THREE.WebGLRenderer({
-        canvas,
-        alpha: true,
-        antialias: true,
-        powerPreference: 'high-performance'
-      });
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas,
+          alpha: true,
+          antialias: true,
+          powerPreference: 'high-performance'
+        });
+      } catch(e) {
+        console.warn('WebGL init failed:', e);
+        // CSS fallback gradient
+        canvas.style.background = 'radial-gradient(ellipse at 60% 50%, rgba(238,43,91,0.25) 0%, transparent 70%)';
+        return;
+      }
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setClearColor(0x000000, 0);
+      console.log('WebGL renderer created, canvas size:', canvas.offsetWidth, canvas.offsetHeight);
 
       // Resize
       function resize() {
-        const w = canvas.parentElement ? canvas.offsetWidth || canvas.parentElement.offsetWidth * 0.6 : window.innerWidth * 0.6;
-        const h = canvas.parentElement ? canvas.offsetHeight || window.innerHeight : window.innerHeight;
+        const rect = canvas.getBoundingClientRect();
+        const w = rect.width || window.innerWidth * 0.6;
+        const h = rect.height || window.innerHeight;
         renderer.setSize(w, h);
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
@@ -2345,11 +2357,12 @@
       }
 
       if (prefersReducedMotion) {
-        // One static frame
         material.uniforms.uTime.value = 2.0;
         renderer.render(scene, camera);
+        console.log('Hero blob: static frame rendered');
       } else {
         animate();
+        console.log('Hero blob: animation started');
       }
 
       // Cleanup on page hide
