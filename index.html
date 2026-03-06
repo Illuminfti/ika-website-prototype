@@ -7,6 +7,8 @@
   <meta name="description" content="Your code signs transactions on any blockchain. No bridges. No wrapping. Just real cryptographic signatures, in under a second.">
   <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Three.js for hero blob -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
   <!-- GSAP + ScrollTrigger for premium scroll animations -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
@@ -408,170 +410,41 @@
     }
 
     /* ═══════════════════════════════════════════
-       HERO ABSTRACT ART — CSS-only, brand coral
+       HERO: Three.js morphing blob canvas
     ═══════════════════════════════════════════ */
+    #heroBlob {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 60%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
 
-    /* Layer 1: massive diagonal sweep */
+    /* Subtle ambient glow behind the blob */
     .hero::before {
       content: '';
       position: absolute;
-      top: -30%;
-      right: -20%;
-      width: 90%;
-      height: 160%;
-      background: conic-gradient(
-        from 200deg at 65% 45%,
-        transparent 0deg,
-        rgba(238, 43, 91, 0.06) 40deg,
-        rgba(238, 43, 91, 0.22) 80deg,
-        rgba(200, 30, 70, 0.18) 120deg,
-        rgba(238, 43, 91, 0.08) 180deg,
-        transparent 240deg
-      );
-      z-index: 0;
-      pointer-events: none;
-      animation: heroSweep 25s linear infinite;
-    }
-
-    /* Layer 2: hard-edged coral arc */
-    .hero::after {
-      content: '';
-      position: absolute;
-      top: 5%;
-      right: -5%;
-      width: 65%;
-      height: 90%;
+      top: 10%;
+      right: 5%;
+      width: 50%;
+      height: 80%;
       background: radial-gradient(
-        ellipse at 80% 40%,
-        rgba(238, 43, 91, 0.35) 0%,
-        rgba(238, 43, 91, 0.15) 25%,
-        rgba(238, 43, 91, 0.04) 50%,
-        transparent 65%
-      );
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* Shape 1: large bold arc — hard edge */
-    .hero-shape-1 {
-      position: absolute;
-      top: -10%;
-      right: -5%;
-      width: 600px;
-      height: 600px;
-      border: 2px solid rgba(238, 43, 91, 0.15);
-      border-radius: 50%;
-      z-index: 1;
-      pointer-events: none;
-      animation: heroRotate 40s linear infinite;
-    }
-    .hero-shape-1::before {
-      content: '';
-      position: absolute;
-      top: 15%;
-      left: 15%;
-      width: 70%;
-      height: 70%;
-      border: 1px solid rgba(238, 43, 91, 0.08);
-      border-radius: 50%;
-    }
-
-    /* Shape 2: offset coral fill — organic blob */
-    .hero-shape-2 {
-      position: absolute;
-      top: 15%;
-      right: 8%;
-      width: 420px;
-      height: 420px;
-      background: radial-gradient(
-        circle at 40% 40%,
-        rgba(238, 43, 91, 0.5) 0%,
-        rgba(238, 43, 91, 0.2) 40%,
+        ellipse at 60% 50%,
+        rgba(238, 43, 91, 0.12) 0%,
+        rgba(238, 43, 91, 0.04) 40%,
         transparent 70%
       );
-      border-radius: 38% 62% 55% 45% / 42% 58% 42% 58%;
-      z-index: 1;
+      z-index: 0;
       pointer-events: none;
-      filter: blur(1px);
-      animation: heroBlobMorph 12s ease-in-out infinite alternate;
     }
 
-    /* Shape 3: small hot accent */
-    .hero-shape-3 {
-      position: absolute;
-      top: 55%;
-      right: 25%;
-      width: 180px;
-      height: 180px;
-      background: radial-gradient(
-        circle,
-        rgba(255, 80, 120, 0.6) 0%,
-        rgba(238, 43, 91, 0.2) 50%,
-        transparent 75%
-      );
-      border-radius: 50%;
-      z-index: 2;
-      pointer-events: none;
-      filter: blur(20px);
-      animation: heroAccentFloat 8s ease-in-out infinite alternate;
+    .hero::after {
+      content: none;
     }
 
-    /* Shape 4: thin geometric ring */
-    .hero-shape-4 {
-      position: absolute;
-      top: 30%;
-      right: 18%;
-      width: 280px;
-      height: 280px;
-      border: 1px solid rgba(238, 43, 91, 0.12);
-      border-radius: 50%;
-      z-index: 1;
-      pointer-events: none;
-      animation: heroRotate 30s linear infinite reverse;
-    }
-
-    /* Shape 5: gradient streak */
-    .hero-shape-5 {
-      position: absolute;
-      top: 20%;
-      right: 0;
-      width: 3px;
-      height: 40%;
-      background: linear-gradient(
-        to bottom,
-        transparent,
-        rgba(238, 43, 91, 0.5),
-        rgba(238, 43, 91, 0.1),
-        transparent
-      );
-      z-index: 2;
-      pointer-events: none;
-      animation: heroStreakDrift 6s ease-in-out infinite alternate;
-    }
-
-    @keyframes heroSweep {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    @keyframes heroRotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    @keyframes heroBlobMorph {
-      0% { border-radius: 38% 62% 55% 45% / 42% 58% 42% 58%; transform: scale(1); }
-      50% { border-radius: 55% 45% 40% 60% / 60% 40% 55% 45%; transform: scale(1.05); }
-      100% { border-radius: 42% 58% 62% 38% / 45% 55% 38% 62%; transform: scale(0.98); }
-    }
-    @keyframes heroAccentFloat {
-      0% { transform: translate(0, 0); }
-      100% { transform: translate(-30px, -20px); }
-    }
-    @keyframes heroStreakDrift {
-      0% { transform: translateX(0) scaleY(1); opacity: 0.6; }
-      100% { transform: translateX(-40px) scaleY(1.2); opacity: 0.3; }
-    }
-
-    /* Old hero keyframes removed — using new abstract art keyframes above */
+    /* Hero animation handled by Three.js blob */
 
     /* Hero Content */
     .hero-content {
@@ -1291,8 +1164,7 @@
     ═══════════════════════════════════════════ */
     @media (max-width: 1024px) {
       .container { padding: 0 32px; }
-      .hero-shape-1, .hero-shape-4 { width: 400px; height: 400px; }
-      .hero-shape-2 { width: 300px; height: 300px; }
+      #heroBlob { width: 50%; opacity: 0.7; }
       .hero-content { padding: 160px 32px 80px; max-width: 580px; }
       .bento-grid { grid-template-columns: repeat(2, 1fr); }
       .metrics-inner { gap: 48px; }
@@ -1301,10 +1173,7 @@
     @media (max-width: 768px) {
       .container { padding: 0 24px; }
       .hero-content { padding: 140px 24px 60px; max-width: 100%; }
-      .hero-shape-1, .hero-shape-4 { width: 250px; height: 250px; }
-      .hero-shape-2 { width: 200px; height: 200px; right: 0; }
-      .hero-shape-3 { width: 120px; height: 120px; }
-      .hero-shape-5 { display: none; }
+      #heroBlob { width: 100%; height: 50%; top: auto; bottom: 0; opacity: 0.5; }
       .nav-links { display: none !important; }
       .nav-hamburger { display: flex; }
       .timeline-line, .timeline-indicator, .timeline-dot { display: none; }
@@ -1440,12 +1309,8 @@
        1. HERO
   ═══════════════════════════════════════════ -->
   <section class="hero section-dark hero-entrance">
-    <!-- Abstract art shapes -->
-    <div class="hero-shape-1"></div>
-    <div class="hero-shape-2"></div>
-    <div class="hero-shape-3"></div>
-    <div class="hero-shape-4"></div>
-    <div class="hero-shape-5"></div>
+    <!-- Three.js morphing blob -->
+    <canvas id="heroBlob"></canvas>
     <!-- Hero grid -->
     <div class="hero-grid">
       <div class="hero-content">
@@ -2264,8 +2129,234 @@
       if (td) td.classList.add('visible');
     }
 
-    /* ─── HERO: Pure CSS abstract art, no canvas ─── */
-    (function() { return; // canvas removed
+    /* ─── HERO: Three.js morphing blob ─── */
+    (function initHeroBlob() {
+      if (typeof THREE === 'undefined') return;
+      const canvas = document.getElementById('heroBlob');
+      if (!canvas) return;
+
+      // Scene
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+      camera.position.z = 4.5;
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true,
+        powerPreference: 'high-performance'
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0x000000, 0);
+
+      // Resize
+      function resize() {
+        const w = canvas.parentElement ? canvas.offsetWidth || canvas.parentElement.offsetWidth * 0.6 : window.innerWidth * 0.6;
+        const h = canvas.parentElement ? canvas.offsetHeight || window.innerHeight : window.innerHeight;
+        renderer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Simplex noise GLSL (compact)
+      const noiseGLSL = `
+        vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+        vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+        vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+        vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+        float snoise(vec3 v){
+          const vec2 C=vec2(1.0/6.0,1.0/3.0);
+          const vec4 D=vec4(0.0,0.5,1.0,2.0);
+          vec3 i=floor(v+dot(v,C.yyy));
+          vec3 x0=v-i+dot(i,C.xxx);
+          vec3 g=step(x0.yzx,x0.xyz);
+          vec3 l=1.0-g;
+          vec3 i1=min(g.xyz,l.zxy);
+          vec3 i2=max(g.xyz,l.zxy);
+          vec3 x1=x0-i1+C.xxx;
+          vec3 x2=x0-i2+C.yyy;
+          vec3 x3=x0-D.yyy;
+          i=mod289(i);
+          vec4 p=permute(permute(permute(
+            i.z+vec4(0.0,i1.z,i2.z,1.0))
+            +i.y+vec4(0.0,i1.y,i2.y,1.0))
+            +i.x+vec4(0.0,i1.x,i2.x,1.0));
+          float n_=0.142857142857;
+          vec3 ns=n_*D.wyz-D.xzx;
+          vec4 j=p-49.0*floor(p*ns.z*ns.z);
+          vec4 x_=floor(j*ns.z);
+          vec4 y_=floor(j-7.0*x_);
+          vec4 x=x_*ns.x+ns.yyyy;
+          vec4 y=y_*ns.x+ns.yyyy;
+          vec4 h=1.0-abs(x)-abs(y);
+          vec4 b0=vec4(x.xy,y.xy);
+          vec4 b1=vec4(x.zw,y.zw);
+          vec4 s0=floor(b0)*2.0+1.0;
+          vec4 s1=floor(b1)*2.0+1.0;
+          vec4 sh=-step(h,vec4(0.0));
+          vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;
+          vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+          vec3 p0=vec3(a0.xy,h.x);
+          vec3 p1=vec3(a0.zw,h.y);
+          vec3 p2=vec3(a1.xy,h.z);
+          vec3 p3=vec3(a1.zw,h.w);
+          vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+          p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+          vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);
+          m=m*m;
+          return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+        }
+      `;
+
+      // Vertex shader
+      const vertexShader = noiseGLSL + `
+        uniform float uTime;
+        uniform float uNoiseAmp;
+        uniform float uNoiseFreq;
+        uniform vec2 uMouse;
+        varying vec3 vNormal;
+        varying vec3 vPosition;
+        varying float vDisplacement;
+
+        void main() {
+          // Layered noise for organic feel
+          float slow = snoise(normal * uNoiseFreq * 0.8 + uTime * 0.15) * 0.6;
+          float med  = snoise(normal * uNoiseFreq * 1.6 + uTime * 0.25) * 0.3;
+          float fast = snoise(normal * uNoiseFreq * 3.2 + uTime * 0.4)  * 0.1;
+          float noise = (slow + med + fast) * uNoiseAmp;
+
+          // Mouse influence — gentle pull toward cursor
+          vec3 mouseDir = normalize(vec3(uMouse.x * 2.0, uMouse.y * 2.0, 0.5));
+          float mouseInfluence = pow(max(dot(normalize(normal), mouseDir), 0.0), 3.0) * 0.15;
+
+          float displacement = noise + mouseInfluence;
+          vec3 newPos = position + normal * displacement;
+
+          vNormal = normalize(normalMatrix * (normal + normal * displacement * 0.5));
+          vPosition = (modelViewMatrix * vec4(newPos, 1.0)).xyz;
+          vDisplacement = displacement;
+
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
+        }
+      `;
+
+      // Fragment shader — Fresnel rim glow in brand coral
+      const fragmentShader = `
+        uniform float uTime;
+        varying vec3 vNormal;
+        varying vec3 vPosition;
+        varying float vDisplacement;
+
+        void main() {
+          // View direction
+          vec3 viewDir = normalize(-vPosition);
+
+          // Fresnel — strong at edges
+          float fresnel = 1.0 - max(dot(viewDir, vNormal), 0.0);
+          fresnel = pow(fresnel, 2.5);
+
+          // Brand coral colors
+          vec3 coralDeep   = vec3(0.15, 0.03, 0.06);  // very dark core
+          vec3 coralMid    = vec3(0.55, 0.10, 0.20);   // mid
+          vec3 coralBright = vec3(0.93, 0.17, 0.36);   // #EE2B5B
+          vec3 coralHot    = vec3(1.0, 0.45, 0.60);    // highlights
+
+          // Color based on displacement + fresnel
+          float t = smoothstep(-0.15, 0.25, vDisplacement);
+          vec3 baseColor = mix(coralDeep, coralMid, t);
+
+          // Fresnel rim glow
+          vec3 rimColor = mix(coralBright, coralHot, fresnel);
+          vec3 finalColor = mix(baseColor, rimColor, fresnel * 0.9);
+
+          // Subtle subsurface scattering fake
+          float sss = pow(max(dot(viewDir, -vNormal), 0.0), 4.0) * 0.15;
+          finalColor += coralBright * sss;
+
+          // Ambient occlusion from displacement
+          float ao = smoothstep(-0.2, 0.1, vDisplacement) * 0.3 + 0.7;
+          finalColor *= ao;
+
+          // Alpha — slightly transparent core, solid rim
+          float alpha = mix(0.75, 1.0, fresnel * 0.8);
+
+          gl_FragColor = vec4(finalColor, alpha);
+        }
+      `;
+
+      // Geometry — high detail icosahedron
+      const isMobile = window.innerWidth < 768;
+      const detail = isMobile ? 48 : 80;
+      const geometry = new THREE.IcosahedronGeometry(1.4, detail);
+
+      const material = new THREE.ShaderMaterial({
+        uniforms: {
+          uTime: { value: 0 },
+          uNoiseAmp: { value: 0.28 },
+          uNoiseFreq: { value: 1.5 },
+          uMouse: { value: new THREE.Vector2(0, 0) },
+        },
+        vertexShader,
+        fragmentShader,
+        transparent: true,
+        depthWrite: false,
+      });
+
+      const blob = new THREE.Mesh(geometry, material);
+      // Offset to the right and slightly up
+      blob.position.set(0.3, 0.2, 0);
+      scene.add(blob);
+
+      // Mouse tracking (debounced)
+      let targetMouse = { x: 0, y: 0 };
+      let currentMouse = { x: 0, y: 0 };
+
+      if (!isMobile) {
+        document.addEventListener('mousemove', (e) => {
+          targetMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+          targetMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+      }
+
+      // Animation
+      const clock = new THREE.Clock();
+      let animFrame;
+
+      function animate() {
+        animFrame = requestAnimationFrame(animate);
+        const t = clock.getElapsedTime();
+
+        material.uniforms.uTime.value = t;
+
+        // Smooth mouse lerp
+        currentMouse.x += (targetMouse.x - currentMouse.x) * 0.05;
+        currentMouse.y += (targetMouse.y - currentMouse.y) * 0.05;
+        material.uniforms.uMouse.value.set(currentMouse.x, currentMouse.y);
+
+        // Slow rotation
+        blob.rotation.y = t * 0.08;
+        blob.rotation.x = Math.sin(t * 0.05) * 0.1;
+
+        renderer.render(scene, camera);
+      }
+
+      if (prefersReducedMotion) {
+        // One static frame
+        material.uniforms.uTime.value = 2.0;
+        renderer.render(scene, camera);
+      } else {
+        animate();
+      }
+
+      // Cleanup on page hide
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && animFrame) cancelAnimationFrame(animFrame);
+        else if (!document.hidden && !prefersReducedMotion) animate();
+      });
+
+      return; // skip old canvas code below
       const ctx = canvas.getContext('2d');
       let W, H, animFrame;
 
