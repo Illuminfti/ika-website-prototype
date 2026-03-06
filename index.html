@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ika — Sign anything. Any chain.</title>
-  <meta name="description" content="The first sub-second MPC network. Your Solana program signs transactions on Bitcoin, Ethereum, and every chain.">
+  <title>Ika — Every chain is yours.</title>
+  <meta name="description" content="The fastest MPC network. Your Sui program signs transactions on Bitcoin, Ethereum, and every chain in under a second.">
   <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -17,13 +17,15 @@
       --brand-glow: rgba(238, 43, 91, 0.35);
       --brand-gradient: linear-gradient(135deg, #EE2B5B, #FF6B8A);
 
-      --bg: #050507;
-      --text-primary: rgba(255,255,255,0.95);
-      --text-secondary: rgba(255,255,255,0.5);
-      --text-muted: rgba(255,255,255,0.3);
+      --bg-dark: #050507;
+      --bg-light: #F5F5F7;
+      --text-white: rgba(255,255,255,0.95);
+      --text-white-secondary: rgba(255,255,255,0.5);
+      --text-white-muted: rgba(255,255,255,0.3);
+      --text-dark: #1a1a1a;
+      --text-dark-secondary: rgba(0,0,0,0.5);
       --card-bg: rgba(255,255,255,0.03);
       --card-border: rgba(255,255,255,0.06);
-      --border: rgba(255,255,255,0.06);
 
       --font-heading: "Clash Display", sans-serif;
       --font-body: "Satoshi", sans-serif;
@@ -36,11 +38,11 @@
        RESET & BASE
     ═══════════════════════════════════════════ */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { background: var(--bg); overflow-x: hidden; scroll-behavior: smooth; }
+    html { background: var(--bg-dark); overflow-x: hidden; scroll-behavior: smooth; }
     body {
       font-family: var(--font-body);
-      color: var(--text-primary);
-      background: var(--bg);
+      color: var(--text-white);
+      background: var(--bg-dark);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
@@ -50,90 +52,82 @@
     button { font-family: inherit; cursor: pointer; border: none; background: none; }
 
     /* ═══════════════════════════════════════════
-       HERO SECTION
+       SCROLL REVEAL
     ═══════════════════════════════════════════ */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
     }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
 
-    /* Convergence Lines SVG */
-    .hero-lines {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
+    /* ═══════════════════════════════════════════
+       SHARED LAYOUT
+    ═══════════════════════════════════════════ */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 48px;
     }
-    .hero-lines line {
-      stroke-linecap: round;
+    .section-dark {
+      background: var(--bg-dark);
+      color: var(--text-white);
     }
-    .convergence-line {
-      stroke-dasharray: 1800;
-      stroke-dashoffset: 1800;
-      animation: drawLine 2.5s var(--ease-out) forwards;
+    .section-light {
+      background: var(--bg-light);
+      color: var(--text-dark);
     }
-    .convergence-line.accent {
-      stroke: var(--brand);
+    .section-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
     }
+    .section-dark .section-tag { color: var(--text-white-secondary); }
+    .section-light .section-tag { color: var(--text-dark-secondary); }
+    .section-headline {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+    .section-body {
+      font-size: 1.125rem;
+      line-height: 1.7;
+      max-width: 680px;
+    }
+    .section-dark .section-body { color: var(--text-white-secondary); }
+    .section-light .section-body { color: var(--text-dark-secondary); }
 
-    @keyframes drawLine {
-      to { stroke-dashoffset: 0; }
-    }
-    @keyframes pulseOpacity {
-      0%, 100% { opacity: var(--base-opacity, 0.08); }
-      50% { opacity: calc(var(--base-opacity, 0.08) + 0.04); }
-    }
-
-    /* Convergence glow — positioned at right-center (75%, 47%) matching SVG convergence point */
-    .convergence-glow {
-      position: absolute;
-      width: 500px;
-      height: 500px;
-      top: 47%;
-      left: 75%;
-      transform: translate(-50%, -50%);
-      background: radial-gradient(circle, rgba(238,43,91,0.25) 0%, rgba(238,43,91,0.08) 40%, transparent 70%);
-      border-radius: 50%;
-      z-index: 1;
-      animation: glowPulse 5s ease-in-out infinite;
-      pointer-events: none;
-    }
-    @keyframes glowPulse {
-      0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
-      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.12); }
-    }
-
-    /* Convergence dot — the nexus point */
-    .convergence-dot {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      top: 47%;
-      left: 75%;
-      transform: translate(-50%, -50%);
-      background: var(--brand);
-      border-radius: 50%;
-      z-index: 2;
-      box-shadow: 0 0 0 2px rgba(238,43,91,0.3), 0 0 20px var(--brand-glow), 0 0 80px var(--brand-glow);
-      animation: dotPulse 3s ease-in-out infinite;
-    }
-    @keyframes dotPulse {
-      0%, 100% { box-shadow: 0 0 0 2px rgba(238,43,91,0.3), 0 0 20px var(--brand-glow), 0 0 80px var(--brand-glow); }
-      50% { box-shadow: 0 0 0 4px rgba(238,43,91,0.15), 0 0 40px var(--brand-glow), 0 0 120px var(--brand-glow); }
-    }
-
-    /* Navigation */
+    /* ═══════════════════════════════════════════
+       STICKY NAV
+    ═══════════════════════════════════════════ */
     .nav {
-      position: relative;
-      z-index: 10;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 28px 48px;
+      padding: 20px 48px;
+      background: rgba(5, 5, 7, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: background 0.3s;
     }
     .nav-logo img {
       height: 28px;
@@ -146,15 +140,15 @@
     }
     .nav-links a {
       font-size: 0.875rem;
-      color: var(--text-secondary);
+      color: var(--text-white-secondary);
       transition: color 0.3s;
       letter-spacing: 0.01em;
     }
-    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a:hover { color: var(--text-white); }
     .nav-cta {
       font-size: 0.875rem;
       font-weight: 600;
-      color: var(--text-primary) !important;
+      color: var(--text-white) !important;
       background: var(--brand);
       padding: 10px 24px;
       border-radius: 100px;
@@ -169,30 +163,125 @@
       flex-direction: column;
       gap: 5px;
       cursor: pointer;
-      z-index: 20;
+      z-index: 101;
     }
     .nav-hamburger span {
       display: block;
       width: 24px;
       height: 1.5px;
-      background: var(--text-primary);
+      background: var(--text-white);
       transition: transform 0.3s, opacity 0.3s;
+    }
+    .nav-hamburger.active span:nth-child(1) {
+      transform: translateY(6.5px) rotate(45deg);
+    }
+    .nav-hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .nav-hamburger.active span:nth-child(3) {
+      transform: translateY(-6.5px) rotate(-45deg);
+    }
+
+    /* Mobile nav overlay */
+    .nav-mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: rgba(5, 5, 7, 0.95);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+    .nav-mobile-overlay.open {
+      display: flex;
+    }
+    .nav-mobile-overlay a {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-white);
+    }
+
+    /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      padding-top: 80px;
+    }
+
+    /* Hero background image */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: url('./assets/hero-bg.png') center / cover no-repeat;
+      z-index: 0;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(5, 5, 7, 0.55);
+    }
+
+    /* Convergence Lines SVG */
+    .hero-lines {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    .hero-lines line { stroke-linecap: round; }
+    .convergence-line {
+      stroke-dasharray: 1800;
+      stroke-dashoffset: 1800;
+    }
+    .convergence-line.accent { stroke: var(--brand); }
+
+    @keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+    .convergence-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      top: 47%;
+      left: 75%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(238,43,91,0.25) 0%, rgba(238,43,91,0.08) 40%, transparent 70%);
+      border-radius: 50%;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .convergence-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      top: 47%;
+      left: 75%;
+      transform: translate(-50%, -50%);
+      background: var(--brand);
+      border-radius: 50%;
+      z-index: 2;
+      box-shadow: 0 0 0 2px rgba(238,43,91,0.3), 0 0 20px var(--brand-glow), 0 0 80px var(--brand-glow);
     }
 
     /* Hero Content */
     .hero-content {
       position: relative;
       z-index: 10;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
       padding: 0 48px;
-      max-width: 900px;
-      gap: 32px;
+      max-width: 1000px;
     }
 
-    /* Status Pill */
     .status-pill {
       display: inline-flex;
       align-items: center;
@@ -207,26 +296,22 @@
       border-radius: 100px;
       width: fit-content;
       background: rgba(238, 43, 91, 0.05);
+      margin-bottom: 32px;
     }
     .status-dot {
       width: 7px;
       height: 7px;
       background: #34D399;
       border-radius: 50%;
-      animation: statusPulse 2s ease-in-out infinite;
-    }
-    @keyframes statusPulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4); }
-      50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
     }
 
-    /* Headline */
     .hero-headline {
       font-family: var(--font-heading);
       font-weight: 700;
-      font-size: clamp(4rem, 8vw, 7.5rem);
+      font-size: clamp(5rem, 10vw, 10rem);
       line-height: 0.9;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.04em;
+      margin-bottom: 32px;
     }
     .hero-headline .line {
       display: block;
@@ -235,10 +320,6 @@
     .hero-headline .line-inner {
       display: block;
       transform: translateY(110%);
-      animation: revealUp 0.8s var(--ease-out) forwards;
-    }
-    .hero-headline .line:nth-child(2) .line-inner {
-      animation-delay: 0.15s;
     }
     .hero-headline .gradient-text {
       background: var(--brand-gradient);
@@ -247,944 +328,898 @@
       background-clip: text;
     }
 
-    @keyframes revealUp {
-      to { transform: translateY(0); }
-    }
-
     .hero-sub {
-      max-width: 520px;
-      color: var(--text-secondary);
       font-size: 1.125rem;
       line-height: 1.7;
-      opacity: 0;
-      animation: fadeUp 0.8s var(--ease-out) 0.4s forwards;
+      color: var(--text-white-secondary);
+      max-width: 600px;
+      margin-bottom: 40px;
     }
 
-    .hero-buttons {
+    .hero-ctas {
       display: flex;
       gap: 16px;
       align-items: center;
-      opacity: 0;
-      animation: fadeUp 0.8s var(--ease-out) 0.55s forwards;
+      flex-wrap: wrap;
     }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     .btn-primary {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 600;
       color: white;
       background: var(--brand);
-      padding: 14px 32px;
+      padding: 16px 36px;
       border-radius: 100px;
       transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
     }
     .btn-primary:hover {
       background: var(--brand-light);
       box-shadow: 0 0 40px var(--brand-glow);
-      transform: translateY(-1px);
     }
-    .btn-ghost {
+    .btn-secondary {
       display: inline-flex;
       align-items: center;
-      font-size: 0.95rem;
+      gap: 8px;
+      font-size: 1rem;
       font-weight: 500;
-      color: var(--text-secondary);
-      padding: 14px 32px;
+      color: var(--text-white-secondary);
+      padding: 16px 36px;
       border-radius: 100px;
-      border: 1px solid var(--card-border);
-      transition: border-color 0.3s, color 0.3s;
+      border: 1px solid rgba(255,255,255,0.15);
+      transition: color 0.3s, border-color 0.3s;
     }
-    .btn-ghost:hover {
-      border-color: rgba(255,255,255,0.2);
-      color: var(--text-primary);
+    .btn-secondary:hover {
+      color: var(--text-white);
+      border-color: rgba(255,255,255,0.4);
     }
 
     /* ═══════════════════════════════════════════
        METRICS BAR
     ═══════════════════════════════════════════ */
     .metrics {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+      background: var(--bg-dark);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 40px 0;
+    }
+    .metrics-inner {
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 32px 48px;
-      gap: 0;
+      gap: 80px;
+      flex-wrap: wrap;
     }
     .metric {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0 48px;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      letter-spacing: 0.04em;
-      color: var(--text-secondary);
-    }
-    .metric:not(:last-child) {
-      border-right: 1px solid var(--border);
+      text-align: center;
     }
     .metric-value {
-      color: var(--brand);
-      font-weight: 600;
+      font-family: var(--font-heading);
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 700;
+      color: var(--text-white);
+      letter-spacing: -0.02em;
+    }
+    .metric-value .coral { color: var(--brand); }
+    .metric-label {
+      font-size: 0.875rem;
+      color: var(--text-white-secondary);
+      margin-top: 4px;
     }
 
     /* ═══════════════════════════════════════════
-       SECTION COMMON
+       IKA IS — TAGLINE LIST (Sui-style)
     ═══════════════════════════════════════════ */
-    .section {
-      padding: 140px 48px;
-      max-width: 1200px;
-      margin: 0 auto;
+    .ika-is {
+      padding: 120px 0;
     }
-    .section-tag {
+    .ika-is-list {
+      list-style: none;
+      border-top: 1px solid rgba(0,0,0,0.1);
+    }
+    .ika-is-item {
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      padding: 36px 0;
+      cursor: default;
+    }
+    .ika-is-item-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .ika-is-item-title {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--text-dark);
+      transition: color 0.4s var(--ease-out);
+    }
+    .ika-is-item:hover .ika-is-item-title,
+    .ika-is-item.active .ika-is-item-title {
+      color: var(--brand);
+    }
+    .ika-is-item-number {
       font-family: var(--font-mono);
       font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--brand);
-      margin-bottom: 20px;
+      color: var(--text-dark-secondary);
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
     }
-    .section-headline {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      font-size: clamp(2.2rem, 4.5vw, 3.5rem);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      color: var(--text-primary);
-      margin-bottom: 64px;
-    }
-
-    /* Scroll reveal */
-    .reveal {
+    .ika-is-item-desc {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s var(--ease-out), opacity 0.4s;
       opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
     }
-    .reveal.visible {
+    .ika-is-item:hover .ika-is-item-desc,
+    .ika-is-item.active .ika-is-item-desc {
+      max-height: 100px;
       opacity: 1;
-      transform: translateY(0);
+    }
+    .ika-is-item-desc p {
+      padding-top: 16px;
+      font-size: 1.125rem;
+      color: var(--text-dark-secondary);
+      max-width: 600px;
     }
 
     /* ═══════════════════════════════════════════
-       HOW IT WORKS
+       PROBLEM SECTION
     ═══════════════════════════════════════════ */
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 48px;
-      position: relative;
-    }
-    .step {
-      position: relative;
-    }
-    .step-number {
-      font-family: var(--font-heading);
-      font-size: 3.5rem;
-      font-weight: 700;
-      color: var(--brand);
-      line-height: 1;
-      margin-bottom: 20px;
-      opacity: 0.9;
-    }
-    .step-title {
-      font-family: var(--font-heading);
-      font-weight: 600;
-      font-size: 1.35rem;
-      color: var(--text-primary);
-      margin-bottom: 12px;
-    }
-    .step-desc {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-    /* Connecting line between steps */
-    .step:not(:last-child)::after {
-      content: "";
-      position: absolute;
-      top: 30px;
-      right: -24px;
-      width: calc(48px);
-      height: 1px;
-      background: var(--border);
-      background-image: repeating-linear-gradient(
-        90deg,
-        var(--text-muted) 0,
-        var(--text-muted) 6px,
-        transparent 6px,
-        transparent 12px
-      );
-      opacity: 0.4;
+    .problem {
+      padding: 120px 0;
     }
 
     /* ═══════════════════════════════════════════
-       FEATURES BENTO GRID
+       SOLUTION SECTION
     ═══════════════════════════════════════════ */
-    .bento {
+    .solution {
+      padding: 120px 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       USE CASES — BENTO GRID
+    ═══════════════════════════════════════════ */
+    .use-cases {
+      padding: 120px 0;
+    }
+    .bento-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: auto auto;
-      gap: 16px;
+      gap: 2px;
+      margin-top: 64px;
     }
     .bento-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 40px 36px;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.5s;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 48px 40px;
+      transition: background 0.4s;
     }
     .bento-card:hover {
-      border-color: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
     }
-    /* Shimmer border on hover */
-    .bento-card::before {
-      content: "";
-      position: absolute;
-      inset: -1px;
-      border-radius: 24px;
-      padding: 1px;
-      background: conic-gradient(from var(--shimmer-angle, 0deg), transparent 60%, rgba(238, 43, 91, 0.3), transparent 80%);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      opacity: 0;
-      transition: opacity 0.5s;
-      pointer-events: none;
-    }
-    .bento-card:hover::before {
-      opacity: 1;
-    }
-    /* Top row: 2 large cards */
-    .bento-card:nth-child(1) { grid-column: span 2; }
-    .bento-card:nth-child(2) { grid-column: span 1; }
-
-    .bento-label {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--brand);
-      margin-bottom: 16px;
-    }
-    .bento-title {
+    .bento-card-title {
       font-family: var(--font-heading);
       font-weight: 600;
-      font-size: 1.35rem;
-      color: var(--text-primary);
-      margin-bottom: 10px;
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
     }
-    .bento-desc {
-      color: var(--text-muted);
-      font-size: 0.9rem;
+    .bento-card-desc {
+      font-size: 1rem;
+      color: var(--text-white-secondary);
       line-height: 1.6;
-      max-width: 380px;
     }
 
     /* ═══════════════════════════════════════════
        COMPARISON TABLE
     ═══════════════════════════════════════════ */
-    .compare-table-wrap {
+    .comparison {
+      padding: 120px 0;
+    }
+    .comparison-table-wrap {
+      margin-top: 64px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
-    .compare-table {
+    .comparison-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      min-width: 700px;
     }
-    .compare-table th,
-    .compare-table td {
-      padding: 18px 24px;
+    .comparison-table th,
+    .comparison-table td {
+      padding: 20px 24px;
       text-align: left;
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
+      font-size: 0.95rem;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
     }
-    .compare-table thead th {
+    .comparison-table th {
       font-family: var(--font-heading);
       font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--text-secondary);
-      padding-bottom: 20px;
+      font-size: 1rem;
+      padding-bottom: 16px;
+      border-bottom: 2px solid rgba(0,0,0,0.12);
     }
-    .compare-table thead th:first-child {
-      color: var(--text-muted);
-    }
-    .compare-table thead th.ika-col {
-      color: var(--brand);
-    }
-    .compare-table tbody td {
-      color: var(--text-muted);
-    }
-    .compare-table tbody td:first-child {
+    .comparison-table .row-label {
       font-weight: 500;
-      color: var(--text-secondary);
+      color: var(--text-dark);
     }
-    .compare-table tbody td.ika-col {
-      color: var(--text-primary);
-      font-weight: 500;
+    .comparison-table td {
+      color: var(--text-dark-secondary);
     }
-    .check {
+    .comparison-table .col-ika {
       color: var(--brand);
-      font-weight: 700;
+      font-weight: 600;
+      background: rgba(238, 43, 91, 0.04);
+    }
+    .comparison-table th.col-ika {
+      color: var(--brand);
+      background: rgba(238, 43, 91, 0.06);
     }
 
     /* ═══════════════════════════════════════════
        CHAINS MARQUEE
     ═══════════════════════════════════════════ */
-    .chains-section {
-      padding: 80px 0;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+    .chains-marquee {
+      background: var(--bg-dark);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 32px 0;
       overflow: hidden;
-      position: relative;
-    }
-    .chains-label {
-      text-align: center;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 40px;
-    }
-    .marquee-container {
-      position: relative;
-      overflow: hidden;
-    }
-    .marquee-container::before,
-    .marquee-container::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 120px;
-      z-index: 2;
-      pointer-events: none;
-    }
-    .marquee-container::before {
-      left: 0;
-      background: linear-gradient(90deg, var(--bg), transparent);
-    }
-    .marquee-container::after {
-      right: 0;
-      background: linear-gradient(270deg, var(--bg), transparent);
     }
     .marquee-track {
       display: flex;
+      width: max-content;
+    }
+    .marquee-content {
+      display: flex;
       align-items: center;
       gap: 64px;
-      width: max-content;
-      animation: marquee 30s linear infinite;
+      padding-right: 64px;
+      flex-shrink: 0;
     }
-    .marquee-track:hover {
-      animation-play-state: paused;
-    }
-    .chain-item {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
+    .marquee-content span {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--text-white-secondary);
       white-space: nowrap;
-      padding: 8px 0;
-      transition: color 0.3s;
     }
-    .chain-item:hover {
-      color: var(--text-secondary);
-    }
-    .chain-dot {
+    .marquee-dot {
       width: 4px;
       height: 4px;
-      background: var(--text-muted);
       border-radius: 50%;
+      background: var(--text-white-muted);
       flex-shrink: 0;
-      opacity: 0.4;
-    }
-
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
     }
 
     /* ═══════════════════════════════════════════
        BACKED BY
     ═══════════════════════════════════════════ */
-    .backers-section {
-      padding: 100px 48px;
-      max-width: 1200px;
-      margin: 0 auto;
-      text-align: center;
+    .backed-by {
+      padding: 120px 0;
     }
-    .backers-label {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 48px;
-    }
-    .backers-grid {
+    .backer-logos {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
       align-items: center;
-      gap: 48px 56px;
+      justify-content: center;
+      gap: 48px 64px;
+      margin-top: 64px;
     }
-    .backer-logo {
-      height: 28px;
-      opacity: 0.45;
-      filter: grayscale(1) brightness(2);
-      transition: opacity 0.4s, filter 0.4s;
+    .backer-logos img {
+      height: 32px;
+      opacity: 0.5;
+      filter: brightness(0) invert(1);
+      transition: opacity 0.3s;
     }
-    .backer-logo:hover {
-      opacity: 0.9;
-      filter: grayscale(0) brightness(1);
+    .backer-logos img:hover {
+      opacity: 0.85;
     }
 
     /* ═══════════════════════════════════════════
        FINAL CTA
     ═══════════════════════════════════════════ */
-    .cta-section {
-      padding: 160px 48px;
+    .final-cta {
+      padding: 160px 0;
       text-align: center;
       position: relative;
       overflow: hidden;
     }
-    .cta-glow {
+    .final-cta::before {
+      content: '';
       position: absolute;
-      width: 500px;
-      height: 500px;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: radial-gradient(circle, var(--brand-glow) 0%, transparent 70%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(238,43,91,0.15) 0%, transparent 60%);
       border-radius: 50%;
-      opacity: 0.3;
       pointer-events: none;
     }
-    .cta-headline {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      font-size: clamp(2.8rem, 6vw, 5rem);
-      line-height: 1;
-      letter-spacing: -0.03em;
-      margin-bottom: 20px;
+    .final-cta .container {
       position: relative;
+      z-index: 1;
     }
-    .cta-sub {
-      color: var(--text-secondary);
-      font-size: 1.125rem;
-      margin-bottom: 40px;
-      position: relative;
+    .final-cta .section-headline {
+      margin-left: auto;
+      margin-right: auto;
     }
-    .cta-section .btn-primary {
-      font-size: 1.05rem;
-      padding: 16px 40px;
-      position: relative;
+    .final-cta .section-body {
+      margin: 0 auto 48px;
+      text-align: center;
     }
 
     /* ═══════════════════════════════════════════
        FOOTER
     ═══════════════════════════════════════════ */
     .footer {
-      border-top: 1px solid var(--border);
-      padding: 32px 48px;
+      padding: 40px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
     }
     .footer-left {
       display: flex;
       align-items: center;
       gap: 16px;
-      color: var(--text-muted);
-      font-size: 0.8rem;
     }
-    .footer-left img { height: 20px; opacity: 0.5; }
-    .footer-links {
+    .footer-left img {
+      height: 22px;
+    }
+    .footer-left span {
+      font-size: 0.8rem;
+      color: var(--text-white-muted);
+    }
+    .footer-right {
       display: flex;
       gap: 32px;
     }
-    .footer-links a {
-      font-size: 0.8rem;
-      color: var(--text-muted);
+    .footer-right a {
+      font-size: 0.875rem;
+      color: var(--text-white-secondary);
       transition: color 0.3s;
     }
-    .footer-links a:hover { color: var(--text-secondary); }
+    .footer-right a:hover {
+      color: var(--text-white);
+    }
 
     /* ═══════════════════════════════════════════
-       REDUCED MOTION
+       ANIMATIONS
     ═══════════════════════════════════════════ */
-    @media (prefers-reduced-motion: reduce) {
-      .convergence-line { animation: none; stroke-dashoffset: 0; }
-      .convergence-glow { animation: none; }
-      .status-dot { animation: none; }
-      .hero-headline .line-inner { animation: none; transform: none; }
-      .hero-sub, .hero-buttons { animation: none; opacity: 1; }
-      .marquee-track { animation: none; }
-      .reveal { opacity: 1; transform: none; transition: none; }
+    @media (prefers-reduced-motion: no-preference) {
+      .convergence-line {
+        animation: drawLine 2.5s var(--ease-out) forwards;
+      }
+      .convergence-glow {
+        animation: glowPulse 5s ease-in-out infinite;
+      }
+      .convergence-dot {
+        animation: dotPulse 3s ease-in-out infinite;
+      }
+      .status-dot {
+        animation: statusPulse 2s ease-in-out infinite;
+      }
+      .hero-headline .line-inner {
+        animation: revealUp 0.8s var(--ease-out) forwards;
+      }
+      .hero-headline .line:nth-child(2) .line-inner {
+        animation-delay: 0.15s;
+      }
+      .marquee-track {
+        animation: marqueeScroll 25s linear infinite;
+      }
+    }
+
+    @keyframes revealUp {
+      from { transform: translateY(110%); }
+      to { transform: translateY(0); }
+    }
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.12); }
+    }
+    @keyframes dotPulse {
+      0%, 100% { box-shadow: 0 0 0 2px rgba(238,43,91,0.3), 0 0 20px var(--brand-glow), 0 0 80px var(--brand-glow); }
+      50% { box-shadow: 0 0 0 4px rgba(238,43,91,0.15), 0 0 40px var(--brand-glow), 0 0 120px var(--brand-glow); }
+    }
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
+    }
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
     }
 
     /* ═══════════════════════════════════════════
        RESPONSIVE
     ═══════════════════════════════════════════ */
     @media (max-width: 1024px) {
-      .bento { grid-template-columns: 1fr 1fr; }
-      .bento-card:nth-child(1) { grid-column: span 2; }
-      .bento-card:nth-child(2) { grid-column: span 1; }
+      .container { padding: 0 32px; }
+      .hero-content { padding: 0 32px; }
+      .nav { padding: 20px 32px; }
+      .bento-grid { grid-template-columns: repeat(2, 1fr); }
+      .metrics-inner { gap: 48px; }
     }
 
     @media (max-width: 768px) {
-      .nav { padding: 20px 24px; }
+      .container { padding: 0 24px; }
+      .hero-content { padding: 0 24px; }
+      .nav { padding: 16px 24px; }
       .nav-links { display: none; }
       .nav-hamburger { display: flex; }
-
-      /* Mobile menu */
-      .nav-links.open {
-        display: flex;
+      .bento-grid { grid-template-columns: repeat(2, 1fr); }
+      .metrics-inner { gap: 32px; }
+      .backer-logos { gap: 32px 48px; }
+      .backer-logos img { height: 24px; }
+      .ika-is, .problem, .solution, .use-cases, .comparison, .backed-by {
+        padding: 80px 0;
+      }
+      .final-cta { padding: 100px 0; }
+      .footer-inner {
         flex-direction: column;
-        position: fixed;
-        inset: 0;
-        background: var(--bg);
-        z-index: 15;
-        justify-content: center;
-        align-items: center;
-        gap: 32px;
-      }
-      .nav-links.open a { font-size: 1.2rem; }
-
-      .hero-content { padding: 0 24px; }
-      .hero-headline { font-size: clamp(2.8rem, 12vw, 4.5rem); }
-      .hero-sub { font-size: 1rem; }
-      .hero-buttons { flex-direction: column; align-items: flex-start; }
-
-      .section { padding: 80px 24px; }
-      .section-headline { font-size: clamp(1.8rem, 6vw, 2.5rem); margin-bottom: 48px; }
-
-      .steps {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-      .step:not(:last-child)::after {
-        top: auto;
-        bottom: -20px;
-        right: auto;
-        left: 20px;
-        width: 1px;
-        height: 40px;
-        background-image: repeating-linear-gradient(
-          180deg,
-          var(--text-muted) 0,
-          var(--text-muted) 6px,
-          transparent 6px,
-          transparent 12px
-        );
-      }
-
-      .bento {
-        grid-template-columns: 1fr;
-      }
-      .bento-card:nth-child(1),
-      .bento-card:nth-child(2) {
-        grid-column: span 1;
-      }
-
-      .metrics {
-        padding: 24px;
-        gap: 0;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-      .metric {
-        padding: 12px 24px;
-      }
-      .metric:not(:last-child) {
-        border-right: none;
-      }
-
-      .compare-table th,
-      .compare-table td {
-        padding: 12px 16px;
-        font-size: 0.8rem;
-      }
-
-      .backers-section { padding: 60px 24px; }
-      .backers-grid { gap: 32px 40px; }
-      .backer-logo { height: 22px; }
-
-      .cta-section { padding: 100px 24px; }
-      .footer {
-        padding: 24px;
-        flex-direction: column;
-        gap: 16px;
-        text-align: center;
+        align-items: flex-start;
       }
     }
 
     @media (max-width: 480px) {
-      .hero-headline { font-size: clamp(2.4rem, 14vw, 3.5rem); }
-      .metric { padding: 8px 16px; font-size: 0.75rem; }
+      .container { padding: 0 20px; }
+      .hero-content { padding: 0 20px; }
+      .nav { padding: 14px 20px; }
+      .bento-grid {
+        grid-template-columns: 1fr;
+      }
+      .bento-card { padding: 32px 24px; }
+      .hero-ctas { flex-direction: column; align-items: flex-start; }
+      .metrics-inner {
+        flex-direction: column;
+        gap: 24px;
+        align-items: center;
+      }
+      .ika-is-item { padding: 24px 0; }
+      .backer-logos img { height: 20px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ═══════════ HERO ═══════════ -->
-  <section class="hero">
+  <!-- ═══════════════════════════════════════════
+       STICKY NAV
+  ═══════════════════════════════════════════ -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">
+      <img src="./assets/logo.svg" alt="Ika" />
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#ika-is">What is Ika</a>
+      <a href="#use-cases">Use Cases</a>
+      <a href="#compare">Compare</a>
+      <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
+      <a href="#cta" class="nav-cta">Start Building</a>
+    </div>
+    <div class="nav-hamburger" id="navToggle" role="button" aria-label="Toggle navigation" tabindex="0">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
 
-    <!-- Convergence Lines SVG — lines converge to right-center (1080, 420) leaving left clear for text -->
+  <!-- Mobile nav overlay -->
+  <div class="nav-mobile-overlay" id="mobileNav">
+    <a href="#ika-is" class="mobile-nav-link">What is Ika</a>
+    <a href="#use-cases" class="mobile-nav-link">Use Cases</a>
+    <a href="#compare" class="mobile-nav-link">Compare</a>
+    <a href="https://docs.ika.network" target="_blank" rel="noopener" class="mobile-nav-link">Docs</a>
+    <a href="#cta" class="btn-primary" style="margin-top: 16px;">Start Building</a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       1. HERO
+  ═══════════════════════════════════════════ -->
+  <section class="hero section-dark">
+    <!-- Background image -->
+    <div class="hero-bg"></div>
+
+    <!-- Convergence Lines SVG -->
     <svg class="hero-lines" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- White lines from all edges converging to (1080, 420) -->
-      <line x1="0" y1="0"   x2="1080" y2="420" stroke="white" stroke-width="0.8" opacity="0.18" class="convergence-line" style="animation-delay: 0s" />
+      <line x1="0" y1="0" x2="1080" y2="420" stroke="white" stroke-width="0.8" opacity="0.18" class="convergence-line" style="animation-delay: 0s" />
       <line x1="200" y1="0" x2="1080" y2="420" stroke="white" stroke-width="0.6" opacity="0.14" class="convergence-line" style="animation-delay: 0.1s" />
       <line x1="480" y1="0" x2="1080" y2="420" stroke="white" stroke-width="0.7" opacity="0.20" class="convergence-line" style="animation-delay: 0.2s" />
       <line x1="760" y1="0" x2="1080" y2="420" stroke="white" stroke-width="0.6" opacity="0.16" class="convergence-line" style="animation-delay: 0.3s" />
       <line x1="1000" y1="0" x2="1080" y2="420" stroke="white" stroke-width="0.8" opacity="0.22" class="convergence-line" style="animation-delay: 0.4s" />
       <line x1="1200" y1="0" x2="1080" y2="420" stroke="white" stroke-width="0.6" opacity="0.15" class="convergence-line" style="animation-delay: 0.5s" />
-      <line x1="1440" y1="50"  x2="1080" y2="420" stroke="white" stroke-width="0.7" opacity="0.18" class="convergence-line" style="animation-delay: 0.6s" />
+      <line x1="1440" y1="50" x2="1080" y2="420" stroke="white" stroke-width="0.7" opacity="0.18" class="convergence-line" style="animation-delay: 0.6s" />
       <line x1="1440" y1="280" x2="1080" y2="420" stroke="white" stroke-width="0.9" opacity="0.24" class="convergence-line" style="animation-delay: 0.7s" />
       <line x1="1440" y1="550" x2="1080" y2="420" stroke="white" stroke-width="0.7" opacity="0.18" class="convergence-line" style="animation-delay: 0.8s" />
       <line x1="1440" y1="800" x2="1080" y2="420" stroke="white" stroke-width="0.6" opacity="0.15" class="convergence-line" style="animation-delay: 0.9s" />
       <line x1="1200" y1="900" x2="1080" y2="420" stroke="white" stroke-width="0.7" opacity="0.17" class="convergence-line" style="animation-delay: 1.0s" />
-      <line x1="900" y1="900"  x2="1080" y2="420" stroke="white" stroke-width="0.6" opacity="0.14" class="convergence-line" style="animation-delay: 1.1s" />
-      <line x1="600" y1="900"  x2="1080" y2="420" stroke="white" stroke-width="0.8" opacity="0.20" class="convergence-line" style="animation-delay: 1.2s" />
-      <line x1="300" y1="900"  x2="1080" y2="420" stroke="white" stroke-width="0.6" opacity="0.15" class="convergence-line" style="animation-delay: 1.3s" />
-      <line x1="0" y1="700"    x2="1080" y2="420" stroke="white" stroke-width="0.7" opacity="0.16" class="convergence-line" style="animation-delay: 1.4s" />
-      <line x1="0" y1="400"    x2="1080" y2="420" stroke="white" stroke-width="0.6" opacity="0.13" class="convergence-line" style="animation-delay: 1.5s" />
-      <line x1="0" y1="150"    x2="1080" y2="420" stroke="white" stroke-width="0.7" opacity="0.17" class="convergence-line" style="animation-delay: 1.6s" />
-
-      <!-- Coral accent lines — 3 prominent ones -->
+      <line x1="900" y1="900" x2="1080" y2="420" stroke="white" stroke-width="0.6" opacity="0.14" class="convergence-line" style="animation-delay: 1.1s" />
+      <line x1="600" y1="900" x2="1080" y2="420" stroke="white" stroke-width="0.8" opacity="0.20" class="convergence-line" style="animation-delay: 1.2s" />
+      <line x1="300" y1="900" x2="1080" y2="420" stroke="white" stroke-width="0.6" opacity="0.15" class="convergence-line" style="animation-delay: 1.3s" />
+      <line x1="0" y1="700" x2="1080" y2="420" stroke="white" stroke-width="0.7" opacity="0.16" class="convergence-line" style="animation-delay: 1.4s" />
+      <line x1="0" y1="400" x2="1080" y2="420" stroke="white" stroke-width="0.6" opacity="0.13" class="convergence-line" style="animation-delay: 1.5s" />
+      <line x1="0" y1="150" x2="1080" y2="420" stroke="white" stroke-width="0.7" opacity="0.17" class="convergence-line" style="animation-delay: 1.6s" />
+      <!-- Coral accent lines -->
       <line x1="1440" y1="280" x2="1080" y2="420" stroke="#EE2B5B" stroke-width="1.2" opacity="0.35" class="convergence-line accent" style="animation-delay: 0.75s" />
-      <line x1="760" y1="0"    x2="1080" y2="420" stroke="#EE2B5B" stroke-width="1.0" opacity="0.28" class="convergence-line accent" style="animation-delay: 0.25s" />
-      <line x1="600" y1="900"  x2="1080" y2="420" stroke="#EE2B5B" stroke-width="1.0" opacity="0.30" class="convergence-line accent" style="animation-delay: 1.25s" />
+      <line x1="760" y1="0" x2="1080" y2="420" stroke="#EE2B5B" stroke-width="1.0" opacity="0.28" class="convergence-line accent" style="animation-delay: 0.25s" />
+      <line x1="600" y1="900" x2="1080" y2="420" stroke="#EE2B5B" stroke-width="1.0" opacity="0.30" class="convergence-line accent" style="animation-delay: 1.25s" />
     </svg>
 
-    <!-- Convergence glow at right-center point -->
     <div class="convergence-glow"></div>
     <div class="convergence-dot"></div>
-
-    <!-- Nav -->
-    <nav class="nav">
-      <a href="/" class="nav-logo">
-        <img src="./assets/logo.svg" alt="Ika" />
-      </a>
-      <div class="nav-links" id="navLinks">
-        <a href="#how-it-works">How It Works</a>
-        <a href="#features">Use Cases</a>
-        <a href="#compare">Compare</a>
-        <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
-        <a href="#cta" class="nav-cta">Start Building</a>
-      </div>
-      <div class="nav-hamburger" id="navToggle" role="button" aria-label="Toggle navigation" tabindex="0">
-        <span></span><span></span><span></span>
-      </div>
-    </nav>
 
     <!-- Hero content -->
     <div class="hero-content">
       <div class="status-pill">
         <span class="status-dot"></span>
-        Now live on Solana &amp; Sui
+        LIVE ON SOLANA &amp; SUI
       </div>
 
       <h1 class="hero-headline">
-        <span class="line"><span class="line-inner">Sign anything.</span></span>
-        <span class="line"><span class="line-inner gradient-text">Any chain.</span></span>
+        <span class="line"><span class="line-inner">Every chain</span></span>
+        <span class="line"><span class="line-inner gradient-text">is yours.</span></span>
       </h1>
 
       <p class="hero-sub">
-        The first sub-second MPC network. Your Solana program signs transactions on Bitcoin, Ethereum, and every chain. Zero trust.
+        Ika is the fastest MPC network. Your Sui program signs transactions on Bitcoin, Ethereum, and every other chain in under a second. No bridges. No trust assumptions. Just cryptography.
       </p>
 
-      <div class="hero-buttons">
+      <div class="hero-ctas">
         <a href="#cta" class="btn-primary">Start Building &rarr;</a>
-        <a href="#" class="btn-ghost">Read Whitepaper</a>
+        <a href="https://docs.ika.network" target="_blank" rel="noopener" class="btn-secondary">Read the Docs</a>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ METRICS BAR ═══════════ -->
-  <div class="metrics reveal">
-    <div class="metric">
-      <span class="metric-value" data-count="8">0</span><span class="metric-value">+</span>&nbsp;Chains
-    </div>
-    <div class="metric">
-      <span class="metric-value">&lt; </span><span class="metric-value" data-count="1">0</span><span class="metric-value">s</span>&nbsp;Latency
-    </div>
-    <div class="metric">
-      <span class="metric-value">Zero</span>&nbsp;Trust
-    </div>
-  </div>
-
-  <!-- ═══════════ HOW IT WORKS ═══════════ -->
-  <section class="section reveal" id="how-it-works">
-    <div class="section-tag">&mdash; How It Works</div>
-    <h2 class="section-headline">Three steps to<br>universal signing</h2>
-
-    <div class="steps">
-      <div class="step">
-        <div class="step-number">01</div>
-        <h3 class="step-title">Create a dWallet</h3>
-        <p class="step-desc">Generate a distributed wallet. The private key is never held by any single party &mdash; it exists only as shares across the network.</p>
-      </div>
-      <div class="step">
-        <div class="step-number">02</div>
-        <h3 class="step-title">Write your logic</h3>
-        <p class="step-desc">Define signing policies in Move. Gate transactions by on-chain state, multi-party approval, time locks, or any composable condition.</p>
-      </div>
-      <div class="step">
-        <div class="step-number">03</div>
-        <h3 class="step-title">Sign on any chain</h3>
-        <p class="step-desc">Submit signatures to Bitcoin, Ethereum, Solana, and every supported chain. Sub-second finality. No bridges, no trust assumptions.</p>
+  <!-- ═══════════════════════════════════════════
+       2. METRICS BAR
+  ═══════════════════════════════════════════ -->
+  <section class="metrics section-dark">
+    <div class="container">
+      <div class="metrics-inner">
+        <div class="metric reveal">
+          <div class="metric-value"><span class="coral" data-count="10000">10,000</span>&times;</div>
+          <div class="metric-label">Faster than legacy MPC</div>
+        </div>
+        <div class="metric reveal reveal-delay-1">
+          <div class="metric-value">&lt; <span class="coral">1</span>s</div>
+          <div class="metric-label">Signing latency</div>
+        </div>
+        <div class="metric reveal reveal-delay-2">
+          <div class="metric-value"><span class="coral">100</span>+</div>
+          <div class="metric-label">Validator nodes</div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ FEATURES BENTO ═══════════ -->
-  <section class="section reveal" id="features">
-    <div class="section-tag">&mdash; Core Features</div>
-    <h2 class="section-headline">Built for the<br>multi-chain future</h2>
+  <!-- ═══════════════════════════════════════════
+       3. IKA IS — TAGLINE LIST
+  ═══════════════════════════════════════════ -->
+  <section class="ika-is section-light" id="ika-is">
+    <div class="container">
+      <p class="section-tag reveal">What makes Ika different</p>
+      <ul class="ika-is-list">
+        <li class="ika-is-item reveal">
+          <div class="ika-is-item-header">
+            <h3 class="ika-is-item-title">Fast by design</h3>
+            <span class="ika-is-item-number">01</span>
+          </div>
+          <div class="ika-is-item-desc">
+            <p>Sub-second signatures where legacy MPC takes 30+ seconds</p>
+          </div>
+        </li>
+        <li class="ika-is-item reveal">
+          <div class="ika-is-item-header">
+            <h3 class="ika-is-item-title">Trustless by proof</h3>
+            <span class="ika-is-item-number">02</span>
+          </div>
+          <div class="ika-is-item-desc">
+            <p>2PC-MPC: no single party ever holds your key. Mathematically guaranteed.</p>
+          </div>
+        </li>
+        <li class="ika-is-item reveal">
+          <div class="ika-is-item-header">
+            <h3 class="ika-is-item-title">Scalable without limits</h3>
+            <span class="ika-is-item-number">03</span>
+          </div>
+          <div class="ika-is-item-desc">
+            <p>Hundreds of nodes signing in parallel. Not the 4-8 node ceiling.</p>
+          </div>
+        </li>
+        <li class="ika-is-item reveal">
+          <div class="ika-is-item-header">
+            <h3 class="ika-is-item-title">Programmable in Move</h3>
+            <span class="ika-is-item-number">04</span>
+          </div>
+          <div class="ika-is-item-desc">
+            <p>Write signing policies as smart contracts. Gate, compose, automate.</p>
+          </div>
+        </li>
+        <li class="ika-is-item reveal">
+          <div class="ika-is-item-header">
+            <h3 class="ika-is-item-title">Native to every chain</h3>
+            <span class="ika-is-item-number">05</span>
+          </div>
+          <div class="ika-is-item-desc">
+            <p>Not a bridge. Not a wrapper. Real signatures on real chains.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
 
-    <div class="bento">
-      <div class="bento-card">
-        <div class="bento-label">Performance</div>
-        <h3 class="bento-title">Sub-Second MPC</h3>
-        <p class="bento-desc">2PC-MPC protocol completes signing in under one second. No waiting.</p>
-      </div>
-      <div class="bento-card">
-        <div class="bento-label">Security</div>
-        <h3 class="bento-title">Zero Trust</h3>
-        <p class="bento-desc">No single party ever holds your key. Not even Ika. Cryptographic guarantee.</p>
-      </div>
-      <div class="bento-card">
-        <div class="bento-label">Reach</div>
-        <h3 class="bento-title">Any Chain Support</h3>
-        <p class="bento-desc">Bitcoin, Ethereum, Solana, Sui, and every chain. One protocol.</p>
-      </div>
-      <div class="bento-card">
-        <div class="bento-label">Flexibility</div>
-        <h3 class="bento-title">Programmable Signing</h3>
-        <p class="bento-desc">Write signing policies in Move. Automate, gate, compose.</p>
-      </div>
-      <div class="bento-card">
-        <div class="bento-label">Trust Model</div>
-        <h3 class="bento-title">Non-Collusive</h3>
-        <p class="bento-desc">Mathematically proven. No subset of nodes can reconstruct your key.</p>
-      </div>
-      <div class="bento-card">
-        <div class="bento-label">Foundation</div>
-        <h3 class="bento-title">Battle-Tested</h3>
-        <p class="bento-desc">Built on Sui. Backed by DCG, Mysten Labs, and more.</p>
+  <!-- ═══════════════════════════════════════════
+       4. PROBLEM
+  ═══════════════════════════════════════════ -->
+  <section class="problem section-dark">
+    <div class="container">
+      <p class="section-tag reveal">The problem</p>
+      <h2 class="section-headline reveal">Today's cross-chain<br>is broken.</h2>
+      <p class="section-body reveal reveal-delay-1">
+        Bridges get hacked. Wrapped assets lose their peg. MPC networks max out at 8 nodes and call it decentralized. You're told to trust relayers, validators, and committees with your assets. Then they get exploited, and you lose everything.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       5. SOLUTION
+  ═══════════════════════════════════════════ -->
+  <section class="solution section-light">
+    <div class="container">
+      <p class="section-tag reveal">The Ika approach</p>
+      <h2 class="section-headline reveal">Your key never exists<br>in one place.</h2>
+      <p class="section-body reveal reveal-delay-1">
+        Ika uses 2PC-MPC — a breakthrough in threshold cryptography where no single party, not even Ika, can reconstruct your private key. Ever. You hold one share. The network holds the other across hundreds of nodes. Signing requires both. That's not a feature. That's the architecture.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       6. USE CASES — BENTO GRID
+  ═══════════════════════════════════════════ -->
+  <section class="use-cases section-dark" id="use-cases">
+    <div class="container">
+      <p class="section-tag reveal">Build with Ika</p>
+      <h2 class="section-headline reveal">What you can build.</h2>
+      <div class="bento-grid">
+        <div class="bento-card reveal">
+          <h3 class="bento-card-title">On-chain Fireblocks</h3>
+          <p class="bento-card-desc">Enterprise custody without the enterprise. Programmable signing policies in Move.</p>
+        </div>
+        <div class="bento-card reveal reveal-delay-1">
+          <h3 class="bento-card-title">Native Bitcoin on Sui</h3>
+          <p class="bento-card-desc">Not wrapped. Not bridged. Real BTC controlled by Sui smart contracts.</p>
+        </div>
+        <div class="bento-card reveal reveal-delay-2">
+          <h3 class="bento-card-title">Cross-chain DeFi</h3>
+          <p class="bento-card-desc">Lend against assets on any chain. Treat all of crypto as one liquidity pool.</p>
+        </div>
+        <div class="bento-card reveal reveal-delay-3">
+          <h3 class="bento-card-title">Smart Wallet</h3>
+          <p class="bento-card-desc">Account recovery, spending limits, multi-party approval — enforced cryptographically.</p>
+        </div>
+        <div class="bento-card reveal reveal-delay-4">
+          <h3 class="bento-card-title">AI Agent Guardrails</h3>
+          <p class="bento-card-desc">Give AI agents the ability to transact with cryptographic guardrails.</p>
+        </div>
+        <div class="bento-card reveal reveal-delay-5">
+          <h3 class="bento-card-title">Universal Staking</h3>
+          <p class="bento-card-desc">Stake any asset to secure any protocol. Cross-chain staking that works.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ COMPARISON ═══════════ -->
-  <section class="section reveal" id="compare">
-    <div class="section-tag">&mdash; Why Ika</div>
-    <h2 class="section-headline">Not your typical bridge</h2>
-
-    <div class="compare-table-wrap">
-      <table class="compare-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th class="ika-col">Ika</th>
-            <th>Bridges</th>
-            <th>MPC Networks</th>
-            <th>Multisig</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Latency</td>
-            <td class="ika-col"><span class="check">&lt; 1s</span></td>
-            <td>Minutes</td>
-            <td>Seconds</td>
-            <td>Variable</td>
-          </tr>
-          <tr>
-            <td>Trust Model</td>
-            <td class="ika-col"><span class="check">Zero trust</span></td>
-            <td>Trusted relayers</td>
-            <td>Threshold trust</td>
-            <td>N-of-M trust</td>
-          </tr>
-          <tr>
-            <td>Key Security</td>
-            <td class="ika-col"><span class="check">Non-collusive</span></td>
-            <td>Custodial</td>
-            <td>Collusion risk</td>
-            <td>Key exposure</td>
-          </tr>
-          <tr>
-            <td>Programmability</td>
-            <td class="ika-col"><span class="check">Move policies</span></td>
-            <td>Limited</td>
-            <td>Minimal</td>
-            <td>None</td>
-          </tr>
-          <tr>
-            <td>Chain Coverage</td>
-            <td class="ika-col"><span class="check">Universal</span></td>
-            <td>Pair-specific</td>
-            <td>Limited</td>
-            <td>Single chain</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- ═══════════ CHAINS MARQUEE ═══════════ -->
-  <section class="chains-section">
-    <div class="chains-label">Supported Chains</div>
-    <div class="marquee-container">
-      <div class="marquee-track">
-        <span class="chain-item">Bitcoin</span><span class="chain-dot"></span>
-        <span class="chain-item">Ethereum</span><span class="chain-dot"></span>
-        <span class="chain-item">Solana</span><span class="chain-dot"></span>
-        <span class="chain-item">Sui</span><span class="chain-dot"></span>
-        <span class="chain-item">Aptos</span><span class="chain-dot"></span>
-        <span class="chain-item">Cosmos</span><span class="chain-dot"></span>
-        <span class="chain-item">Polkadot</span><span class="chain-dot"></span>
-        <span class="chain-item">Arbitrum</span><span class="chain-dot"></span>
-        <!-- Duplicate for seamless loop -->
-        <span class="chain-item">Bitcoin</span><span class="chain-dot"></span>
-        <span class="chain-item">Ethereum</span><span class="chain-dot"></span>
-        <span class="chain-item">Solana</span><span class="chain-dot"></span>
-        <span class="chain-item">Sui</span><span class="chain-dot"></span>
-        <span class="chain-item">Aptos</span><span class="chain-dot"></span>
-        <span class="chain-item">Cosmos</span><span class="chain-dot"></span>
-        <span class="chain-item">Polkadot</span><span class="chain-dot"></span>
-        <span class="chain-item">Arbitrum</span><span class="chain-dot"></span>
+  <!-- ═══════════════════════════════════════════
+       7. COMPARISON TABLE
+  ═══════════════════════════════════════════ -->
+  <section class="comparison section-light" id="compare">
+    <div class="container">
+      <p class="section-tag reveal">Why Ika</p>
+      <h2 class="section-headline reveal">Not another bridge.</h2>
+      <div class="comparison-table-wrap reveal reveal-delay-1">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="col-ika">Ika</th>
+              <th>Bridges</th>
+              <th>Legacy MPC</th>
+              <th>Multisig</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label">Latency</td>
+              <td class="col-ika">&lt; 1 second</td>
+              <td>Minutes to hours</td>
+              <td>30+ seconds</td>
+              <td>Manual</td>
+            </tr>
+            <tr>
+              <td class="row-label">Trust</td>
+              <td class="col-ika">Trustless (2PC-MPC)</td>
+              <td>Trusted relayers</td>
+              <td>Trusted committee</td>
+              <td>Trusted signers</td>
+            </tr>
+            <tr>
+              <td class="row-label">Key security</td>
+              <td class="col-ika">Key never reconstructed</td>
+              <td>Custodial</td>
+              <td>4-8 node ceiling</td>
+              <td>Individual keys</td>
+            </tr>
+            <tr>
+              <td class="row-label">Programmability</td>
+              <td class="col-ika">Full (Move smart contracts)</td>
+              <td>Limited</td>
+              <td>None</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <td class="row-label">Chains</td>
+              <td class="col-ika">Any (ECDSA/EdDSA)</td>
+              <td>Pair-specific</td>
+              <td>Limited</td>
+              <td>Single chain</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ BACKED BY ═══════════ -->
-  <section class="backers-section reveal">
-    <div class="backers-label">Backed by</div>
-    <div class="backers-grid">
-      <img src="./assets/logo-dcg.png" alt="DCG" class="backer-logo" />
-      <img src="./assets/logo-mysten-labs.png" alt="Mysten Labs" class="backer-logo" />
-      <img src="./assets/logo-falconX.png" alt="FalconX" class="backer-logo" />
-      <img src="./assets/logo-big-brain-holdings.png" alt="Big Brain Holdings" class="backer-logo" />
-      <img src="./assets/logo-blockchange.png" alt="Blockchange" class="backer-logo" />
-      <img src="./assets/logo-amplify.png" alt="Amplify" class="backer-logo" />
-      <img src="./assets/logo-liquid2.png" alt="Liquid2" class="backer-logo" />
-      <img src="./assets/logo-sui.png" alt="Sui" class="backer-logo" />
-      <img src="./assets/logo-dwallet-labs.png" alt="dWallet Labs" class="backer-logo" />
+  <!-- ═══════════════════════════════════════════
+       8. CHAINS MARQUEE
+  ═══════════════════════════════════════════ -->
+  <section class="chains-marquee">
+    <div class="marquee-track">
+      <div class="marquee-content">
+        <span>Bitcoin</span><span class="marquee-dot"></span>
+        <span>Ethereum</span><span class="marquee-dot"></span>
+        <span>Solana</span><span class="marquee-dot"></span>
+        <span>Sui</span><span class="marquee-dot"></span>
+        <span>Aptos</span><span class="marquee-dot"></span>
+        <span>Cosmos</span><span class="marquee-dot"></span>
+        <span>Polkadot</span><span class="marquee-dot"></span>
+        <span>Arbitrum</span><span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-content" aria-hidden="true">
+        <span>Bitcoin</span><span class="marquee-dot"></span>
+        <span>Ethereum</span><span class="marquee-dot"></span>
+        <span>Solana</span><span class="marquee-dot"></span>
+        <span>Sui</span><span class="marquee-dot"></span>
+        <span>Aptos</span><span class="marquee-dot"></span>
+        <span>Cosmos</span><span class="marquee-dot"></span>
+        <span>Polkadot</span><span class="marquee-dot"></span>
+        <span>Arbitrum</span><span class="marquee-dot"></span>
+      </div>
     </div>
   </section>
 
-  <!-- ═══════════ FINAL CTA ═══════════ -->
-  <section class="cta-section reveal" id="cta">
-    <div class="cta-glow"></div>
-    <h2 class="cta-headline">Start building<br>cross-chain</h2>
-    <p class="cta-sub">The future of signing is here.</p>
-    <a href="https://docs.ika.network" target="_blank" rel="noopener" class="btn-primary">Get Started &rarr;</a>
+  <!-- ═══════════════════════════════════════════
+       9. BACKED BY
+  ═══════════════════════════════════════════ -->
+  <section class="backed-by section-dark">
+    <div class="container">
+      <p class="section-tag reveal" style="text-align: center;">Backed by</p>
+      <div class="backer-logos reveal">
+        <img src="./assets/logo-dcg.png" alt="DCG" loading="lazy" />
+        <img src="./assets/logo-mysten-labs.png" alt="Mysten Labs" loading="lazy" />
+        <img src="./assets/logo-falconX.png" alt="FalconX" loading="lazy" />
+        <img src="./assets/logo-big-brain-holdings.png" alt="Big Brain Holdings" loading="lazy" />
+        <img src="./assets/logo-blockchange.png" alt="Blockchange" loading="lazy" />
+        <img src="./assets/logo-amplify.png" alt="Amplify" loading="lazy" />
+        <img src="./assets/logo-liquid2.png" alt="Liquid2" loading="lazy" />
+        <img src="./assets/logo-sui.png" alt="Sui" loading="lazy" />
+        <img src="./assets/logo-dwallet-labs.png" alt="dWallet Labs" loading="lazy" />
+      </div>
+    </div>
   </section>
 
-  <!-- ═══════════ FOOTER ═══════════ -->
-  <footer class="footer">
-    <div class="footer-left">
-      <img src="./assets/logo.svg" alt="Ika" />
-      <span>&copy; 2026 Ika Network</span>
+  <!-- ═══════════════════════════════════════════
+       10. FINAL CTA
+  ═══════════════════════════════════════════ -->
+  <section class="final-cta section-dark" id="cta">
+    <div class="container">
+      <h2 class="section-headline reveal">Build what wasn't<br>possible before.</h2>
+      <p class="section-body reveal reveal-delay-1">
+        Your Sui program can now sign transactions on Bitcoin. On Ethereum. On any chain.
+      </p>
+      <a href="https://docs.ika.network" target="_blank" rel="noopener" class="btn-primary reveal reveal-delay-2">Start Building &rarr;</a>
     </div>
-    <div class="footer-links">
-      <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
-      <a href="https://github.com/nicetomeetyou1" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://twitter.com/abortyourmpc" target="_blank" rel="noopener">Twitter</a>
-      <a href="#" target="_blank" rel="noopener">Discord</a>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       11. FOOTER
+  ═══════════════════════════════════════════ -->
+  <footer class="footer section-dark">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <img src="./assets/logo.svg" alt="Ika" />
+          <span>&copy; 2026 Ika Network</span>
+        </div>
+        <div class="footer-right">
+          <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
+          <a href="https://github.com/nicedoc" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://twitter.com/abortiux" target="_blank" rel="noopener">Twitter</a>
+          <a href="https://discord.gg/ika" target="_blank" rel="noopener">Discord</a>
+        </div>
+      </div>
     </div>
   </footer>
 
-  <!-- ═══════════ SCRIPTS ═══════════ -->
+  <!-- ═══════════════════════════════════════════
+       JAVASCRIPT
+  ═══════════════════════════════════════════ -->
   <script>
-    /* ── Scroll Reveal (IntersectionObserver) ── */
-    const reveals = document.querySelectorAll('.reveal');
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.05, rootMargin: '0px 0px 0px 0px' });
-    reveals.forEach(el => revealObserver.observe(el));
+    /* Scroll reveal with IntersectionObserver */
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* ── Metric Counter Animation ── */
-    const counters = document.querySelectorAll('[data-count]');
-    const counterObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const el = entry.target;
-          const target = parseInt(el.dataset.count, 10);
-          let current = 0;
-          const step = () => {
-            current++;
-            el.textContent = current;
-            if (current < target) requestAnimationFrame(step);
-          };
-          requestAnimationFrame(step);
-          counterObserver.unobserve(el);
-        }
-      });
-    }, { threshold: 0.5 });
-    counters.forEach(el => counterObserver.observe(el));
+    if (!prefersReducedMotion) {
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
 
-    /* ── Convergence Line Pulse (after draw-in) ── */
-    const lines = document.querySelectorAll('.convergence-line');
-    lines.forEach(line => {
-      const delay = parseFloat(line.style.animationDelay) || 0;
-      const baseOpacity = parseFloat(line.getAttribute('opacity')) || 0.08;
-      setTimeout(() => {
-        line.style.setProperty('--base-opacity', baseOpacity);
-        line.style.animation = `pulseOpacity ${4 + Math.random() * 3}s ease-in-out infinite`;
-        line.style.animationDelay = `${Math.random() * 2}s`;
-      }, (delay + 2) * 1000);
-    });
-
-    /* ── Shimmer angle for bento cards ── */
-    let shimmerAngle = 0;
-    function updateShimmer() {
-      shimmerAngle = (shimmerAngle + 0.5) % 360;
-      document.querySelectorAll('.bento-card').forEach(card => {
-        card.style.setProperty('--shimmer-angle', shimmerAngle + 'deg');
-      });
-      requestAnimationFrame(updateShimmer);
+      document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    } else {
+      /* If reduced motion, show everything immediately */
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
     }
-    updateShimmer();
 
-    /* ── Mobile Nav Toggle ── */
+    /* Mobile nav toggle */
     const navToggle = document.getElementById('navToggle');
-    const navLinks = document.getElementById('navLinks');
+    const mobileNav = document.getElementById('mobileNav');
+
     navToggle.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
+      navToggle.classList.toggle('active');
+      mobileNav.classList.toggle('open');
+      document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
     });
-    navToggle.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        navLinks.classList.toggle('open');
-      }
-    });
-    /* Close mobile nav when clicking a link */
-    navLinks.querySelectorAll('a').forEach(link => {
+
+    /* Close mobile nav on link click */
+    mobileNav.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
-        navLinks.classList.remove('open');
+        navToggle.classList.remove('active');
+        mobileNav.classList.remove('open');
+        document.body.style.overflow = '';
       });
     });
-  </script>
 
+    /* Ika Is — activate on scroll (mobile) and hover (desktop) */
+    const ikaIsItems = document.querySelectorAll('.ika-is-item');
+    if (!prefersReducedMotion) {
+      const ikaIsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          } else {
+            entry.target.classList.remove('active');
+          }
+        });
+      }, { threshold: 0.6 });
+
+      if (window.innerWidth <= 768) {
+        ikaIsItems.forEach(item => ikaIsObserver.observe(item));
+      }
+    }
+  </script>
 </body>
 </html>
