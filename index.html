@@ -1037,6 +1037,17 @@
        REDUCED MOTION
     ═══════════════════════════════════════════ */
     @media (prefers-reduced-motion: reduce) {
+      .hero-headline .line-inner {
+        transform: translateY(0) !important;
+      }
+      .hero-entrance .status-pill,
+      .hero-entrance .hero-tagline,
+      .hero-entrance .hero-sub,
+      .hero-entrance .hero-ctas .btn-primary,
+      .hero-entrance .hero-ctas .btn-secondary {
+        opacity: 1 !important;
+        transform: none !important;
+      }
       .reveal {
         opacity: 1;
         transform: none;
@@ -1515,6 +1526,15 @@
           btn.style.transform = 'translateY(0)';
         }, 1500 + i * 150);
       });
+
+      /* Safety: ensure hero content shows even if animations fail */
+      setTimeout(() => {
+        const heroEl = document.querySelector('.hero-entrance');
+        if (heroEl) heroEl.classList.remove('hero-entrance');
+        document.querySelectorAll('.hero-headline .line-inner').forEach(el => {
+          el.style.transform = 'translateY(0)';
+        });
+      }, 3000);
 
       /* ─── 4. SCROLL REVEAL (IntersectionObserver) ─── */
       const revealObserver = new IntersectionObserver((entries) => {
