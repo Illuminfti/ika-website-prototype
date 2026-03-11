@@ -185,8 +185,8 @@
        ANNOUNCEMENT BAR
     ═══════════════════════════════════════════ */
     .announcement-bar {
-      background: rgba(4, 6, 12, 0.92);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(2, 3, 6, 0.82);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -197,9 +197,9 @@
     }
     .announcement-bar a {
       font-family: var(--font-mono);
-      font-size: 0.74rem;
-      color: rgba(255,255,255,0.78);
-      letter-spacing: 0.08em;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.62);
+      letter-spacing: 0.1em;
       transition: opacity 0.3s, color 0.3s;
       text-transform: uppercase;
       display: inline-flex;
@@ -208,11 +208,11 @@
     }
     .announcement-bar a::before {
       content: '';
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(20,241,149,0.95), rgba(114,255,214,0.8));
-      box-shadow: 0 0 14px rgba(20,241,149,0.55);
+      background: linear-gradient(135deg, rgba(20,241,149,0.8), rgba(114,255,214,0.5));
+      box-shadow: 0 0 8px rgba(20,241,149,0.22);
     }
     .announcement-bar a:hover {
       opacity: 1;
@@ -1408,18 +1408,18 @@
       min-height: 112vh;
       padding: 140px 0 72px;
       background:
-        radial-gradient(circle at 76% 42%, rgba(79, 172, 254, 0.14), transparent 24%),
-        radial-gradient(circle at 68% 58%, rgba(92, 39, 255, 0.12), transparent 22%),
-        radial-gradient(circle at 54% 52%, rgba(255,255,255,0.05), transparent 18%),
-        linear-gradient(180deg, #020305 0%, #05070d 44%, #000 100%);
+        radial-gradient(circle at 76% 42%, rgba(79, 172, 254, 0.08), transparent 22%),
+        radial-gradient(circle at 68% 58%, rgba(92, 39, 255, 0.05), transparent 20%),
+        radial-gradient(circle at 54% 52%, rgba(255,255,255,0.03), transparent 16%),
+        linear-gradient(180deg, #010102 0%, #020305 44%, #000 100%);
     }
     .hero::before {
       top: 12%;
-      right: 4%;
-      width: 46%;
-      height: 72%;
-      background: radial-gradient(ellipse at 58% 52%, rgba(86,160,255,0.08) 0%, rgba(86,160,255,0.025) 34%, transparent 68%);
-      filter: blur(22px);
+      right: 9%;
+      width: 34%;
+      height: 58%;
+      background: radial-gradient(ellipse at 58% 52%, rgba(86,160,255,0.04) 0%, rgba(86,160,255,0.012) 36%, transparent 70%);
+      filter: blur(18px);
     }
     .hero-grid {
       max-width: 1320px;
@@ -1434,6 +1434,19 @@
     .hero-content {
       padding: 0;
       max-width: 620px;
+      isolation: isolate;
+    }
+    .hero-content::before {
+      content: '';
+      position: absolute;
+      inset: -56px -52px -64px -72px;
+      border-radius: 36px;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.88) 62%, rgba(0,0,0,0.24) 100%),
+        radial-gradient(circle at 82% 18%, rgba(255,255,255,0.04), transparent 26%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+      z-index: -1;
+      pointer-events: none;
     }
     .hero-headline {
       font-size: clamp(4.2rem, 7vw, 7.5rem);
@@ -1563,10 +1576,10 @@
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.08);
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
-        radial-gradient(circle at 50% 50%, rgba(97,165,255,0.12), transparent 42%),
-        radial-gradient(circle at 50% 50%, rgba(121,84,255,0.08), transparent 58%),
-        rgba(6,6,8,0.9);
+        linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.018)),
+        radial-gradient(circle at 50% 50%, rgba(97,165,255,0.14), transparent 36%),
+        radial-gradient(circle at 50% 50%, rgba(121,84,255,0.05), transparent 46%),
+        rgba(4,5,8,0.94);
       box-shadow: 0 30px 100px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08);
       backdrop-filter: blur(24px);
     }
@@ -1646,10 +1659,10 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 120%;
-      height: 120%;
-      background: radial-gradient(ellipse at center, rgba(95,162,255,0.14) 0%, rgba(118,84,255,0.10) 32%, transparent 70%);
-      filter: blur(60px);
+      width: 58%;
+      height: 58%;
+      background: radial-gradient(circle at center, rgba(95,162,255,0.22) 0%, rgba(95,162,255,0.1) 30%, rgba(118,84,255,0.05) 48%, transparent 72%);
+      filter: blur(28px);
       pointer-events: none;
       z-index: 0;
     }
