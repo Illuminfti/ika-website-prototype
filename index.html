@@ -159,12 +159,34 @@
       display: inline-block;
       width: 0.3em;
     }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(16px);
+      will-change: transform, opacity;
+    }
+    .word-space {
+      display: inline-block;
+      width: 0.32em;
+    }
 
     /* ═══════════════════════════════════════════
        ANNOUNCEMENT BAR
     ═══════════════════════════════════════════ */
     .announcement-bar {
-      background: var(--brand);
+      background: rgba(4, 6, 12, 0.92);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -175,13 +197,26 @@
     }
     .announcement-bar a {
       font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: #fff;
-      letter-spacing: 0.04em;
-      transition: opacity 0.3s;
+      font-size: 0.74rem;
+      color: rgba(255,255,255,0.78);
+      letter-spacing: 0.08em;
+      transition: opacity 0.3s, color 0.3s;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .announcement-bar a::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(20,241,149,0.95), rgba(114,255,214,0.8));
+      box-shadow: 0 0 14px rgba(20,241,149,0.55);
     }
     .announcement-bar a:hover {
-      opacity: 0.85;
+      opacity: 1;
+      color: #fff;
     }
 
     /* ═══════════════════════════════════════════
@@ -438,7 +473,7 @@
       transform: translate(-50%, -50%);
       width: 120%;
       height: 120%;
-      background: radial-gradient(ellipse at center, rgba(238, 43, 91, 0.08) 0%, rgba(99, 102, 241, 0.04) 30%, transparent 70%);
+      background: radial-gradient(ellipse at center, rgba(95,162,255,0.14) 0%, rgba(118,84,255,0.10) 32%, transparent 70%);
       filter: blur(60px);
       pointer-events: none;
       z-index: 0;
@@ -1373,17 +1408,17 @@
       min-height: 112vh;
       padding: 140px 0 72px;
       background:
-        radial-gradient(circle at 16% 20%, rgba(238,43,91,0.16), transparent 30%),
-        radial-gradient(circle at 82% 24%, rgba(255,107,138,0.18), transparent 28%),
-        radial-gradient(circle at 68% 62%, rgba(98,126,234,0.14), transparent 24%),
-        #000;
+        radial-gradient(circle at 76% 42%, rgba(79, 172, 254, 0.14), transparent 24%),
+        radial-gradient(circle at 68% 58%, rgba(92, 39, 255, 0.12), transparent 22%),
+        radial-gradient(circle at 54% 52%, rgba(255,255,255,0.05), transparent 18%),
+        linear-gradient(180deg, #020305 0%, #05070d 44%, #000 100%);
     }
     .hero::before {
       top: 12%;
       right: 4%;
       width: 46%;
       height: 72%;
-      background: radial-gradient(ellipse at 60% 50%, rgba(238,43,91,0.04) 0%, rgba(238,43,91,0.015) 35%, transparent 72%);
+      background: radial-gradient(ellipse at 58% 52%, rgba(86,160,255,0.08) 0%, rgba(86,160,255,0.025) 34%, transparent 68%);
       filter: blur(22px);
     }
     .hero-grid {
@@ -1490,10 +1525,10 @@
       letter-spacing: 0.02em;
       box-shadow: 0 12px 32px rgba(0,0,0,0.4);
     }
-    .hero-chain-node.sui { top: 12%; left: 18%; background: linear-gradient(135deg, rgba(238,43,91,0.25), rgba(238,43,91,0.08)); border: 1px solid var(--brand); color: var(--brand); }
-    .hero-chain-node.eth { top: 15%; right: 16%; background: rgba(98,126,234,0.2); border: 1px solid #627eea; color: #627eea; }
-    .hero-chain-node.sol { bottom: 18%; left: 22%; background: rgba(20,241,149,0.2); border: 1px solid #14f195; color: #14f195; }
-    .hero-chain-node.btc { bottom: 15%; right: 20%; background: rgba(247,147,26,0.2); border: 1px solid #f7931a; color: #f7931a; }
+    .hero-chain-node.sui { top: 14%; left: 15%; background: linear-gradient(135deg, rgba(86,160,255,0.18), rgba(86,160,255,0.06)); border: 1px solid rgba(86,160,255,0.75); color: #8fd3ff; }
+    .hero-chain-node.eth { top: 13%; right: 15%; background: rgba(98,126,234,0.18); border: 1px solid rgba(124,148,255,0.8); color: #9cb0ff; }
+    .hero-chain-node.sol { bottom: 17%; left: 19%; background: rgba(20,241,149,0.16); border: 1px solid rgba(96,255,192,0.8); color: #8affd0; }
+    .hero-chain-node.btc { bottom: 16%; right: 18%; background: rgba(247,147,26,0.14); border: 1px solid rgba(255,184,89,0.8); color: #ffc56f; }
     .hero-chain-node svg { width: 22px; height: 22px; }
     .hero-signing-pulse {
       position: absolute;
@@ -1503,7 +1538,7 @@
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(238,43,91,0.3), transparent 70%);
+      background: radial-gradient(circle, rgba(101,168,255,0.36), rgba(121,84,255,0.16) 38%, transparent 72%);
       animation: signingPulse 2s ease-in-out infinite;
     }
     @keyframes signingPulse {
@@ -1529,7 +1564,8 @@
       border: 1px solid rgba(255,255,255,0.08);
       background:
         linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
-        radial-gradient(circle at 50% 50%, rgba(238,43,91,0.10), transparent 48%),
+        radial-gradient(circle at 50% 50%, rgba(97,165,255,0.12), transparent 42%),
+        radial-gradient(circle at 50% 50%, rgba(121,84,255,0.08), transparent 58%),
         rgba(6,6,8,0.9);
       box-shadow: 0 30px 100px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08);
       backdrop-filter: blur(24px);
@@ -1546,6 +1582,64 @@
       opacity: 0.65;
       pointer-events: none;
     }
+    .hero-visual-shell::after {
+      content: '';
+      position: absolute;
+      inset: 12% 14%;
+      border-radius: 28px;
+      border: 1px solid rgba(126,176,255,0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+    .hero-core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 210px;
+      padding: 18px 20px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(11,18,31,0.96), rgba(8,12,22,0.9));
+      border: 1px solid rgba(133,183,255,0.18);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+      z-index: 3;
+      overflow: hidden;
+    }
+    .hero-core::before {
+      content: '';
+      position: absolute;
+      inset: -40% 16% auto;
+      height: 70%;
+      background: radial-gradient(circle, rgba(96,161,255,0.18), transparent 72%);
+      pointer-events: none;
+    }
+    .hero-core-label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-core strong {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-core p {
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.72);
+      position: relative;
+      z-index: 1;
+    }
     /* #heroBlob REMOVED */
 .hero-glow {
       position: absolute;
@@ -1554,7 +1648,7 @@
       transform: translate(-50%, -50%);
       width: 120%;
       height: 120%;
-      background: radial-gradient(ellipse at center, rgba(238, 43, 91, 0.08) 0%, rgba(99, 102, 241, 0.04) 30%, transparent 70%);
+      background: radial-gradient(ellipse at center, rgba(95,162,255,0.14) 0%, rgba(118,84,255,0.10) 32%, transparent 70%);
       filter: blur(60px);
       pointer-events: none;
       z-index: 0;
@@ -1595,7 +1689,7 @@
       height: 54%;
       top: 23%;
       left: 23%;
-      border-color: rgba(238,43,91,0.04);
+      border-color: rgba(115,160,255,0.10);
     }
     .hero-grid-orbit::before {
       inset: 7%;
@@ -1608,7 +1702,7 @@
       height: 16px;
       top: 18%;
       left: 16%;
-      background: radial-gradient(circle, rgba(255,255,255,0.95), rgba(238,43,91,0.3));
+      background: radial-gradient(circle, rgba(255,255,255,0.98), rgba(95,162,255,0.4));
       border: 0;
       box-shadow: 0 0 24px rgba(255,255,255,0.5);
       animation: orbitFloat 5s ease-in-out infinite;
@@ -1620,7 +1714,7 @@
       min-width: 170px;
       padding: 14px 16px;
       border-radius: 18px;
-      background: rgba(7,7,10,0.78);
+      background: rgba(5,8,15,0.82);
       border: 1px solid rgba(255,255,255,0.08);
       backdrop-filter: blur(16px);
       box-shadow: 0 18px 45px rgba(0,0,0,0.38);
@@ -1660,7 +1754,7 @@
       gap: 8px;
       padding: 10px 14px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.07);
+      background: rgba(9,14,24,0.76);
       border: 1px solid rgba(255,255,255,0.09);
       font-family: var(--font-mono);
       font-size: 0.68rem;
@@ -1676,8 +1770,8 @@
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: var(--brand-light);
-      box-shadow: 0 0 12px rgba(255,107,138,0.75);
+      background: linear-gradient(135deg, rgba(20,241,149,1), rgba(95,162,255,0.9));
+      box-shadow: 0 0 14px rgba(95,162,255,0.55);
     }
     .hero-visual-chip.chip-a { left: 8%; top: 18%; }
     .hero-visual-chip.chip-b { right: 11%; bottom: 22%; }
@@ -1690,12 +1784,24 @@
     }
     .section-shell {
       position: relative;
+      transform-origin: center top;
       border-radius: 32px;
       padding: 48px;
       border: 1px solid rgba(255,255,255,0.08);
       background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
       box-shadow: 0 30px 90px rgba(0,0,0,0.24);
     }
+    .section-shell::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(180deg, rgba(255,255,255,0.025), transparent 38%);
+      opacity: 0;
+      transition: opacity 0.5s var(--ease-out);
+      pointer-events: none;
+    }
+    .section-shell.in-view::before { opacity: 1; }
     .problem .section-shell {
       background:
         radial-gradient(circle at 82% 22%, rgba(238,43,91,0.14), transparent 28%),
@@ -2128,7 +2234,6 @@
           <div class="hero-glow"></div>
           <div class="hero-grid-rings"></div>
           <div class="hero-grid-orbit"></div>
-          <!-- Cross-chain signing nodes -->
           <div class="hero-chain-nodes">
             <div class="hero-signing-pulse"></div>
             <div class="hero-chain-node sui">
@@ -2144,17 +2249,22 @@
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 14.5v-1.5h1.5v-2h-2v-.5h-2v3h2v.5h-2.5v1.5h2.5v2h-3.5v-3h3.5zm-1-4h-2v-1h2v1z"/></svg>
             </div>
           </div>
+          <div class="hero-core">
+            <span class="hero-core-label">Programmable signing core</span>
+            <strong>Move policy → native execution</strong>
+            <p>One control plane routes real signatures into the chain where capital already sits.</p>
+          </div>
           <div class="hero-visual-chip chip-a">Programmable policies</div>
           <div class="hero-visual-chip chip-b">Trustless signatures</div>
           <div class="hero-visual-card top">
             <span>Signing route</span>
             <strong>Solana → Bitcoin</strong>
-            <p>Real native signatures flowing through a live network, not wrapped claims.</p>
+            <p>Directed execution rails instead of bridge hops, with native settlement at the edge.</p>
           </div>
           <div class="hero-visual-card bottom">
             <span>Execution state</span>
             <strong>Sub-second quorum</strong>
-            <p>Hundreds of nodes, one coordinated signature, no single point of key custody.</p>
+            <p>Hundreds of nodes coordinate one approval surface while the key stays split the whole time.</p>
           </div>
         </div>
       </div>
@@ -2190,7 +2300,7 @@
     <div class="container">
       <div class="timeline-intro reveal">
         <p class="section-tag">Architecture</p>
-        <h2 class="timeline-intro-headline char-reveal">The key never becomes a liability.</h2>
+        <h2 class="timeline-intro-headline char-reveal" data-split="words">The key never becomes a liability.</h2>
         <p class="timeline-intro-sub">Ika uses 2PC-MPC so signing is computed jointly without reconstructing the private key in one place. That matters because most systems fail at the control point. They may decentralize governance language, but key control still collapses back to a small group of signers. Ika changes the control model itself.</p>
       </div>
 
@@ -2399,7 +2509,7 @@
         <div class="problem-grid">
           <div>
             <p class="section-tag reveal">Capital should move. Risk should not.</p>
-            <h2 class="section-headline reveal char-reveal">Cross-chain demand is real.<br>The control layer is still broken.</h2>
+            <h2 class="section-headline reveal char-reveal" data-split="words">Cross-chain demand is real.<br>The control layer is still broken.</h2>
             <p class="section-body reveal reveal-delay-1">
               Teams want to trade, lend, custody, automate, and settle across chains as if the market were one surface. Instead they get bridges, wrapped assets, relayers, and signer committees. That stack adds latency, operational drag, and the kind of trust assumptions that keep blowing up under size.
             </p>
@@ -2426,7 +2536,7 @@
         <div class="solution-grid">
           <div>
             <p class="section-tag reveal">The Ika approach</p>
-            <h2 class="section-headline reveal char-reveal">Do not move the asset. Control it where it already sits.</h2>
+            <h2 class="section-headline reveal char-reveal" data-split="words">Do not move the asset. Control it where it already sits.</h2>
             <p class="section-body reveal reveal-delay-1">
               Ika is a signing network for native cross-chain execution. Your application defines policy in Move. Ika produces the signature on the destination chain. No synthetic asset. No handoff to a bridge operator. No committee holding the full key because there is no full key sitting in one place to begin with.
             </p>
@@ -2492,7 +2602,7 @@
       <div class="agentic-grid">
         <div class="agentic-content">
           <p class="section-tag reveal">Agentic Interoperability</p>
-          <h2 class="section-headline reveal char-reveal">AI agents that can actually sign.</h2>
+          <h2 class="section-headline reveal char-reveal" data-split="words">AI agents that can actually sign.</h2>
           <p class="section-body reveal reveal-delay-1">Your AI agent isn't just a UI. It holds keys. It signs on any chain. But it only signs what your policy allows.</p>
           <div class="agentic-features reveal reveal-delay-2">
             <div class="agentic-feature">
@@ -2546,7 +2656,7 @@
   <section class="use-cases section-dark" id="use-cases">
     <div class="container">
       <p class="section-tag reveal">Programmable control</p>
-      <h2 class="section-headline reveal char-reveal">Policy decides what can sign, not a human runbook.</h2>
+      <h2 class="section-headline reveal char-reveal" data-split="words">Policy decides what can sign, not a human runbook.</h2>
       <div class="bento-grid">
         <div class="bento-card">
           <div class="bento-icon">
@@ -2600,7 +2710,7 @@
   <section class="comparison section-light" id="compare">
     <div class="container">
       <p class="section-tag reveal">Execution quality</p>
-      <h2 class="section-headline reveal char-reveal">Fast enough for software. Structured enough for capital.</h2>
+      <h2 class="section-headline reveal char-reveal" data-split="words">Fast enough for software. Structured enough for capital.</h2>
       <p class="section-body reveal reveal-delay-1" style="max-width: 760px; margin-bottom: 28px;">Not another bridge. Not another signer committee.</p>
       <div class="comparison-table-wrap reveal reveal-delay-2">
         <table class="comparison-table">
@@ -2689,7 +2799,7 @@
   <section class="backed-by section-dark">
     <div class="container">
       <p class="section-tag reveal" style="text-align: center;">Proof</p>
-      <h2 class="section-headline reveal char-reveal" style="text-align: center; margin-bottom: 18px;">This is infrastructure, not a thought experiment.</h2>
+      <h2 class="section-headline reveal char-reveal" data-split="words" style="text-align: center; margin-bottom: 18px;">This is infrastructure, not a thought experiment.</h2>
       <p class="section-body reveal reveal-delay-1" style="max-width: 820px; margin: 0 auto 40px; text-align: center;">Ika is built for teams that care about execution quality, cryptographic control, and capital efficiency. Backing matters because infra buyers want signals that serious operators have looked at the architecture and decided it deserves attention.</p>
       <div class="backer-logos reveal reveal-delay-2">
         <img src="./assets/logo-dcg.png" alt="DCG" loading="lazy" />
@@ -2710,7 +2820,7 @@
   ═══════════════════════════════════════════ -->
   <section class="final-cta section-dark" id="cta">
     <div class="container">
-      <h2 class="section-headline reveal char-reveal">Build the control layer cross-chain capital actually needed.</h2>
+      <h2 class="section-headline reveal char-reveal" data-split="words">Build the control layer cross-chain capital actually needed.</h2>
       <p class="section-body reveal reveal-delay-1">
         If your product depends on moving value across ecosystems, the weak point is almost always key control. Ika gives you a way to keep execution native, policy programmable, and trust assumptions small enough to survive contact with real capital.
       </p>
@@ -2888,18 +2998,62 @@
           });
         });
 
+        const sectionShells = gsap.utils.toArray('.section-shell');
+        sectionShells.forEach(shell => {
+          gsap.set(shell, { opacity: 0, y: 54 * scale, scale: 0.985 });
+          ScrollTrigger.create({
+            trigger: shell,
+            start: 'top 84%',
+            once: true,
+            onEnter: () => {
+              shell.classList.add('in-view');
+              gsap.to(shell, {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.88 * scale,
+                ease: 'power3.out'
+              });
+            }
+          });
+        });
+
         const headingPreset = preset('charRevealHeading');
         document.querySelectorAll('.char-reveal').forEach(el => {
           if (el.closest('.hero')) return;
           const html = el.innerHTML;
+          const mode = el.dataset.split || 'chars';
           const parts = html.split(/(<br\s*\/?>)/gi);
+          const plainText = html.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ').trim();
+          el.setAttribute('aria-label', plainText);
           el.innerHTML = '';
-          const chars = [];
+          const nodes = [];
+
           parts.forEach(part => {
             if (part.match(/<br\s*\/?>/i)) {
               el.appendChild(document.createElement('br'));
               return;
             }
+
+            if (mode === 'words') {
+              part.split(/(\s+)/).forEach(token => {
+                const span = document.createElement('span');
+                if (/^\s+$/.test(token)) {
+                  span.className = 'word-space';
+                  span.innerHTML = '&nbsp;';
+                } else if (token) {
+                  span.className = 'word';
+                  span.textContent = token;
+                  span.setAttribute('aria-hidden', 'true');
+                  span.style.opacity = '0';
+                  span.style.transform = `translateY(${headingPreset.distance}px)`;
+                  nodes.push(span);
+                }
+                el.appendChild(span);
+              });
+              return;
+            }
+
             part.split('').forEach(char => {
               const span = document.createElement('span');
               if (char === ' ') {
@@ -2908,19 +3062,20 @@
               } else {
                 span.className = 'char';
                 span.textContent = char;
+                span.setAttribute('aria-hidden', 'true');
               }
               span.style.opacity = '0';
               span.style.transform = `translateY(${headingPreset.distance}px)`;
               el.appendChild(span);
-              chars.push(span);
+              nodes.push(span);
             });
           });
 
-          gsap.to(chars, {
+          gsap.to(nodes, {
             opacity: 1,
             y: 0,
-            stagger: headingPreset.stagger,
-            duration: headingPreset.duration,
+            stagger: mode === 'words' ? headingPreset.stagger * 2.1 : headingPreset.stagger,
+            duration: mode === 'words' ? headingPreset.duration * 4.6 : headingPreset.duration,
             ease: headingPreset.ease,
             scrollTrigger: {
               trigger: el,
@@ -2935,10 +3090,10 @@
             once: true,
             onEnter: () => {
               window.setTimeout(() => {
-                chars.forEach(char => {
-                  if (parseFloat(getComputedStyle(char).opacity) < 0.5) {
-                    char.style.opacity = '1';
-                    char.style.transform = 'none';
+                nodes.forEach(node => {
+                  if (parseFloat(getComputedStyle(node).opacity) < 0.5) {
+                    node.style.opacity = '1';
+                    node.style.transform = 'none';
                   }
                 });
               }, 800);
@@ -3167,7 +3322,7 @@
 
     } else {
       document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-      document.querySelectorAll('.section-tag, .char, .timeline-row, .bento-card, .comparison-table tbody tr, .timeline-intro-sub, #techDiagram').forEach(el => {
+      document.querySelectorAll('.section-tag, .char, .word, .timeline-row, .bento-card, .comparison-table tbody tr, .timeline-intro-sub, #techDiagram, .section-shell').forEach(el => {
         el.style.opacity = '1';
         el.style.transform = 'none';
       });
