@@ -2752,7 +2752,7 @@
       comparisonRows: { start: 'top 82%', distance: 18, duration: 0.46, stagger: 0.07, ease: 'power2.out' },
       techDiagram: { start: 'top 83%', distance: 22, duration: 0.68, scale: 0.94, ease: 'power2.out' },
       sectionTag: { start: 'top 89%', distance: 26, duration: 0.52, ease: 'power2.out' },
-      charRevealHeading: { start: 'top 83%', end: 'top 40%', distance: 18, duration: 0.04, stagger: 0.024, scrub: 1, ease: 'power2.out' }
+      charRevealHeading: { start: 'top 85%', distance: 22, duration: 0.06, stagger: 0.018, ease: 'power4.out' }
     };
 
     function heroSequence(steps, options = {}) {
@@ -2925,8 +2925,7 @@
             scrollTrigger: {
               trigger: el,
               start: headingPreset.start,
-              end: headingPreset.end,
-              scrub: headingPreset.scrub
+              toggleActions: 'play none none none'
             }
           });
 
@@ -2942,7 +2941,7 @@
                     char.style.transform = 'none';
                   }
                 });
-              }, 3000);
+              }, 800);
             }
           });
         });
