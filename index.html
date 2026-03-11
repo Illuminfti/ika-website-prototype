@@ -45,6 +45,15 @@
       --scroll: 0px;
     }
 
+    /* Parallax effects wired to --scroll */
+    .motion-safe .hero-chain-node.sui { transition: transform 0.1s ease-out; transform: translateY(calc(var(--scroll, 0px) * -0.08)); }
+    .motion-safe .hero-chain-node.eth { transition: transform 0.12s ease-out; transform: translateY(calc(var(--scroll, 0px) * -0.05)); }
+    .motion-safe .hero-chain-node.sol { transition: transform 0.11s ease-out; transform: translateY(calc(var(--scroll, 0px) * 0.06)); }
+    .motion-safe .hero-chain-node.btc { transition: transform 0.13s ease-out; transform: translateY(calc(var(--scroll, 0px) * 0.09)); }
+    .motion-safe .hero-visual-card { transition: transform 0.15s ease-out; }
+    .motion-safe .hero-visual-card.top { transform: translateY(calc(var(--scroll, 0px) * -0.03)); }
+    .motion-safe .hero-visual-card.bottom { transform: translateY(calc(var(--scroll, 0px) * 0.04)); }
+
     /* @property for spinning border */
     @property --angle {
       syntax: "<angle>";
@@ -882,6 +891,127 @@
     }
 
     /* ═══════════════════════════════════════════
+       AGENTIC INTEROPERABILITY SECTION
+    ═══════════════════════════════════════════ */
+    .agentic {
+      padding: 120px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .agentic::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(238,43,91,0.08), transparent 60%);
+      pointer-events: none;
+    }
+    .agentic-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .agentic-visual {
+      position: relative;
+      min-height: 400px;
+    }
+    .agentic-diagram {
+      position: absolute;
+      inset: 0;
+    }
+    .agentic-node {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-white-secondary);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .agentic-node.sui { top: 10%; left: 15%; background: linear-gradient(135deg, rgba(238,43,91,0.2), rgba(238,43,91,0.05)); border-color: var(--brand); color: var(--brand); }
+    .agentic-node.eth { top: 25%; right: 10%; background: rgba(98,126,234,0.15); border-color: #627eea; color: #627eea; }
+    .agentic-node.sol { bottom: 25%; left: 10%; background: rgba(20,241,149,0.15); border-color: #14f195; color: #14f195; }
+    .agentic-node.btc { bottom: 10%; right: 20%; background: rgba(247,147,26,0.15); border-color: #f7931a; color: #f7931a; }
+    .agentic-node.agent {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), #ff6b8a);
+      border: none;
+      color: #fff;
+      font-size: 0.8rem;
+      box-shadow: 0 0 60px rgba(238,43,91,0.4);
+    }
+    .agentic-connection {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: 200px;
+      transform: translate(-50%, -50%);
+      border: 1px dashed rgba(255,255,255,0.1);
+      border-radius: 50%;
+      animation: agenticPulse 4s ease-in-out infinite;
+    }
+    .agentic-connection:nth-child(2) { width: 280px; height: 280px; animation-delay: 1s; }
+    .agentic-connection:nth-child(3) { width: 360px; height: 360px; animation-delay: 2s; }
+    @keyframes agenticPulse {
+      0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.05); }
+    }
+    .agentic-features {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .agentic-feature {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .agentic-feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(238,43,91,0.1);
+      border: 1px solid rgba(238,43,91,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .agentic-feature h4 {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .agentic-feature p {
+      color: var(--text-white-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    @media (max-width: 900px) {
+      .agentic-grid { grid-template-columns: 1fr; gap: 40px; }
+      .agentic-visual { min-height: 300px; }
+      .agentic { padding: 80px 0; }
+    }
+
+    /* ═══════════════════════════════════════════
        COMPARISON TABLE
     ═══════════════════════════════════════════ */
     .comparison {
@@ -1326,6 +1456,56 @@
       align-items: center;
       justify-content: center;
     }
+    /* Cross-chain signing visual nodes */
+    .hero-chain-nodes {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .hero-chain-node {
+      position: absolute;
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+    }
+    .hero-chain-node.sui { top: 12%; left: 18%; background: linear-gradient(135deg, rgba(238,43,91,0.25), rgba(238,43,91,0.08)); border: 1px solid var(--brand); color: var(--brand); }
+    .hero-chain-node.eth { top: 15%; right: 16%; background: rgba(98,126,234,0.2); border: 1px solid #627eea; color: #627eea; }
+    .hero-chain-node.sol { bottom: 18%; left: 22%; background: rgba(20,241,149,0.2); border: 1px solid #14f195; color: #14f195; }
+    .hero-chain-node.btc { bottom: 15%; right: 20%; background: rgba(247,147,26,0.2); border: 1px solid #f7931a; color: #f7931a; }
+    .hero-chain-node svg { width: 22px; height: 22px; }
+    .hero-signing-pulse {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(238,43,91,0.3), transparent 70%);
+      animation: signingPulse 2s ease-in-out infinite;
+    }
+    @keyframes signingPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      50% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+    }
+    .hero-connection-lines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .hero-connection-lines line {
+      stroke: rgba(238,43,91,0.15);
+      stroke-width: 1;
+      stroke-dasharray: 4 6;
+    }
     .hero-visual-shell {
       position: relative;
       width: min(100%, 620px);
@@ -1709,21 +1889,32 @@
       .hero-visual-card.top { top: 4%; right: 4%; }
       .hero-visual-card.bottom { left: 4%; bottom: 5%; }
       .section-shell { padding: 32px 24px; }
+      /* Nav: account for announcement bar */
+      .nav { top: 36px; }
       .nav-links { display: none !important; }
-      .nav-hamburger { display: flex; }
+      .nav-hamburger { display: flex; top: 8px; }
+      /* Compress timeline on mobile */
+      .timeline { padding: 48px 0; }
       .timeline-line, .timeline-indicator, .timeline-dot { display: none; }
-      .timeline-row { grid-template-columns: 1fr; gap: 24px; margin-bottom: 48px; }
+      .timeline-row { grid-template-columns: 1fr; gap: 16px; margin-bottom: 32px; padding: 0 12px; }
+      .timeline-intro { padding: 0 24px; margin-bottom: 32px; }
       .timeline-row .timeline-text,
       .timeline-row .timeline-card { order: unset !important; text-align: left !important; }
       .timeline-row:nth-of-type(even) .timeline-card { order: -1 !important; }
-      .bento-grid { grid-template-columns: repeat(2, 1fr); }
+      .timeline-card { width: 100%; margin-left: 0; margin-bottom: 16px; padding: 20px; }
+      /* Compress bento/use-cases on mobile */
+      .bento-grid { grid-template-columns: 1fr; gap: 16px; }
+      .bento-card { padding: 24px 20px; }
+      .bento-card-title { font-size: 1.25rem; }
+      .bento-card-desc { font-size: 0.95rem; }
+      .use-cases { padding: 60px 0; }
       .metrics-inner { gap: 32px; }
       .backer-logos { gap: 32px 48px; }
       .backer-logos img { height: 24px; }
       .ika-is, .problem, .solution, .use-cases, .comparison, .backed-by {
-        padding: 80px 0;
+        padding: 60px 0;
       }
-      .final-cta { padding: 100px 0; }
+      .final-cta { padding: 80px 0; }
       .footer-inner {
         flex-direction: column;
         align-items: flex-start;
@@ -1811,6 +2002,15 @@
       .tech-diagram .diagram-box {
         opacity: 1;
       }
+      /* Disable parallax transforms */
+      .hero-chain-node,
+      .hero-visual-card {
+        transform: none !important;
+        transition: none !important;
+      }
+      .hero-signing-pulse {
+        animation: none !important;
+      }
     }
   </style>
 </head>
@@ -1833,6 +2033,7 @@
     </a>
     <div class="nav-links" id="navLinks">
       <a href="#ika-is">What is Ika</a>
+      <a href="#agentic">Agents</a>
       <a href="#use-cases">Use Cases</a>
       <a href="#compare">Compare</a>
       <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
@@ -1847,6 +2048,7 @@
   <!-- Mobile nav overlay -->
   <div class="nav-mobile-overlay" id="mobileNav">
     <a href="#ika-is" class="mobile-nav-link">What is Ika</a>
+    <a href="#agentic" class="mobile-nav-link">Agents</a>
     <a href="#use-cases" class="mobile-nav-link">Use Cases</a>
     <a href="#compare" class="mobile-nav-link">Compare</a>
     <a href="https://docs.ika.network" target="_blank" rel="noopener" class="mobile-nav-link">Docs</a>
@@ -1898,6 +2100,22 @@
           <canvas id="heroBlob"></canvas>
           <div class="hero-grid-rings"></div>
           <div class="hero-grid-orbit"></div>
+          <!-- Cross-chain signing nodes -->
+          <div class="hero-chain-nodes">
+            <div class="hero-signing-pulse"></div>
+            <div class="hero-chain-node sui">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 7v10l8 5 8-5V7l-8-5zm0 2.5l5.5 3.5-5.5 3.5-5.5-3.5L12 4.5z"/></svg>
+            </div>
+            <div class="hero-chain-node eth">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5l-8 4.5v9l8 4.5 8-4.5v-9l-8-4.5z"/></svg>
+            </div>
+            <div class="hero-chain-node sol">
+              <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
+            </div>
+            <div class="hero-chain-node btc">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 14.5v-1.5h1.5v-2h-2v-.5h-2v3h2v.5h-2.5v1.5h2.5v2h-3.5v-3h3.5zm-1-4h-2v-1h2v1z"/></svg>
+            </div>
+          </div>
           <div class="hero-visual-chip chip-a">Programmable policies</div>
           <div class="hero-visual-chip chip-b">Trustless signatures</div>
           <div class="hero-visual-card top">
@@ -2232,6 +2450,62 @@
             <text x="660" y="180" text-anchor="middle" fill="#000" font-family="Satoshi, sans-serif" font-size="13" font-weight="500">Any Chain</text>
           </g>
         </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       AGENTIC INTEROPERABILITY
+  ═══════════════════════════════════════════ -->
+  <section class="agentic section-dark" id="agentic">
+    <div class="container">
+      <div class="agentic-grid">
+        <div class="agentic-content">
+          <p class="section-tag reveal">Agentic Interoperability</p>
+          <h2 class="section-headline reveal char-reveal">AI agents that can actually sign.</h2>
+          <p class="section-body reveal reveal-delay-1">Your AI agent isn't just a UI. It holds keys. It signs on any chain. But it only signs what your policy allows.</p>
+          <div class="agentic-features reveal reveal-delay-2">
+            <div class="agentic-feature">
+              <div class="agentic-feature-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L13 7L18 8L14 12L15 17L10 15L5 17L6 12L2 8L7 7L10 2Z" stroke="#EE2B5B" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <h4>Hard Limits, Not Soft Promises</h4>
+                <p>Per-trade caps, daily volume limits, allowed token pairs. Enforced by Move contract logic, not API rules.</p>
+              </div>
+            </div>
+            <div class="agentic-feature">
+              <div class="agentic-feature-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#EE2B5B" stroke-width="1.5"/><path d="M10 6V10L13 13" stroke="#EE2B5B" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <div>
+                <h4>Sub-second Signing</h4>
+                <p>No human approval delays. Your agent signs in <800ms. Markets don't wait for Slack approvals.</p>
+              </div>
+            </div>
+            <div class="agentic-feature">
+              <div class="agentic-feature-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 10h14M10 3v14" stroke="#EE2B5B" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="10" r="8" stroke="#EE2B5B" stroke-width="1.5"/></svg>
+              </div>
+              <div>
+                <h4>Multi-chain, Single Policy</h4>
+                <p>One policy controls behavior across Sui, Ethereum, Solana, Bitcoin. Same rules everywhere.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agentic-visual reveal reveal-delay-2">
+          <div class="agentic-diagram">
+            <div class="agentic-connection"></div>
+            <div class="agentic-connection"></div>
+            <div class="agentic-connection"></div>
+            <div class="agentic-node sui">SUI</div>
+            <div class="agentic-node eth">ETH</div>
+            <div class="agentic-node sol">SOL</div>
+            <div class="agentic-node btc">BTC</div>
+            <div class="agentic-node agent">AGENT</div>
           </div>
         </div>
       </div>
