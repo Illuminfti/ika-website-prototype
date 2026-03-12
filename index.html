@@ -54,12 +54,7 @@
     .motion-safe .hero-visual-card.top { transform: translateY(calc(var(--scroll, 0px) * -0.03)); }
     .motion-safe .hero-visual-card.bottom { transform: translateY(calc(var(--scroll, 0px) * 0.04)); }
 
-    /* @property for spinning border */
-    @property --angle {
-      syntax: "<angle>";
-      initial-value: 0deg;
-      inherits: false;
-    }
+    /* @property for spinning border - REMOVED, using transform instead for better browser support */
 
     /* ═══════════════════════════════════════════
        RESET & BASE
@@ -471,12 +466,20 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 120%;
-      height: 120%;
-      background: radial-gradient(ellipse at center, rgba(95,162,255,0.14) 0%, rgba(118,84,255,0.10) 32%, transparent 70%);
-      filter: blur(60px);
+      width: 140%;
+      height: 140%;
+      background: 
+        radial-gradient(circle at 30% 30%, rgba(59,130,246,0.12) 0%, transparent 40%),
+        radial-gradient(circle at 70% 70%, rgba(139,92,246,0.08) 0%, transparent 35%),
+        radial-gradient(circle at center, rgba(95,162,255,0.08) 0%, rgba(118,84,255,0.04) 30%, transparent 60%);
+      filter: blur(48px);
       pointer-events: none;
       z-index: 0;
+      animation: glowPulse 8s ease-in-out infinite;
+    }
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
     }
     /* backup */
     .hero-glow-backup {
@@ -489,26 +492,47 @@
       pointer-events: none;
     }
 
-    /* Subtle ambient glow behind the blob */
+    /* Premium ambient effect - removed red blob, replaced with sophisticated mesh */
     .hero::before {
       content: '';
       position: absolute;
-      top: 10%;
-      right: 5%;
-      width: 50%;
-      height: 80%;
-      background: radial-gradient(
-        ellipse at 60% 50%,
-        rgba(238, 43, 91, 0.03) 0%,
-        rgba(238, 43, 91, 0.01) 40%,
-        transparent 70%
-      );
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse 80% 50% at 80% 20%, rgba(59,130,246,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 20% 80%, rgba(139,92,246,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 60% at 50% 50%, rgba(20,184,166,0.04) 0%, transparent 50%);
       z-index: 0;
       pointer-events: none;
     }
 
     .hero::after {
-      content: none;
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 80px,
+          rgba(255,255,255,0.008) 80px,
+          rgba(255,255,255,0.008) 81px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 80px,
+          rgba(255,255,255,0.008) 80px,
+          rgba(255,255,255,0.008) 81px
+        );
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.5;
     }
 
     /* Hero animation handled by Three.js blob */
@@ -1490,12 +1514,43 @@
         linear-gradient(180deg, #010102 0%, #020305 44%, #000 100%);
     }
     .hero::before {
-      top: 12%;
-      right: 9%;
-      width: 34%;
-      height: 58%;
-      background: radial-gradient(ellipse at 58% 52%, rgba(86,160,255,0.04) 0%, rgba(86,160,255,0.012) 36%, transparent 70%);
-      filter: blur(18px);
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse 80% 50% at 85% 15%, rgba(59,130,246,0.1) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 15% 85%, rgba(139,92,246,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 60% at 50% 50%, rgba(20,184,166,0.05) 0%, transparent 50%);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 80px,
+          rgba(255,255,255,0.01) 80px,
+          rgba(255,255,255,0.01) 81px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 80px,
+          rgba(255,255,255,0.01) 80px,
+          rgba(255,255,255,0.01) 81px
+        );
+      z-index: 0;
+      pointer-events: none;
     }
     .hero-grid {
       max-width: 1320px;
@@ -1659,6 +1714,15 @@
       box-shadow: 0 30px 100px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08);
       backdrop-filter: blur(24px);
     }
+    .hero-particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
     .hero-visual-shell::before {
       content: '';
       position: absolute;
@@ -1735,12 +1799,21 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 58%;
-      height: 58%;
-      background: radial-gradient(circle at center, rgba(95,162,255,0.22) 0%, rgba(95,162,255,0.1) 30%, rgba(118,84,255,0.05) 48%, transparent 72%);
-      filter: blur(28px);
+      width: 70%;
+      height: 70%;
+      background: 
+        radial-gradient(circle at 30% 30%, rgba(59,130,246,0.2) 0%, transparent 40%),
+        radial-gradient(circle at 70% 70%, rgba(139,92,246,0.15) 0%, transparent 35%),
+        radial-gradient(circle at 50% 50%, rgba(20,184,166,0.1) 0%, transparent 50%),
+        radial-gradient(circle at center, rgba(95,162,255,0.12) 0%, rgba(118,84,255,0.06) 30%, transparent 60%);
+      filter: blur(32px);
       pointer-events: none;
       z-index: 0;
+      animation: glowPulse 8s ease-in-out infinite;
+    }
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
     }
     /* backup */
     .hero-glow-backup {
@@ -2307,7 +2380,7 @@
           NOW LIVE ON SOLANA
         </div>
 
-        <h1 class="hero-headline">Every chain is yours.</h1>
+        <h1 class="hero-headline char-reveal" data-split="words">Every chain is yours.</h1>
 
         <p class="hero-tagline">Ika gives your code native signing power across chains.</p>
 
@@ -2338,6 +2411,7 @@
 
       <div class="hero-visual reveal reveal-delay-1" aria-hidden="true">
         <div class="hero-visual-shell">
+          <canvas class="hero-particles" id="heroParticles"></canvas>
           <div class="hero-glow"></div>
           <div class="hero-grid-rings"></div>
           <div class="hero-grid-orbit"></div>
@@ -2973,6 +3047,128 @@
       charRevealHeading: { start: 'top 85%', distance: 22, duration: 0.06, stagger: 0.018, ease: 'power4.out' }
     };
 
+    // Premium particle network animation
+    (function initHeroParticles() {
+      if (prefersReducedMotion) return;
+      const canvas = document.getElementById('heroParticles');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let animationId;
+      let particles = [];
+      
+      function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      }
+      
+      function createParticles() {
+        particles = [];
+        const count = Math.floor((canvas.width * canvas.height) / 14000);
+        const nodePositions = [
+          { x: 0.15, y: 0.14 }, { x: 0.85, y: 0.13 }, { x: 0.19, y: 0.83 }, { x: 0.82, y: 0.84 }
+        ];
+        // Add fixed chain node particles
+        nodePositions.forEach(pos => {
+          particles.push({
+            x: canvas.width * pos.x,
+            y: canvas.height * pos.y,
+            vx: 0,
+            vy: 0,
+            radius: 3,
+            color: 'rgba(95, 162, 255, 0.6)',
+            isNode: true,
+            pulse: Math.random() * Math.PI * 2
+          });
+        });
+        // Add floating particles
+        for (let i = 0; i < Math.min(count, 20); i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            radius: Math.random() * 1.5 + 0.5,
+            color: `rgba(${Math.random() > 0.5 ? '95,162,255' : '139,92,246'}, ${Math.random() * 0.3 + 0.1})`,
+            isNode: false
+          });
+        }
+      }
+      
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw connections
+        particles.forEach((p1, i) => {
+          particles.slice(i + 1).forEach(p2 => {
+            const dx = p2.x - p1.x;
+            const dy = p2.y - p1.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const maxDist = p1.isNode || p2.isNode ? 180 : 120;
+            
+            if (dist < maxDist) {
+              const alpha = (1 - dist / maxDist) * (p1.isNode || p2.isNode ? 0.25 : 0.15);
+              ctx.beginPath();
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = `rgba(95, 162, 255, ${alpha})`;
+              ctx.lineWidth = p1.isNode || p2.isNode ? 1 : 0.5;
+              ctx.stroke();
+            }
+          });
+        });
+        
+        // Draw particles
+        particles.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.fill();
+          
+          // Pulse effect for nodes
+          if (p.isNode) {
+            p.pulse += 0.03;
+            const pulseRadius = p.radius + Math.sin(p.pulse) * 2;
+            const gradient = ctx.createRadialGradient(p.x, p.y, p.radius, p.x, p.y, pulseRadius * 2);
+            gradient.addColorStop(0, 'rgba(95, 162, 255, 0.3)');
+            gradient.addColorStop(1, 'transparent');
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, pulseRadius * 2, 0, Math.PI * 2);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+          }
+        });
+        
+        // Update positions
+        particles.forEach(p => {
+          if (!p.isNode) {
+            p.x += p.vx;
+            p.y += p.vy;
+            
+            // Bounce off edges
+            if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+            if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+          }
+        });
+        
+        animationId = requestAnimationFrame(draw);
+      }
+      
+      function init() {
+        resize();
+        createParticles();
+        draw();
+      }
+      
+      if (canvas) {
+        init();
+        window.addEventListener('resize', () => {
+          resize();
+          createParticles();
+        });
+      }
+    })();
+
     function heroSequence(steps, options = {}) {
       const initialDelay = options.initialDelay || 0;
       const fallbackSpacing = options.fallbackSpacing || 110;
@@ -3128,7 +3324,8 @@
 
         const headingPreset = preset('charRevealHeading');
         document.querySelectorAll('.char-reveal').forEach(el => {
-          if (el.closest('.hero')) return;
+          // Process hero headlines too for letter-by-letter reveal
+          const isHero = el.closest('.hero');
           const html = el.innerHTML;
           const mode = el.dataset.split || 'chars';
           const parts = html.split(/(<br\s*\/?>)/gi);
@@ -3179,34 +3376,48 @@
             });
           });
 
-          gsap.to(nodes, {
-            opacity: 1,
-            y: 0,
-            stagger: mode === 'words' ? headingPreset.stagger * 2.1 : headingPreset.stagger,
-            duration: mode === 'words' ? headingPreset.duration * 4.6 : headingPreset.duration,
-            ease: headingPreset.ease,
-            scrollTrigger: {
-              trigger: el,
-              start: headingPreset.start,
-              toggleActions: 'play none none none'
-            }
-          });
+          // Hero elements animate on page load, others on scroll
+          if (isHero) {
+            // Hero: animate immediately with entrance timing
+            gsap.to(nodes, {
+              opacity: 1,
+              y: 0,
+              stagger: 0.04,
+              duration: 0.5,
+              ease: 'power3.out',
+              delay: 0.3
+            });
+          } else {
+            // Non-hero: animate on scroll into view
+            gsap.to(nodes, {
+              opacity: 1,
+              y: 0,
+              stagger: mode === 'words' ? headingPreset.stagger * 2.1 : headingPreset.stagger,
+              duration: mode === 'words' ? headingPreset.duration * 4.6 : headingPreset.duration,
+              ease: headingPreset.ease,
+              scrollTrigger: {
+                trigger: el,
+                start: headingPreset.start,
+                toggleActions: 'play none none none'
+              }
+            });
 
-          ScrollTrigger.create({
-            trigger: el,
-            start: 'top 90%',
-            once: true,
-            onEnter: () => {
-              window.setTimeout(() => {
-                nodes.forEach(node => {
-                  if (parseFloat(getComputedStyle(node).opacity) < 0.5) {
-                    node.style.opacity = '1';
-                    node.style.transform = 'none';
-                  }
-                });
-              }, 800);
-            }
-          });
+            ScrollTrigger.create({
+              trigger: el,
+              start: 'top 90%',
+              once: true,
+              onEnter: () => {
+                window.setTimeout(() => {
+                  nodes.forEach(node => {
+                    if (parseFloat(getComputedStyle(node).opacity) < 0.5) {
+                      node.style.opacity = '1';
+                      node.style.transform = 'none';
+                    }
+                  });
+                }, 800);
+              }
+            });
+          }
         });
 
         const timelinePreset = preset('timelineRows');
