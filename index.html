@@ -54,7 +54,17 @@
     .motion-safe .hero-visual-card.top { transform: translateY(calc(var(--scroll, 0px) * -0.03)); }
     .motion-safe .hero-visual-card.bottom { transform: translateY(calc(var(--scroll, 0px) * 0.04)); }
 
-    /* @property for spinning border - REMOVED, using transform instead for better browser support */
+    /* @property for spinning border - needed for conic-gradient animation */
+    @property --angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    @keyframes spin {
+      from { --angle: 0deg; }
+      to { --angle: 360deg; }
+    }
 
     /* ═══════════════════════════════════════════
        RESET & BASE
@@ -584,6 +594,12 @@
       line-height: 1;
       letter-spacing: -0.03em;
       margin-bottom: 28px;
+    }
+    .hero-headline .word {
+      display: inline-block;
+    }
+    .hero-headline .char {
+      will-change: opacity, transform;
     }
     /* Line wrappers removed — headline renders directly */
     .hero-headline .gradient-text {
@@ -3994,6 +4010,65 @@
     }
 
     initHeroBlob();
+
+    /* ─── LETTER-BY-LETTER SCROLL REVEAL ─── */
+    (function() {
+      const headline = document.querySelector('.hero-headline');
+      if (!headline) return;
+      
+      const text = headline.textContent;
+      headline.innerHTML = '';
+      
+      // Split into words, then letters
+      const words = text.split(' ');
+      words.forEach((word, wi) => {
+        const wordSpan = document.createElement('span');
+        wordSpan.className = 'word';
+        wordSpan.style.display = 'inline-block';
+        wordSpan.style.overflow = 'hidden';
+        
+        const letters = word.split('');
+        letters.forEach((char, ci) => {
+          const span = document.createElement('span');
+          span.className = 'char';
+          span.textContent = char;
+          span.style.display = 'inline-block';
+          span.style.opacity = '0';
+          span.style.transform = 'translateY(100%)';
+          span.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          span.style.transitionDelay = (wi * 0.08 + ci * 0.02) + 's';
+          wordSpan.appendChild(span);
+        });
+        
+        headline.appendChild(wordSpan);
+        
+        // Add space between words
+        if (wi < words.length - 1) {
+          const space = document.createTextNode(' ');
+          space.style.display = 'inline-block';
+          space.style.width = '0.3em';
+          headline.appendChild(space);
+        }
+      });
+      
+      // Animate on scroll
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const chars = headline.querySelectorAll('.char');
+            chars.forEach((char, i) => {
+              setTimeout(() => {
+                char.style.opacity = '1';
+                char.style.transform = 'translateY(0)';
+              }, i * 15);
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      
+      observer.observe(headline);
+    })();
 
     /* ─── MOBILE NAV TOGGLE (always active) ─── */
     const navToggle = document.getElementById('navToggle');
