@@ -587,6 +587,17 @@
     }
     /* Line wrappers removed — headline renders directly */
     .hero-headline .gradient-text {
+
+    /* Hero character-by-character reveal */
+    .hero-char {
+      display: inline-block;
+      will-change: opacity, transform;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+    .hero-char-space {
+      width: 0.25em;
+    }
       background: var(--brand-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -3253,6 +3264,64 @@
           el.style.transform = 'translateY(0)';
         });
       }, 1800);
+
+
+      /* ─── HERO LETTER-BY-LETTER SCROLL REVEAL ─── */
+      (function initHeroCharReveal() {
+        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+        
+        const heroHeadline = document.querySelector('.hero-headline');
+        const heroTagline = document.querySelector('.hero-tagline');
+        const heroSub = document.querySelector('.hero-sub');
+        if (!heroHeadline) return;
+        
+        // Split headline text into characters
+        const text = heroHeadline.textContent;
+        heroHeadline.innerHTML = '';
+        
+        const chars = [];
+        text.split('').forEach((char, i) => {
+          const span = document.createElement('span');
+          span.className = 'hero-char';
+          if (char === ' ') {
+            span.innerHTML = '&nbsp;';
+            span.classList.add('hero-char-space');
+          } else {
+            span.textContent = char;
+          }
+          span.style.display = 'inline-block';
+          span.style.opacity = '0';
+          span.style.transform = 'translateY(35px) rotateX(-90deg)';
+          span.style.transition = 'none';
+          heroHeadline.appendChild(span);
+          chars.push(span);
+        });
+        
+        // Animate on scroll - letter by letter reveal
+        gsap.to(chars, {
+          opacity: 1,
+          translateY: 0,
+          rotateX: 0,
+          duration: 0.6,
+          stagger: 0.04,
+          ease: 'back.out(1.2)',
+          scrollTrigger: {
+            trigger: '.hero',
+            start: 'top 75%',
+            end: 'top 20%',
+            toggleActions: 'play none none reverse',
+            onEnter: () => {
+              // Tagline fades in after headline starts
+              if (heroTagline) {
+                gsap.to(heroTagline, { opacity: 1, y: 0, duration: 0.5, delay: 0.3, ease: 'power2.out' });
+              }
+              if (heroSub) {
+                gsap.to(heroSub, { opacity: 1, y: 0, duration: 0.5, delay: 0.5, ease: 'power2.out' });
+              }
+            }
+          }
+        });
+      })();
 
       /* ─── 4. GSAP SCROLL ANIMATIONS ─── */
       function initGSAP() {
