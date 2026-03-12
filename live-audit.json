@@ -1,0 +1,128 @@
+{
+  "desktop": {
+    "title": "Ika — Every chain is yours.",
+    "h1": "Every chain is yours.",
+    "liveStripText": "Live on Solana — The first trustless signing network →",
+    "overflow": 0,
+    "navHeight": 82.046875,
+    "heroTop": 462.375,
+    "heroBg": "rgba(0, 0, 0, 0)",
+    "bodyBg": "rgb(0, 0, 0)",
+    "links": [
+      "What is Ika",
+      "Agents",
+      "Use Cases",
+      "Compare",
+      "Docs",
+      "Start Building"
+    ]
+  },
+  "mobile": {
+    "initial": {
+      "overflow": 0,
+      "buttons": [],
+      "navTextLinks": [
+        {
+          "text": "",
+          "rect": {
+            "x": 40,
+            "y": 58,
+            "width": 56,
+            "height": 28,
+            "top": 58,
+            "right": 96,
+            "bottom": 86,
+            "left": 40
+          }
+        },
+        {
+          "text": "What is Ika",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Agents",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Use Cases",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Compare",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Docs",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Start Building",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        }
+      ],
+      "navHtml": "<nav class=\"nav\">\n    <div class=\"nav-inner\">\n    <a href=\"/\" class=\"nav-logo\">\n      <img src=\"./assets/logo.svg\" alt=\"Ika\">\n    </a>\n    <div class=\"nav-links\" id=\"navLinks\">\n      <a href=\"#ika-is\">What is Ika</a>\n      <a href=\"#agentic\">Agents</a>\n      <a href=\"#use-cases\">Use Cases</a>\n      <a href=\"#compare\">Compare</a>\n      <a href=\"https://docs.ika.network\" target=\"_blank\" rel=\"noopener\">Docs</a>\n      <a href=\"#cta\" class=\"nav-cta\">Start Building</a>\n    </div>\n    <div class=\"nav-hamburger\" id=\"navToggle\" role=\"button\" aria-label=\"Toggle navigation\" tabindex=\"0\">\n      <span></span><span></span><span></span>\n    </div>\n    </div><!-- /nav-inner -->\n  </nav>"
+    },
+    "overlay": {
+      "opened": false
+    }
+  },
+  "reducedMotion": {
+    "prefersReduced": true,
+    "overflow": 0,
+    "animated": []
+  }
+}
