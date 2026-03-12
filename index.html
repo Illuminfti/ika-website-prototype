@@ -54,7 +54,7 @@
     .motion-safe .hero-visual-card.top { transform: translateY(calc(var(--scroll, 0px) * -0.03)); }
     .motion-safe .hero-visual-card.bottom { transform: translateY(calc(var(--scroll, 0px) * 0.04)); }
 
-    /* @property for spinning border - needed for conic-gradient animation */
+    /* @property for spinning border - enables CSS custom property animation */
     @property --angle {
       syntax: '<angle>';
       initial-value: 0deg;
@@ -65,6 +65,7 @@
       from { --angle: 0deg; }
       to { --angle: 360deg; }
     }
+>>>>>>> bab0f690d14603e5da82b94c8d003f934c07582a
 
     /* ═══════════════════════════════════════════
        RESET & BASE
@@ -479,17 +480,38 @@
       width: 140%;
       height: 140%;
       background: 
-        radial-gradient(circle at 30% 30%, rgba(59,130,246,0.12) 0%, transparent 40%),
-        radial-gradient(circle at 70% 70%, rgba(139,92,246,0.08) 0%, transparent 35%),
-        radial-gradient(circle at center, rgba(95,162,255,0.08) 0%, rgba(118,84,255,0.04) 30%, transparent 60%);
+        radial-gradient(circle at 30% 30%, rgba(139,92,246,0.08) 0%, transparent 40%),
+        radial-gradient(circle at 70% 70%, rgba(59,130,246,0.06) 0%, transparent 35%),
+        radial-gradient(circle at 50% 50%, rgba(20,184,166,0.04) 0%, transparent 45%),
+        radial-gradient(circle at center, rgba(99,102,241,0.03) 0%, transparent 50%);
       filter: blur(48px);
       pointer-events: none;
       z-index: 0;
-      animation: glowPulse 8s ease-in-out infinite;
+      animation: glowPulse 12s ease-in-out infinite;
+    }
+    /* Secondary glow layer for depth */
+    .hero-glow-deep {
+      position: absolute;
+      top: 25%;
+      left: 75%;
+      transform: translate(-50%, -50%);
+      width: 60%;
+      height: 60%;
+      background: 
+        radial-gradient(circle at 50% 50%, rgba(139,92,246,0.06) 0%, transparent 45%),
+        radial-gradient(circle at 30% 30%, rgba(59,130,246,0.04) 0%, transparent 40%);
+      filter: blur(72px);
+      pointer-events: none;
+      z-index: 0;
+      animation: glowPulseDeep 16s ease-in-out infinite;
     }
     @keyframes glowPulse {
-      0%, 100% { opacity: 0.8; }
-      50% { opacity: 1; }
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.7; }
+    }
+    @keyframes glowPulseDeep {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.5; }
     }
     /* backup */
     .hero-glow-backup {
@@ -1829,18 +1851,37 @@
       width: 70%;
       height: 70%;
       background: 
-        radial-gradient(circle at 30% 30%, rgba(59,130,246,0.2) 0%, transparent 40%),
-        radial-gradient(circle at 70% 70%, rgba(139,92,246,0.15) 0%, transparent 35%),
-        radial-gradient(circle at 50% 50%, rgba(20,184,166,0.1) 0%, transparent 50%),
-        radial-gradient(circle at center, rgba(95,162,255,0.12) 0%, rgba(118,84,255,0.06) 30%, transparent 60%);
+        radial-gradient(circle at 25% 35%, rgba(238,43,91,0.2) 0%, transparent 45%),
+        radial-gradient(circle at 75% 65%, rgba(244,63,94,0.15) 0%, transparent 40%),
+        radial-gradient(circle at 50% 80%, rgba(255,45,85,0.1) 0%, transparent 35%),
+        radial-gradient(circle at center, rgba(139,92,246,0.08) 0%, rgba(59,130,246,0.04) 30%, transparent 60%);
       filter: blur(32px);
       pointer-events: none;
       z-index: 0;
       animation: glowPulse 8s ease-in-out infinite;
     }
+    .hero-glow-deep {
+      position: absolute;
+      top: 30%;
+      left: 70%;
+      transform: translate(-50%, -50%);
+      width: 50%;
+      height: 50%;
+      background: 
+        radial-gradient(circle at 40% 40%, rgba(139,92,246,0.15) 0%, transparent 50%),
+        radial-gradient(circle at 60% 60%, rgba(59,130,246,0.1) 0%, transparent 40%);
+      filter: blur(40px);
+      pointer-events: none;
+      z-index: 0;
+      animation: glowPulseDeep 12s ease-in-out infinite;
+    }
     @keyframes glowPulse {
-      0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+      0%, 100% { opacity: 0.85; transform: translate(-50%, -50%) scale(1); }
       50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+    }
+    @keyframes glowPulseDeep {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.8; }
     }
     /* backup */
     .hero-glow-backup {
@@ -2407,7 +2448,7 @@
           NOW LIVE ON SOLANA
         </div>
 
-        <h1 class="hero-headline char-reveal" data-split="words">Every chain is yours.</h1>
+        <h1 class="hero-headline char-reveal" data-split="chars">Every chain is yours.</h1>
 
         <p class="hero-tagline">Ika gives your code native signing power across chains.</p>
 
@@ -2440,6 +2481,7 @@
         <div class="hero-visual-shell">
           <canvas class="hero-particles" id="heroParticles"></canvas>
           <div class="hero-glow"></div>
+          <div class="hero-glow-deep"></div>
           <div class="hero-grid-rings"></div>
           <div class="hero-grid-orbit"></div>
           <div class="hero-chain-nodes">
@@ -2494,7 +2536,7 @@
           <div class="metric-label">Time to sign, any chain</div>
         </div>
         <div class="metric reveal reveal-delay-2">
-          <div class="metric-value"><span class="coral" data-count="2000</span><span class="metric-suffix">+</span></div>
+          <div class="metric-value"><span class="coral" data-count="2000"></span><span class="metric-suffix">+</span></div>
           <div class="metric-label">Validators. You approve.</div>
         </div>
       </div>
@@ -2829,7 +2871,7 @@
               </div>
               <div>
                 <h4>Sub-second Signing</h4>
-                <p>No human approval delays. Your agent signs in <800ms. Markets don't wait for Slack approvals.</p>
+                <p>No human approval delays. Your agent signs in &lt;800ms. Markets don't wait for Slack approvals.</p>
               </div>
             </div>
             <div class="agentic-feature">
@@ -3264,14 +3306,16 @@
       const heroTagline = hero.querySelector('.hero-tagline');
       const heroSub = hero.querySelector('.hero-sub');
       const heroButtons = hero.querySelectorAll('.hero-ctas .btn-primary, .hero-ctas .btn-secondary');
+      const heroProof = hero.querySelector('.hero-proof');
       const heroScale = mobileMotionScale();
 
       heroSequence([
-        { target: statusPill, y: 0, duration: 0.34 * heroScale },
-        { target: heroTagline, y: 0, duration: 0.42 * heroScale, overlap: 0.14 },
-        { target: heroSub, y: 0, duration: 0.38 * heroScale, overlap: 0.2 },
-        { target: heroButtons, y: 0, duration: 0.34 * heroScale, stagger: 0.08 * heroScale, overlap: 0.18 }
-      ], { initialDelay: 0.18 });
+        { target: statusPill, y: 0, duration: 0.4 * heroScale },
+        { target: heroTagline, y: 0, duration: 0.5 * heroScale, overlap: 0.12 },
+        { target: heroSub, y: 0, duration: 0.45 * heroScale, overlap: 0.18 },
+        { target: heroButtons, y: 0, duration: 0.4 * heroScale, stagger: 0.06 * heroScale, overlap: 0.15 },
+        { target: heroProof, y: 0, duration: 0.35 * heroScale, overlap: 0.1 }
+      ], { initialDelay: 0.25 });
 
       window.setTimeout(() => {
         const heroEl = document.querySelector('.hero-entrance');
@@ -3279,7 +3323,7 @@
         document.querySelectorAll('.hero-headline .line-inner').forEach(el => {
           el.style.transform = 'translateY(0)';
         });
-      }, 1800);
+      }, 2000);
 
 
       /* ─── HERO LETTER-BY-LETTER SCROLL REVEAL ─── */
@@ -3461,16 +3505,45 @@
             });
           });
 
-          // Hero elements animate on page load, others on scroll
+          // Hero elements animate on page load + scroll parallax
           if (isHero) {
-            // Hero: animate immediately with entrance timing
+            // Hero: animate immediately with entrance timing (letter-by-letter)
             gsap.to(nodes, {
               opacity: 1,
               y: 0,
-              stagger: 0.04,
-              duration: 0.5,
-              ease: 'power3.out',
-              delay: 0.3
+              stagger: 0.035,
+              duration: 0.55,
+              ease: 'expo.out',
+              delay: 0.35
+            });
+            
+            // Add scroll-based parallax for hero content
+            ScrollTrigger.create({
+              trigger: '.hero',
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 1,
+              onUpdate: (self) => {
+                const heroContent = document.querySelector('.hero-content');
+                const heroVisual = document.querySelector('.hero-visual');
+                if (heroContent) {
+                  gsap.to(heroContent, {
+                    y: self.progress * -80,
+                    opacity: 1 - self.progress * 0.4,
+                    ease: 'none',
+                    overwrite: 'auto'
+                  });
+                }
+                if (heroVisual) {
+                  gsap.to(heroVisual, {
+                    y: self.progress * -120,
+                    scale: 1 - self.progress * 0.1,
+                    opacity: 1 - self.progress * 0.3,
+                    ease: 'none',
+                    overwrite: 'auto'
+                  });
+                }
+              }
             });
           } else {
             // Non-hero: animate on scroll into view
@@ -3504,6 +3577,44 @@
             });
           }
         });
+
+        // Hero scroll-triggered fade-up for tagline and subheadline
+        const heroTagline = document.querySelector('.hero-tagline');
+        const heroSub = document.querySelector('.hero-sub');
+        const heroCtas = document.querySelector('.hero-ctas');
+        
+        if (heroTagline) {
+          gsap.set(heroTagline, { opacity: 0, y: 32 });
+          ScrollTrigger.create({
+            trigger: '.hero',
+            start: 'top 60%',
+            onEnter: () => {
+              gsap.to(heroTagline, { 
+                opacity: 1, 
+                y: 0, 
+                duration: 0.6, 
+                ease: 'power3.out' 
+              });
+            }
+          });
+        }
+        
+        if (heroSub) {
+          gsap.set(heroSub, { opacity: 0, y: 28 });
+          ScrollTrigger.create({
+            trigger: '.hero',
+            start: 'top 40%',
+            onEnter: () => {
+              gsap.to(heroSub, { 
+                opacity: 1, 
+                y: 0, 
+                duration: 0.6, 
+                delay: 0.15,
+                ease: 'power3.out' 
+              });
+            }
+          });
+        }
 
         const timelinePreset = preset('timelineRows');
         const timelineLine = document.querySelector('.timeline-line-progress');

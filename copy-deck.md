@@ -38,7 +38,7 @@ Tag: `What makes Ika different`
 - **Fast by design** — Sub-second signatures where legacy MPC takes 30+ seconds
 - **Trustless by proof** — 2PC-MPC: no single party ever holds your key. Mathematically guaranteed.
 - **Scalable without limits** — Hundreds of nodes signing in parallel. Not the 4-8 node ceiling of legacy networks.
-- **Programmable in Move** — Write signing policies as smart contracts. Gate, compose, automate.
+- **Programmable in Rust** — Write signing policies as smart contracts. Gate, compose, automate.
 - **Native to every chain** — Not a bridge. Not a wrapper. Real signatures on real chains.
 
 ---
@@ -66,7 +66,7 @@ Ika uses 2PC-MPC — a breakthrough in threshold cryptography where no single pa
 ## USE CASES (Bento Grid)
 
 ### On-chain Fireblocks
-Enterprise custody without the enterprise. Programmable signing policies in Move give you institutional-grade key management, on-chain.
+Enterprise custody without the enterprise. Programmable signing policies give you institutional-grade key management, on-chain.
 
 ### Native Bitcoin on Sui  
 Not wrapped. Not bridged. Real BTC controlled by Sui smart contracts. Programmable Bitcoin DeFi becomes possible.
@@ -96,7 +96,7 @@ Tag: `Why Ika`
 | Latency | < 1 second | Minutes | 30+ seconds | Manual |
 | Trust | Zero-trust | Trusted relayers | Trusted committee | Trusted signers |
 | Key security | Non-collusive | N/A | Collusion risk | Key exposure |
-| Programmability | Move smart contracts | Limited | None | None |
+| Programmability | Rust smart contracts | Limited | None | None |
 | Chains | Universal | Pair-specific | Limited | Per-chain |
 
 ---
