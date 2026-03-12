@@ -1651,13 +1651,15 @@
       color: rgba(255,255,255,0.76);
     }
     .hero-proof {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      display: flex;
+      flex-wrap: wrap;
       gap: 14px;
       margin-top: 34px;
       max-width: 540px;
     }
     .proof-card {
+      flex: 1;
+      min-width: 140px;
       position: relative;
       overflow: hidden;
       border-radius: 20px;
@@ -2257,7 +2259,7 @@
     @media (max-width: 768px) {
       .container { padding: 0 24px; }
       .hero-grid { padding: 0 24px; }
-      .hero-proof { grid-template-columns: 1fr; max-width: 100%; }
+      .hero-proof { flex-wrap: wrap; max-width: 100%; }
       .hero-visual { min-height: 420px; }
       .hero-visual-shell { aspect-ratio: auto; min-height: 420px; }
       .hero-visual-card { min-width: 150px; padding: 12px 14px; }
