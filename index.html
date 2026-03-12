@@ -54,7 +54,12 @@
     .motion-safe .hero-visual-card.top { transform: translateY(calc(var(--scroll, 0px) * -0.03)); }
     .motion-safe .hero-visual-card.bottom { transform: translateY(calc(var(--scroll, 0px) * 0.04)); }
 
-    /* @property for spinning border - REMOVED, using transform instead for better browser support */
+    /* @property for spinning border - enables CSS custom property animation */
+    @property --angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
 
     /* ═══════════════════════════════════════════
        RESET & BASE
