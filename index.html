@@ -92,6 +92,12 @@ p { color: var(--text-1); }
   backdrop-filter: blur(16px) saturate(135%);
   border-radius: 28px;
   padding: clamp(28px, 4vw, 48px);
+  transition: border-color .4s, box-shadow .4s, transform .3s;
+}
+.panel:hover {
+  border-color: var(--stroke-2);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04);
+  transform: translateY(-2px);
 }
 
 /* ═══════════════════════════════════════════
@@ -114,9 +120,10 @@ p { color: var(--text-1); }
   border-bottom: 1px solid transparent;
 }
 .nav.scrolled {
-  background: rgba(5,8,22,.64);
+  background: rgba(5,8,22,.72);
   backdrop-filter: blur(20px) saturate(140%);
   border-bottom-color: var(--stroke-1);
+  box-shadow: 0 1px 20px rgba(238,43,91,0.04);
 }
 .nav-inner {
   display: flex; align-items: center; justify-content: space-between;
@@ -133,7 +140,16 @@ p { color: var(--text-1); }
 .nav-links a {
   font-size: 14px; font-weight: 500; color: var(--text-1);
   transition: color .2s;
+  opacity: 0; animation: nav-link-in .5s ease forwards;
 }
+.nav-links a:nth-child(1) { animation-delay: .1s; }
+.nav-links a:nth-child(2) { animation-delay: .15s; }
+.nav-links a:nth-child(3) { animation-delay: .2s; }
+.nav-links a:nth-child(4) { animation-delay: .25s; }
+.nav-links a:nth-child(5) { animation-delay: .3s; }
+.nav-links a:nth-child(6) { animation-delay: .35s; }
+.nav-links a:nth-child(7) { animation-delay: .4s; }
+@keyframes nav-link-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 .nav-links a:hover { color: var(--text-0); }
 .nav-cta {
   background: var(--brand); color: #fff !important;
@@ -207,6 +223,11 @@ p { color: var(--text-1); }
     radial-gradient(ellipse 60% 50% at 30% 60%, rgba(117,241,255,0.04) 0%, transparent 60%);
   pointer-events: none;
 }
+.hero-glow-follow {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), rgba(238,43,91,0.04), transparent 50%);
+  transition: background .15s ease;
+}
 .hero-text {
   grid-column: 1 / 6; position: relative; z-index: 2;
   padding: clamp(32px, 5vw, 80px) 0;
@@ -226,7 +247,12 @@ p { color: var(--text-1); }
 }
 @keyframes pulse-dot { 0%,100%{ opacity:1; } 50%{ opacity:.4; } }
 .hero h1 { margin-bottom: 24px; max-width: 600px; }
-.hero h1 em { font-style: italic; color: var(--cyan); }
+.hero h1 em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--cyan), var(--violet));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 .hero-sub {
   font-size: clamp(16px, 1.8vw, 20px);
   color: var(--text-1); max-width: 480px;
@@ -289,30 +315,36 @@ p { color: var(--text-1); }
    PROOF RAIL
    ═══════════════════════════════════════════ */
 .proof-rail {
-  padding: 48px 0;
+  padding: 56px 0;
   border-top: 1px solid var(--stroke-1);
   border-bottom: 1px solid var(--stroke-1);
+  background: linear-gradient(180deg, rgba(238,43,91,0.015) 0%, transparent 100%);
 }
 .proof-rail-inner {
   display: flex; flex-wrap: wrap; justify-content: center;
-  gap: 12px 32px;
+  gap: 16px 40px;
 }
 .proof-token {
-  display: inline-flex; align-items: center; gap: 8px;
+  display: inline-flex; align-items: center; gap: 10px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px; font-weight: 400;
-  text-transform: uppercase; letter-spacing: 0.08em;
+  font-size: 12px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.1em;
   color: var(--text-2);
+  transition: color .3s;
 }
+.proof-token:hover { color: var(--text-1); }
 .proof-token::before {
-  content: ''; width: 4px; height: 4px; border-radius: 50%;
+  content: ''; width: 5px; height: 5px; border-radius: 50%;
   background: var(--brand);
+  box-shadow: 0 0 8px rgba(238,43,91,0.4);
+  transition: box-shadow .3s;
 }
+.proof-token:hover::before { box-shadow: 0 0 14px rgba(238,43,91,0.6); }
 
 /* ═══════════════════════════════════════════
    PROBLEM
    ═══════════════════════════════════════════ */
-.problem { padding: clamp(80px, 10vw, 160px) 0; }
+.problem { padding: clamp(80px, 10vw, 160px) 0; background: var(--bg-1); }
 .problem-grid {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: clamp(40px, 5vw, 80px); align-items: start;
@@ -325,7 +357,9 @@ p { color: var(--text-1); }
 .problem-card-svg {
   flex: 1; display: flex; align-items: center; justify-content: center;
   margin-bottom: 20px; padding-top: 24px;
+  transition: transform .5s cubic-bezier(.22,1,.36,1);
 }
+.problem-card:hover .problem-card-svg { transform: scale(1.04); }
 .problem-card h3 { margin-bottom: 8px; }
 .problem-card p { font-size: 15px; }
 
@@ -343,9 +377,14 @@ p { color: var(--text-1); }
 .solution-steps { display: flex; flex-direction: column; gap: 28px; }
 .solution-step {
   padding: 32px; border-left: 2px solid var(--stroke-1);
-  transition: border-color .3s;
+  transition: border-color .4s, background .4s, transform .3s;
+  border-radius: 0 16px 16px 0;
 }
-.solution-step:hover { border-color: var(--brand); }
+.solution-step:hover {
+  border-color: var(--brand);
+  background: rgba(238,43,91,0.03);
+  transform: translateX(4px);
+}
 .solution-step .step-num {
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px; font-weight: 500;
@@ -359,22 +398,35 @@ p { color: var(--text-1); }
    INTERLUDE
    ═══════════════════════════════════════════ */
 .interlude {
-  padding: clamp(100px, 14vw, 220px) 0;
+  padding: clamp(120px, 16vw, 260px) 0;
   text-align: center; position: relative;
+  overflow: hidden;
 }
-.interlude h2 em { font-style: italic; color: var(--violet); }
+.interlude::before {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px; height: 400px;
+  background: radial-gradient(ellipse, rgba(183,140,255,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.interlude h2 {
+  opacity: 0.15;
+  transition: opacity 1.2s cubic-bezier(.22,1,.36,1);
+}
+.interlude h2.vis { opacity: 1; }
+.interlude h2 em { font-style: italic; color: var(--violet); text-shadow: 0 0 40px rgba(183,140,255,0.15); }
 .interlude-rule {
   width: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--stroke-2), transparent);
-  margin: 40px auto 0;
-  transition: width 1.2s cubic-bezier(.22,1,.36,1);
+  background: linear-gradient(90deg, transparent, var(--violet), transparent);
+  margin: 48px auto 0;
+  transition: width 1.4s cubic-bezier(.22,1,.36,1);
 }
-.interlude-rule.vis { width: min(400px, 60vw); }
+.interlude-rule.vis { width: min(500px, 70vw); }
 
 /* ═══════════════════════════════════════════
    SOLANA TRIPTYCH
    ═══════════════════════════════════════════ */
-.triptych { padding: clamp(80px, 10vw, 160px) 0; }
+.triptych { padding: clamp(80px, 10vw, 160px) 0; background: var(--bg-1); }
 .triptych-header { margin-bottom: clamp(40px, 5vw, 64px); }
 .triptych-header h2 { max-width: 600px; }
 .triptych-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -385,11 +437,11 @@ p { color: var(--text-1); }
 }
 .triptych-panel:hover { border-color: var(--stroke-2); }
 .triptych-panel::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
   background: linear-gradient(90deg, var(--violet), var(--cyan));
-  opacity: 0; transition: opacity .4s;
+  opacity: 0.2; transition: opacity .4s, height .4s;
 }
-.triptych-panel:hover::before { opacity: 1; }
+.triptych-panel:hover::before { opacity: 1; height: 3px; }
 .triptych-label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px; text-transform: uppercase;
@@ -488,7 +540,7 @@ p { color: var(--text-1); }
 /* ═══════════════════════════════════════════
    ZUD
    ═══════════════════════════════════════════ */
-.zud { padding: clamp(80px, 10vw, 160px) 0; }
+.zud { padding: clamp(80px, 10vw, 160px) 0; background: var(--bg-1); }
 .zud-header { margin-bottom: clamp(48px, 6vw, 80px); }
 .zud-header h2 { max-width: 500px; }
 .zud-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -502,8 +554,10 @@ p { color: var(--text-1); }
   transform: translate(-50%, -60%);
   font-family: 'Inter Tight', sans-serif; font-weight: 800;
   font-size: clamp(8rem, 14vw, 14rem);
-  color: rgba(255,255,255,0.025);
+  color: rgba(255,255,255,0.04);
   line-height: 1; pointer-events: none; user-select: none;
+  text-shadow: 0 0 80px rgba(238,43,91,0.04);
+  transition: color 1s ease;
 }
 .zud-pillar h3 { margin-bottom: 12px; font-size: 1.4rem; position: relative; z-index: 1; }
 .zud-pillar > p { font-size: 15px; position: relative; z-index: 1; max-width: 320px; margin: 0 auto 16px; }
@@ -530,7 +584,17 @@ p { color: var(--text-1); }
 .uc-card:hover { border-color: var(--stroke-2); }
 .uc-card h3 { margin-bottom: 8px; font-size: 1.15rem; }
 .uc-card p { font-size: 14px; }
-.uc-hero-card { grid-column: span 2; grid-row: span 2; min-height: 380px; }
+.uc-hero-card {
+  grid-column: span 2; grid-row: span 2; min-height: 380px;
+  border-color: rgba(238,43,91,0.12);
+  background: linear-gradient(180deg, rgba(238,43,91,0.04), rgba(255,255,255,0.01)), var(--panel);
+  position: relative;
+}
+.uc-hero-card::before {
+  content: ''; position: absolute; top: -1px; left: 24px; right: 24px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--brand), transparent);
+  opacity: 0.4; border-radius: 2px;
+}
 .uc-hero-card h3 { font-size: 1.5rem; }
 .uc-hero-card p { font-size: 16px; }
 .uc-pano { grid-column: span 2; min-height: 180px; }
@@ -597,12 +661,23 @@ p { color: var(--text-1); }
   font-family: 'Inter Tight', sans-serif; font-weight: 700;
   font-size: clamp(1.2rem, 2.5vw, 2rem);
   color: var(--text-2); white-space: nowrap; flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 14px;
+  transition: color .3s;
 }
+.marquee:hover .marquee-item { color: var(--text-1); }
+.marquee-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0; opacity: 0.6;
+}
+.dot-sol { background: var(--violet); box-shadow: 0 0 10px rgba(183,140,255,0.3); }
+.dot-btc { background: #f7931a; box-shadow: 0 0 10px rgba(247,147,26,0.3); }
+.dot-eth { background: #627eea; box-shadow: 0 0 10px rgba(98,126,234,0.3); }
+.dot-generic { background: var(--text-2); }
 
 /* ═══════════════════════════════════════════
    RESEARCH
    ═══════════════════════════════════════════ */
-.research { padding: clamp(80px, 10vw, 160px) 0; }
+.research { padding: clamp(80px, 10vw, 160px) 0; background: var(--bg-1); }
 .research-header { margin-bottom: clamp(40px, 5vw, 64px); }
 .research-header h2 { max-width: 600px; }
 .research-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -610,6 +685,12 @@ p { color: var(--text-1); }
   grid-row: span 2; min-height: 400px;
   display: flex; flex-direction: column; justify-content: flex-end;
   border-left: 3px solid var(--brand);
+  position: relative; overflow: hidden;
+}
+.research-featured::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 20% 80%, rgba(238,43,91,0.06), transparent 60%);
+  pointer-events: none;
 }
 .research-featured .research-type {
   font-family: 'JetBrains Mono', monospace;
@@ -651,31 +732,49 @@ p { color: var(--text-1); }
    FINAL CTA
    ═══════════════════════════════════════════ */
 .final-cta {
-  padding: clamp(100px, 14vw, 200px) 0;
+  padding: clamp(120px, 16vw, 240px) 0;
   text-align: center; position: relative;
+  overflow: hidden;
 }
 .final-cta::before {
   content: ''; position: absolute;
   left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: 600px; height: 400px;
-  background: radial-gradient(ellipse, var(--brand-glow), transparent 70%);
-  pointer-events: none; filter: blur(40px);
+  width: 800px; height: 500px;
+  background: radial-gradient(ellipse, rgba(238,43,91,0.12), transparent 60%);
+  pointer-events: none; filter: blur(60px);
+}
+.final-cta::after {
+  content: ''; position: absolute;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 400px; height: 400px;
+  border: 1px solid rgba(238,43,91,0.06);
+  border-radius: 50%; pointer-events: none;
 }
 .cta-glow-orb {
   position: absolute; left: 50%; top: 50%;
   transform: translate(-50%, -50%);
-  width: 500px; height: 300px;
-  background: radial-gradient(ellipse, rgba(238,43,91,0.12), transparent 70%);
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse, rgba(238,43,91,0.16), transparent 65%);
   pointer-events: none; border-radius: 50%;
 }
-.final-cta h2 { position: relative; z-index: 1; max-width: 700px; margin: 0 auto 20px; }
-.final-cta p { position: relative; z-index: 1; max-width: 520px; margin: 0 auto 36px; font-size: 17px; }
+.cta-ring-1, .cta-ring-2 {
+  position: absolute; left: 50%; top: 50%;
+  border-radius: 50%; pointer-events: none;
+  border: 1px solid rgba(238,43,91,0.04);
+}
+.cta-ring-1 { width: 300px; height: 300px; transform: translate(-50%, -50%); }
+.cta-ring-2 { width: 550px; height: 550px; transform: translate(-50%, -50%); }
+.final-cta h2 { position: relative; z-index: 1; max-width: 700px; margin: 0 auto 24px; }
+.final-cta p { position: relative; z-index: 1; max-width: 520px; margin: 0 auto 40px; font-size: 17px; }
 .final-cta .hero-ctas { justify-content: center; position: relative; z-index: 1; }
 
 /* ═══════════════════════════════════════════
    FOOTER
    ═══════════════════════════════════════════ */
-.footer { padding: 64px 0 32px; border-top: 1px solid var(--stroke-1); }
+.footer {
+  padding: 80px 0 32px; border-top: 1px solid var(--stroke-1);
+  background: linear-gradient(180deg, transparent 0%, rgba(5,8,22,0.6) 100%);
+}
 .footer-grid {
   display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: clamp(32px, 4vw, 64px); margin-bottom: 48px;
@@ -688,9 +787,9 @@ p { color: var(--text-1); }
 }
 .footer-col a {
   display: block; font-size: 14px; color: var(--text-1);
-  padding: 4px 0; transition: color .2s;
+  padding: 5px 0; transition: color .2s, transform .2s;
 }
-.footer-col a:hover { color: var(--text-0); }
+.footer-col a:hover { color: var(--text-0); transform: translateX(4px); }
 .footer-bottom {
   display: flex; justify-content: space-between; align-items: center;
   padding-top: 24px; border-top: 1px solid var(--stroke-1);
@@ -741,11 +840,56 @@ p { color: var(--text-1); }
 }
 
 /* ═══════════════════════════════════════════
+   GRAIN TEXTURE OVERLAY
+   ═══════════════════════════════════════════ */
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: 9999;
+  pointer-events: none; opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION TRANSITION BLEED
+   ═══════════════════════════════════════════ */
+.section-fade-top, .section-fade-bottom { position: relative; }
+.section-fade-top::before {
+  content: ''; position: absolute; top: -1px; left: 0; right: 0; height: 100px;
+  background: linear-gradient(to bottom, var(--bg-0), transparent);
+  pointer-events: none; z-index: 1;
+}
+.section-fade-bottom::after {
+  content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 100px;
+  background: linear-gradient(to top, var(--bg-0), transparent);
+  pointer-events: none; z-index: 1;
+}
+
+/* ═══════════════════════════════════════════
+   DIVERSE REVEAL CLASSES
+   ═══════════════════════════════════════════ */
+.reveal-slide-right { opacity: 0; transform: translateX(-48px); transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+.reveal-slide-right.vis { opacity: 1; transform: none; }
+.reveal-tilt { opacity: 0; transform: translateY(24px) perspective(800px) rotateX(6deg); transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+.reveal-tilt.vis { opacity: 1; transform: none; }
+.reveal-scale { opacity: 0; transform: scale(0.92); transition: opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1); }
+.reveal-scale.vis { opacity: 1; transform: none; }
+.reveal-clip { opacity: 0; clip-path: inset(0 100% 0 0); transition: opacity .6s cubic-bezier(.22,1,.36,1), clip-path .7s cubic-bezier(.22,1,.36,1); }
+.reveal-clip.vis { opacity: 1; clip-path: inset(0 0% 0 0); }
+.reveal-blur { opacity: 0; filter: blur(8px); transform: translateY(16px); transition: opacity .6s cubic-bezier(.22,1,.36,1), filter .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1); }
+.reveal-blur.vis { opacity: 1; filter: blur(0); transform: none; }
+/* Stagger delay utilities */
+.rd-1 { transition-delay: .08s; }
+.rd-2 { transition-delay: .16s; }
+.rd-3 { transition-delay: .24s; }
+.rd-4 { transition-delay: .32s; }
+.rd-5 { transition-delay: .4s; }
+
+/* ═══════════════════════════════════════════
    REDUCED MOTION
    ═══════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
-  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .reveal, .reveal-slide-right, .reveal-tilt, .reveal-scale, .reveal-clip, .reveal-blur { opacity: 1 !important; transform: none !important; filter: none !important; clip-path: none !important; transition: none !important; }
   .marquee-track { animation: none !important; }
   .flow-path { animation: none !important; }
 }
@@ -794,10 +938,11 @@ p { color: var(--text-1); }
      HERO — SIGNATURE MOMENT #1
      ═══════════════════════════════════════════════ -->
 <section class="hero container" id="hero">
+  <div class="hero-glow-follow" id="hero-glow-follow"></div>
   <div class="hero-text">
     <div class="hero-eyebrow reveal"><span class="dot"></span> LIVE ON SOLANA</div>
     <h1 class="reveal">The <em>control layer</em> for Solana apps and agents</h1>
-    <p class="hero-sub reveal">Let Solana programs and AI agents control assets and actions on any chain&mdash;without bridges, custodians, or handing over the keys.</p>
+    <p class="hero-sub reveal">Let Solana programs and AI agents control assets and actions on any chain. No bridges. No custodians. No handing over the keys.</p>
     <div class="hero-ctas reveal">
       <a href="#" class="btn-primary">Start Building &rarr;</a>
       <a href="#" class="btn-secondary">Read the Docs</a>
@@ -943,30 +1088,30 @@ p { color: var(--text-1); }
 <section class="proof-rail">
   <div class="container">
     <div class="proof-rail-inner">
-      <span class="proof-token">Built on 2PC-MPC</span>
-      <span class="proof-token">Zero-trust signing</span>
-      <span class="proof-token">Programmable approvals</span>
-      <span class="proof-token">Cross-chain control</span>
-      <span class="proof-token">Agent guardrails</span>
-      <span class="proof-token">Native asset workflows</span>
+      <span class="proof-token reveal-scale rd-1">Built on 2PC-MPC</span>
+      <span class="proof-token reveal-scale rd-2">Zero-trust signing</span>
+      <span class="proof-token reveal-scale rd-3">Programmable approvals</span>
+      <span class="proof-token reveal-scale rd-4">Cross-chain control</span>
+      <span class="proof-token reveal-scale rd-5">Agent guardrails</span>
+      <span class="proof-token reveal-scale">Native asset workflows</span>
     </div>
   </div>
 </section>
 
 
 <!-- ═══════════════ PROBLEM ═══════════════ -->
-<section class="problem" id="developers">
+<section class="problem section-fade-top section-fade-bottom" id="developers">
   <div class="container">
     <div class="problem-grid">
-      <div class="problem-left reveal">
-        <span class="tag">The problem</span>
+      <div class="problem-left reveal-slide-right">
+        <span class="tag reveal-clip">The problem</span>
         <h2>Solana apps can execute fast. Control is still fragmented.</h2>
-        <p>Solana programs can swap, lend, and settle in milliseconds. But the moment an action needs to touch another chain&mdash;speed doesn&rsquo;t matter if security is the bottleneck.</p>
+        <p>Solana programs can swap, lend, and settle in milliseconds. But the moment an action needs to touch another chain, speed stops mattering. Security is the bottleneck.</p>
       </div>
       <div class="problem-cards">
 
         <!-- Bridges -->
-        <div class="panel problem-card reveal">
+        <div class="panel problem-card reveal-tilt rd-1">
           <div class="problem-card-svg">
             <svg viewBox="0 0 280 120" width="280" height="120" aria-hidden="true">
               <circle cx="50" cy="60" r="16" fill="none" stroke="var(--violet)" stroke-width="1.5" opacity="0.7"/>
@@ -987,7 +1132,7 @@ p { color: var(--text-1); }
         </div>
 
         <!-- Custody -->
-        <div class="panel problem-card reveal">
+        <div class="panel problem-card reveal-tilt rd-2">
           <div class="problem-card-svg">
             <svg viewBox="0 0 280 120" width="280" height="120" aria-hidden="true">
               <circle cx="140" cy="60" r="20" fill="none" stroke="var(--danger)" stroke-width="1.5" opacity="0.6"/>
@@ -1012,7 +1157,7 @@ p { color: var(--text-1); }
         </div>
 
         <!-- Agents -->
-        <div class="panel problem-card reveal">
+        <div class="panel problem-card reveal-tilt rd-3">
           <div class="problem-card-svg">
             <svg viewBox="0 0 280 120" width="280" height="120" aria-hidden="true">
               <circle cx="140" cy="60" r="18" fill="none" stroke="var(--danger)" stroke-width="1.5" opacity="0.6"/>
@@ -1031,7 +1176,7 @@ p { color: var(--text-1); }
             </svg>
           </div>
           <h3>AI agents need rules, not root access</h3>
-          <p>Agents get full keys or nothing. There&rsquo;s no way to scope authority, enforce limits, or require human approval.</p>
+          <p>Agents get full keys or nothing. No way to scope authority, enforce limits, or require human approval.</p>
         </div>
       </div>
     </div>
@@ -1043,28 +1188,28 @@ p { color: var(--text-1); }
 <section class="solution">
   <div class="container">
     <div class="solution-grid">
-      <div class="solution-left reveal">
-        <span class="tag tag--brand">The Ika approach</span>
+      <div class="solution-left reveal-slide-right">
+        <span class="tag tag--brand reveal-clip">The Ika approach</span>
         <h2>Signing as a programmable primitive.</h2>
-        <p>Define who can act, on what, under which rules. The network and the user each hold a key share. Signing requires both. That&rsquo;s programmable authority.</p>
+        <p>Define who can act, on what, under which rules. The network and the user each hold a key share. Signing requires both. Programmable authority, enforced cryptographically.</p>
       </div>
       <div class="solution-steps">
-        <div class="solution-step reveal">
+        <div class="solution-step reveal rd-1">
           <div class="step-num">01</div>
           <h3>User-required signatures</h3>
           <p>Keep the human in the loop for high-stakes actions. Cryptographic proof, not a checkbox.</p>
         </div>
-        <div class="solution-step reveal">
+        <div class="solution-step reveal rd-2">
           <div class="step-num">02</div>
           <h3>Policy-based approvals</h3>
           <p>Spending caps, allowlists, time windows. Enforced by contracts, not API rules.</p>
         </div>
-        <div class="solution-step reveal">
+        <div class="solution-step reveal rd-3">
           <div class="step-num">03</div>
           <h3>Shared automated workflows</h3>
           <p>Automated actions within defined boundaries. No keys exposed, no trust delegation.</p>
         </div>
-        <div class="solution-step reveal">
+        <div class="solution-step reveal rd-4">
           <div class="step-num">04</div>
           <h3>Cross-chain native execution</h3>
           <p>Real signatures on real chains. Not wrapped assets, not relay messages. Native settlement.</p>
@@ -1076,33 +1221,33 @@ p { color: var(--text-1); }
 
 
 <!-- ═══════════════ INTERLUDE ═══════════════ -->
-<section class="interlude">
+<section class="interlude section-fade-top" id="interlude">
   <div class="container">
-    <h2 class="reveal"><em>Public logic on Solana.</em><br>Native control everywhere.</h2>
-    <div class="interlude-rule reveal"></div>
+    <h2 id="interlude-heading"><em>Public logic on Solana.</em><br>Native control everywhere.</h2>
+    <div class="interlude-rule" id="interlude-rule"></div>
   </div>
 </section>
 
 
 <!-- ═══════════════ SOLANA TRIPTYCH ═══════════════ -->
-<section class="triptych">
+<section class="triptych section-fade-top section-fade-bottom">
   <div class="container">
-    <div class="triptych-header reveal">
-      <span class="tag tag--violet">Solana-native</span>
+    <div class="triptych-header reveal-slide-right">
+      <span class="tag tag--violet reveal-clip">Solana-native</span>
       <h2>Built for Solana&rsquo;s next chapter</h2>
     </div>
     <div class="triptych-grid">
-      <div class="panel triptych-panel reveal">
+      <div class="panel triptych-panel reveal-slide-right rd-1">
         <div class="triptych-label">Capital Markets</div>
         <h3>Cross-chain DeFi without fragmentation</h3>
         <p>Lend against ETH, trade native BTC, execute atomic swaps. All from a Solana program, all settling natively.</p>
       </div>
-      <div class="panel triptych-panel reveal">
+      <div class="panel triptych-panel reveal-slide-right rd-2">
         <div class="triptych-label">Agentic Finance</div>
         <h3>Agents that act across chains under constraints</h3>
         <p>AI agents trade, rebalance, and settle with cryptographic guardrails. Scoped authority, not full keys.</p>
       </div>
-      <div class="panel triptych-panel reveal">
+      <div class="panel triptych-panel reveal-slide-right rd-3">
         <div class="triptych-label">Consumer UX</div>
         <h3>One wallet, every chain, invisible complexity</h3>
         <p>Users hold one address. Social recovery, spending limits, multi-party approval. No bridge mechanics.</p>
@@ -1117,15 +1262,15 @@ p { color: var(--text-1); }
      ═══════════════════════════════════════════════ -->
 <section class="agent-section" id="agent-section">
   <div class="container">
-    <div class="agent-header reveal">
-      <span class="tag tag--cyan">Agentic authority</span>
+    <div class="agent-header reveal-slide-right">
+      <span class="tag tag--cyan reveal-clip">Agentic authority</span>
       <h2>Give agents rules, not keys.</h2>
-      <p>AI agents need to act across chains. But giving an agent a private key is giving it unlimited power. Ika lets you define what an agent can sign, how much, how often&mdash;enforced cryptographically.</p>
+      <p>AI agents need to act across chains. But a private key is unlimited power. Ika lets you define exactly what an agent can sign, how much, how often. Enforced cryptographically, not by API rules.</p>
     </div>
 
-    <div class="agent-demo reveal" id="agent-demo">
+    <div class="agent-demo" id="agent-demo">
       <!-- Left: Agent Console -->
-      <div class="agent-console" style="padding:0;">
+      <div class="agent-console reveal-tilt rd-1" style="padding:0;">
         <div class="console-header">
           <div class="console-dots"><span></span><span></span><span></span></div>
           <span class="console-title">Agent Authority Console</span>
@@ -1153,7 +1298,7 @@ p { color: var(--text-1); }
       </div>
 
       <!-- Right: Execution Route Map -->
-      <div class="panel agent-route">
+      <div class="panel agent-route reveal-tilt rd-3">
         <svg viewBox="0 0 500 240" aria-hidden="true" id="agent-route-svg">
           <defs>
             <filter id="agent-glow">
@@ -1196,29 +1341,29 @@ p { color: var(--text-1); }
 
 
 <!-- ═══════════════ ZUD ═══════════════ -->
-<section class="zud">
+<section class="zud section-fade-top section-fade-bottom">
   <div class="container">
-    <div class="zud-header reveal">
-      <span class="tag">Architecture</span>
+    <div class="zud-header reveal-slide-right">
+      <span class="tag reveal-clip">Architecture</span>
       <h2>Zero-trust. Usable. Decentralized.</h2>
     </div>
     <div class="zud-grid">
-      <div class="panel zud-pillar reveal">
+      <div class="panel zud-pillar reveal-scale rd-1">
         <span class="zud-glyph">Z</span>
         <h3>Zero-trust</h3>
-        <p>No single party&mdash;not even Ika&mdash;can reconstruct your private key. 2PC-MPC guarantees mathematical non-collusion.</p>
+        <p>No single party can reconstruct your private key. Not even Ika. 2PC-MPC guarantees mathematical non-collusion.</p>
         <span class="zud-proof">200+ nodes, zero key reconstruction</span>
       </div>
-      <div class="panel zud-pillar reveal">
+      <div class="panel zud-pillar reveal-scale rd-2">
         <span class="zud-glyph">U</span>
         <h3>Usable</h3>
         <p>Sub-second signing. Programmable policies. Seamless integration with existing Solana programs.</p>
         <span class="zud-proof">Sub-second latency at scale</span>
       </div>
-      <div class="panel zud-pillar reveal">
+      <div class="panel zud-pillar reveal-scale rd-3">
         <span class="zud-glyph">D</span>
         <h3>Decentralized</h3>
-        <p>200+ validator nodes signing in parallel. Not the 4&ndash;8 node ceiling of legacy MPC networks.</p>
+        <p>200+ validator nodes signing in parallel. Not the 4 to 8 node ceiling of legacy MPC networks.</p>
         <span class="zud-proof">True parallel threshold signing</span>
       </div>
     </div>
@@ -1229,32 +1374,32 @@ p { color: var(--text-1); }
 <!-- ═══════════════ USE CASES ═══════════════ -->
 <section class="use-cases" id="use-cases">
   <div class="container">
-    <div class="use-cases-header reveal">
-      <span class="tag tag--brand">Programmable control</span>
+    <div class="use-cases-header reveal-slide-right">
+      <span class="tag tag--brand reveal-clip">Programmable control</span>
       <h2>Policy decides what can sign.</h2>
     </div>
     <div class="uc-grid">
-      <div class="panel uc-card uc-hero-card reveal">
+      <div class="panel uc-card uc-hero-card reveal-scale">
         <h3>Universal wallet infrastructure</h3>
         <p>One address, every chain. Social recovery, spending limits, and multi-party approval enforced cryptographically.</p>
       </div>
-      <div class="panel uc-card uc-small reveal">
+      <div class="panel uc-card uc-small reveal-tilt rd-1">
         <h3>Treasury and governance</h3>
         <p>Multi-sig treasuries with programmable spending policies across every chain.</p>
       </div>
-      <div class="panel uc-card uc-small reveal">
+      <div class="panel uc-card uc-small reveal-tilt rd-2">
         <h3>Agent permissions</h3>
         <p>Give AI agents scoped signing authority with hard cryptographic limits.</p>
       </div>
-      <div class="panel uc-card uc-pano reveal">
+      <div class="panel uc-card uc-pano reveal-tilt rd-3">
         <h3>Cross-chain intents</h3>
         <p>Express what you want. Ika signs the execution path natively on each target chain.</p>
       </div>
-      <div class="panel uc-card uc-small reveal">
+      <div class="panel uc-card uc-small reveal-tilt rd-4">
         <h3>Native-asset DeFi</h3>
         <p>Real BTC, real ETH. Controlled by Solana programs, settled natively.</p>
       </div>
-      <div class="panel uc-card uc-small reveal">
+      <div class="panel uc-card uc-small reveal-tilt rd-5">
         <h3>Consumer apps</h3>
         <p>Invisible cross-chain complexity. Users experience one interface.</p>
       </div>
@@ -1268,8 +1413,8 @@ p { color: var(--text-1); }
      ═══════════════════════════════════════════════ -->
 <section class="arch-section" id="architecture">
   <div class="container">
-    <div class="arch-header reveal">
-      <span class="tag">How it works</span>
+    <div class="arch-header reveal-slide-right">
+      <span class="tag reveal-clip">How it works</span>
       <h2>From Solana to any chain, in six steps.</h2>
     </div>
     <div class="arch-body" id="arch-body">
@@ -1376,60 +1521,60 @@ p { color: var(--text-1); }
 <!-- ═══════════════ MARQUEE ═══════════════ -->
 <section class="marquee">
   <div class="marquee-track">
-    <span class="marquee-item">Solana</span>
-    <span class="marquee-item">Bitcoin</span>
-    <span class="marquee-item">Ethereum</span>
-    <span class="marquee-item">Sui</span>
-    <span class="marquee-item">Aptos</span>
-    <span class="marquee-item">Arbitrum</span>
-    <span class="marquee-item">Cosmos</span>
-    <span class="marquee-item">Polkadot</span>
-    <span class="marquee-item">Solana</span>
-    <span class="marquee-item">Bitcoin</span>
-    <span class="marquee-item">Ethereum</span>
-    <span class="marquee-item">Sui</span>
-    <span class="marquee-item">Aptos</span>
-    <span class="marquee-item">Arbitrum</span>
-    <span class="marquee-item">Cosmos</span>
-    <span class="marquee-item">Polkadot</span>
+    <span class="marquee-item"><span class="marquee-dot dot-sol"></span>Solana</span>
+    <span class="marquee-item"><span class="marquee-dot dot-btc"></span>Bitcoin</span>
+    <span class="marquee-item"><span class="marquee-dot dot-eth"></span>Ethereum</span>
+    <span class="marquee-item"><span class="marquee-dot dot-generic"></span>Sui</span>
+    <span class="marquee-item"><span class="marquee-dot dot-generic"></span>Aptos</span>
+    <span class="marquee-item"><span class="marquee-dot dot-eth"></span>Arbitrum</span>
+    <span class="marquee-item"><span class="marquee-dot dot-generic"></span>Cosmos</span>
+    <span class="marquee-item"><span class="marquee-dot dot-generic"></span>Polkadot</span>
+    <span class="marquee-item"><span class="marquee-dot dot-sol"></span>Solana</span>
+    <span class="marquee-item"><span class="marquee-dot dot-btc"></span>Bitcoin</span>
+    <span class="marquee-item"><span class="marquee-dot dot-eth"></span>Ethereum</span>
+    <span class="marquee-item"><span class="marquee-dot dot-generic"></span>Sui</span>
+    <span class="marquee-item"><span class="marquee-dot dot-generic"></span>Aptos</span>
+    <span class="marquee-item"><span class="marquee-dot dot-eth"></span>Arbitrum</span>
+    <span class="marquee-item"><span class="marquee-dot dot-generic"></span>Cosmos</span>
+    <span class="marquee-item"><span class="marquee-dot dot-generic"></span>Polkadot</span>
   </div>
 </section>
 
 
 <!-- ═══════════════ RESEARCH ═══════════════ -->
-<section class="research" id="research">
+<section class="research section-fade-top section-fade-bottom" id="research">
   <div class="container">
-    <div class="research-header reveal">
-      <span class="tag">Research</span>
+    <div class="research-header reveal-slide-right">
+      <span class="tag reveal-clip">Research</span>
       <h2>The cryptography behind programmable authority</h2>
     </div>
     <div class="research-grid">
-      <div class="panel research-featured reveal">
+      <div class="panel research-featured reveal-scale">
         <span class="research-type">Whitepaper</span>
         <h3>Ika Network</h3>
         <p>The architecture, protocol design, and economic model behind Ika&rsquo;s programmable signing infrastructure.</p>
       </div>
-      <div class="panel research-card reveal">
+      <div class="panel research-card reveal-tilt rd-1">
         <span class="research-type">Cryptography</span>
         <h3>2PC-MPC v2</h3>
         <p>Breakthrough threshold cryptography where no single party ever holds a reconstructable private key.</p>
       </div>
-      <div class="panel research-card reveal">
+      <div class="panel research-card reveal-tilt rd-2">
         <span class="research-type">Security Model</span>
         <h3>Zero-trust Architecture</h3>
         <p>Mathematical non-collusion guarantees across 200+ validator nodes.</p>
       </div>
-      <div class="panel research-card reveal">
+      <div class="panel research-card reveal-blur rd-1">
         <span class="research-type">Integration</span>
         <h3>Solana Program Integration</h3>
         <p>How dWallet contracts integrate with Solana programs for policy enforcement.</p>
       </div>
-      <div class="panel research-card reveal">
+      <div class="panel research-card reveal-blur rd-2">
         <span class="research-type">Example</span>
         <h3>KeySpring</h3>
         <p>Reference implementation for session-style key delegation with automatic expiration.</p>
       </div>
-      <div class="panel research-card reveal">
+      <div class="panel research-card reveal-blur rd-3">
         <span class="research-type">Case Study</span>
         <h3>Wallet-as-a-Protocol</h3>
         <p>Universal wallet infrastructure built on programmable signing.</p>
@@ -1442,30 +1587,32 @@ p { color: var(--text-1); }
 <!-- ═══════════════ BACKERS ═══════════════ -->
 <section class="backers">
   <div class="container">
-    <div class="backers-header reveal">
+    <div class="backers-header reveal-clip">
       <span class="tag">Backed by</span>
     </div>
-    <div class="backers-logos reveal">
-      <img src="./assets/logo-dcg.png" alt="DCG" loading="lazy">
-      <img src="./assets/logo-mysten-labs.png" alt="Mysten Labs" loading="lazy">
-      <img src="./assets/logo-falconX.png" alt="FalconX" loading="lazy">
-      <img src="./assets/logo-big-brain-holdings.png" alt="Big Brain Holdings" loading="lazy">
-      <img src="./assets/logo-blockchange.png" alt="Blockchange" loading="lazy">
-      <img src="./assets/logo-amplify.png" alt="Amplify" loading="lazy">
-      <img src="./assets/logo-liquid2.png" alt="Liquid2" loading="lazy">
-      <img src="./assets/logo-dwallet-labs.png" alt="dWallet Labs" loading="lazy">
+    <div class="backers-logos">
+      <img src="./assets/logo-dcg.png" alt="DCG" loading="lazy" class="reveal-blur rd-1">
+      <img src="./assets/logo-mysten-labs.png" alt="Mysten Labs" loading="lazy" class="reveal-blur rd-2">
+      <img src="./assets/logo-falconX.png" alt="FalconX" loading="lazy" class="reveal-blur rd-3">
+      <img src="./assets/logo-big-brain-holdings.png" alt="Big Brain Holdings" loading="lazy" class="reveal-blur rd-4">
+      <img src="./assets/logo-blockchange.png" alt="Blockchange" loading="lazy" class="reveal-blur rd-5">
+      <img src="./assets/logo-amplify.png" alt="Amplify" loading="lazy" class="reveal-blur">
+      <img src="./assets/logo-liquid2.png" alt="Liquid2" loading="lazy" class="reveal-blur rd-1">
+      <img src="./assets/logo-dwallet-labs.png" alt="dWallet Labs" loading="lazy" class="reveal-blur rd-2">
     </div>
   </div>
 </section>
 
 
 <!-- ═══════════════ FINAL CTA ═══════════════ -->
-<section class="final-cta">
+<section class="final-cta section-fade-top">
   <div class="container">
     <div class="cta-glow-orb" id="cta-glow"></div>
-    <h2 class="reveal">Build the apps and agents that act everywhere.</h2>
-    <p class="reveal">Start with wallets, treasuries, intents, or agent permissions. Build on Solana. Control any chain.</p>
-    <div class="hero-ctas reveal">
+    <div class="cta-ring-1"></div>
+    <div class="cta-ring-2"></div>
+    <h2 class="reveal-scale">Build the apps and agents that act everywhere.</h2>
+    <p class="reveal-blur rd-1">Start with wallets, treasuries, intents, or agent permissions. Build on Solana. Control any chain.</p>
+    <div class="hero-ctas reveal-blur rd-2">
       <a href="#" class="btn-primary">Start Building &rarr;</a>
       <a href="#" class="btn-secondary">Explore Use Cases</a>
     </div>
@@ -1569,10 +1716,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   /* ── REDUCED MOTION: reveal everything, skip animations ── */
   if (prefersReduced) {
-    document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('vis'); });
+    document.querySelectorAll('.reveal, .reveal-slide-right, .reveal-tilt, .reveal-scale, .reveal-clip, .reveal-blur').forEach(function(el) { el.classList.add('vis'); });
     var rule = document.querySelector('.interlude-rule');
     if (rule) rule.classList.add('vis');
-    // Still run agent state machine (non-motion)
     initAgentDemo();
     return;
   }
@@ -1587,7 +1733,7 @@ document.addEventListener('DOMContentLoaded', function() {
       else if (attempts > 60) {
         // GSAP failed to load — show everything anyway
         clearInterval(check);
-        document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('vis'); });
+        document.querySelectorAll('.reveal, .reveal-slide-right, .reveal-tilt, .reveal-scale, .reveal-clip, .reveal-blur').forEach(function(el) { el.classList.add('vis'); });
         // Show hero elements that had .reveal removed
         var heroEls = document.querySelectorAll('.hero-eyebrow, .hero h1, .hero-sub, .hero-ctas, .hero-micro, .hero-visual, .perm-chip');
         heroEls.forEach(function(el) { el.style.opacity = '1'; el.style.transform = 'none'; });
@@ -1608,7 +1754,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /* ── 5. REVEAL SYSTEM (skip hero — it has its own timeline) ── */
-    document.querySelectorAll('.reveal').forEach(function(el) {
+    var revealSelectors = '.reveal, .reveal-slide-right, .reveal-tilt, .reveal-scale, .reveal-clip, .reveal-blur';
+    document.querySelectorAll(revealSelectors).forEach(function(el) {
       if (el.closest('.hero')) return;
       ScrollTrigger.create({
         trigger: el,
@@ -1638,20 +1785,27 @@ document.addEventListener('DOMContentLoaded', function() {
       .to('.hero-visual', { opacity: 1, scale: 1, duration: 0.9, ease: 'power2.out' }, '-=0.6')
       .to('.perm-chip', { opacity: 1, scale: 1, stagger: 0.1, duration: 0.4, ease: 'back.out(1.5)' }, '-=0.3');
 
-    /* ── 7. HERO PARALLAX (desktop) ── */
+    /* ── 7. HERO PARALLAX + GLOW FOLLOW (desktop) ── */
     if (!isMobile) {
       var heroSection = document.querySelector('.hero');
       var layers = document.querySelectorAll('.hero-layer');
+      var glowFollow = document.getElementById('hero-glow-follow');
       heroSection.addEventListener('mousemove', function(e) {
         var rect = heroSection.getBoundingClientRect();
-        var x = (e.clientX - rect.left) / rect.width - 0.5;
-        var y = (e.clientY - rect.top) / rect.height - 0.5;
+        var px = ((e.clientX - rect.left) / rect.width * 100);
+        var py = ((e.clientY - rect.top) / rect.height * 100);
+        var x = px / 100 - 0.5;
+        var y = py / 100 - 0.5;
         layers.forEach(function(layer) {
           var depth = parseFloat(layer.dataset.depth) || 0.03;
           var mx = x * depth * 400;
           var my = y * depth * 400;
           layer.style.transform = 'translate(' + mx + 'px, ' + my + 'px)';
         });
+        if (glowFollow) {
+          glowFollow.style.setProperty('--mx', px + '%');
+          glowFollow.style.setProperty('--my', py + '%');
+        }
       });
     }
 
@@ -1674,10 +1828,17 @@ document.addEventListener('DOMContentLoaded', function() {
       chips[chipIdx].classList.add('active');
     }, 2200);
 
-    /* ── 10. INTERLUDE RULE ── */
+    /* ── 10. INTERLUDE — scroll-scrubbed reveal ── */
+    var intHead = document.getElementById('interlude-heading');
+    if (intHead) {
+      gsap.fromTo(intHead, { opacity: 0.1 }, {
+        opacity: 1,
+        scrollTrigger: { trigger: '#interlude', start: 'top 70%', end: 'center 50%', scrub: 1 }
+      });
+    }
     ScrollTrigger.create({
       trigger: '.interlude-rule',
-      start: 'top 85%',
+      start: 'top 80%',
       once: true,
       onEnter: function() { document.querySelector('.interlude-rule').classList.add('vis'); }
     });
@@ -1690,10 +1851,46 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
 
-    /* ── 12. CTA GLOW PULSE ── */
+    /* ── 12. CTA GLOW PULSE + RING ROTATION ── */
     gsap.to('#cta-glow', {
-      scale: 1.15, duration: 2.5, ease: 'sine.inOut',
+      scale: 1.2, duration: 3, ease: 'sine.inOut',
       yoyo: true, repeat: -1
+    });
+    gsap.to('.cta-ring-1', {
+      rotation: 360, duration: 30, ease: 'none', repeat: -1
+    });
+    gsap.to('.cta-ring-2', {
+      rotation: -360, duration: 50, ease: 'none', repeat: -1
+    });
+
+    /* ── 12b. MAGNETIC CTA BUTTONS ── */
+    if (!isMobile) {
+      document.querySelectorAll('.final-cta .btn-primary, .final-cta .btn-secondary').forEach(function(btn) {
+        btn.addEventListener('mousemove', function(e) {
+          var rect = btn.getBoundingClientRect();
+          var x = (e.clientX - rect.left - rect.width / 2) * 0.15;
+          var y = (e.clientY - rect.top - rect.height / 2) * 0.15;
+          gsap.to(btn, { x: x, y: y, duration: 0.3, ease: 'power2.out' });
+        });
+        btn.addEventListener('mouseleave', function() {
+          gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.4)' });
+        });
+      });
+    }
+
+    /* ── 12c. SOLUTION STEP COUNTER ── */
+    document.querySelectorAll('.solution-step .step-num').forEach(function(num) {
+      var target = parseInt(num.textContent, 10);
+      var obj = { val: 0 };
+      ScrollTrigger.create({
+        trigger: num, start: 'top 85%', once: true,
+        onEnter: function() {
+          gsap.to(obj, {
+            val: target, duration: 0.8, ease: 'power2.out',
+            onUpdate: function() { num.textContent = String(Math.round(obj.val)).padStart(2, '0'); }
+          });
+        }
+      });
     });
 
     /* ── 13. AGENT DEMO ── */
@@ -1716,22 +1913,25 @@ document.addEventListener('DOMContentLoaded', function() {
       var archEth = document.getElementById('arch-eth');
       var archAny = document.getElementById('arch-any');
 
+      var lastArchStep = -1;
       function setArchStep(step) {
+        if (step === lastArchStep) return;
+        lastArchStep = step;
         archSteps.forEach(function(s, i) { s.classList.toggle('active', i <= step); });
-        archFill.style.height = ((step + 1) / totalSteps * 100) + '%';
-        archIka.style.opacity = step >= 1 ? '1' : '0.2';
-        archValidators.style.opacity = step >= 2 ? '0.8' : '0.1';
-        archEdge1.style.strokeDashoffset = step >= 3 ? '0' : '200';
-        archEdge1.style.transition = 'stroke-dashoffset 0.8s ease';
-        archPolicyGate.style.opacity = step >= 4 ? '0.6' : '0';
-        var ev = step >= 5 ? '0' : '200';
-        [archEdgeBtc, archEdgeEth, archEdgeAny].forEach(function(e) {
-          e.style.strokeDashoffset = ev;
-          e.style.transition = 'stroke-dashoffset 0.8s ease 0.1s';
+        gsap.to(archFill, { height: ((step + 1) / totalSteps * 100) + '%', duration: 0.4, ease: 'power2.out' });
+        gsap.to(archIka, { opacity: step >= 1 ? 1 : 0.2, duration: 0.6 });
+        gsap.to(archValidators, { opacity: step >= 2 ? 0.8 : 0.1, duration: 0.5 });
+        gsap.to(archEdge1, { strokeDashoffset: step >= 3 ? 0 : 200, duration: 0.8, ease: 'power2.inOut' });
+        gsap.to(archPolicyGate, { opacity: step >= 4 ? 0.6 : 0, duration: 0.5 });
+        [archEdgeBtc, archEdgeEth, archEdgeAny].forEach(function(e, i) {
+          gsap.to(e, { strokeDashoffset: step >= 5 ? 0 : 200, duration: 0.7, delay: i * 0.1, ease: 'power2.inOut' });
         });
-        archBtc.style.opacity = step >= 5 ? '0.9' : '0.15';
-        archEth.style.opacity = step >= 5 ? '0.9' : '0.15';
-        archAny.style.opacity = step >= 5 ? '0.7' : '0.15';
+        gsap.to(archBtc, { opacity: step >= 5 ? 0.9 : 0.15, duration: 0.5, delay: 0.1 });
+        gsap.to(archEth, { opacity: step >= 5 ? 0.9 : 0.15, duration: 0.5, delay: 0.2 });
+        gsap.to(archAny, { opacity: step >= 5 ? 0.7 : 0.15, duration: 0.5, delay: 0.3 });
+        // Node pulse on activation
+        if (step === 1) gsap.fromTo('#arch-ika circle:nth-child(2)', { scale: 0.8 }, { scale: 1, duration: 0.5, ease: 'elastic.out(1, 0.5)', transformOrigin: 'center' });
+        if (step === 4) gsap.fromTo(archPolicyGate, { scale: 0.95 }, { scale: 1, duration: 0.4, ease: 'back.out(2)', transformOrigin: 'center' });
       }
 
       setArchStep(0);
