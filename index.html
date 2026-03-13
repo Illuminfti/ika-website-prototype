@@ -737,7 +737,9 @@ p { color: var(--text-1); }
   display: inline-flex; align-items: center; gap: 14px;
   transition: color .3s;
 }
+.marquee-item { cursor: default; }
 .marquee:hover .marquee-item { color: var(--text-1); }
+.marquee-item:hover { color: var(--text-0) !important; }
 .marquee-dot {
   width: 8px; height: 8px; border-radius: 50%;
   flex-shrink: 0; opacity: 0.6;
@@ -759,12 +761,19 @@ p { color: var(--text-1); }
   display: flex; flex-direction: column; justify-content: flex-end;
   border-left: 3px solid var(--brand);
   position: relative; overflow: hidden;
+  background: linear-gradient(180deg, rgba(238,43,91,0.03), rgba(255,255,255,0.01)), var(--panel);
 }
 .research-featured::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background: radial-gradient(ellipse at 20% 80%, rgba(238,43,91,0.06), transparent 60%);
   pointer-events: none;
 }
+.research-featured-visual {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  min-height: 120px; margin-bottom: 16px;
+}
+.research-featured-visual svg { opacity: 0.8; transition: opacity .4s; }
+.research-featured:hover .research-featured-visual svg { opacity: 1; }
 .research-featured .research-type {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px; text-transform: uppercase;
@@ -1806,6 +1815,27 @@ body::after {
     </div>
     <div class="research-grid">
       <div class="panel research-featured reveal-scale">
+        <div class="research-featured-visual">
+          <svg viewBox="0 0 280 160" width="280" height="160" aria-hidden="true">
+            <defs><filter id="res-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+            <circle cx="140" cy="80" r="40" fill="none" stroke="var(--brand)" stroke-width="1" opacity="0.3" stroke-dasharray="6 4"/>
+            <circle cx="140" cy="80" r="25" fill="none" stroke="var(--brand)" stroke-width="1.5" opacity="0.4"/>
+            <circle cx="140" cy="80" r="10" fill="var(--brand)" opacity="0.25" filter="url(#res-glow)"/>
+            <text x="140" y="84" text-anchor="middle" font-family="Inter Tight" font-weight="800" font-size="8" fill="white" opacity="0.6">ika</text>
+            <!-- Node ring -->
+            <circle cx="100" cy="45" r="3" fill="var(--cyan)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2s" repeatCount="indefinite"/></circle>
+            <circle cx="180" cy="45" r="3" fill="var(--cyan)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.3s" begin="0.3s" repeatCount="indefinite"/></circle>
+            <circle cx="100" cy="115" r="3" fill="var(--mint)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.1s" begin="0.6s" repeatCount="indefinite"/></circle>
+            <circle cx="180" cy="115" r="3" fill="var(--cyan)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.4s" begin="0.9s" repeatCount="indefinite"/></circle>
+            <circle cx="80" cy="80" r="2.5" fill="var(--mint)" opacity="0.4"><animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.2s" begin="0.2s" repeatCount="indefinite"/></circle>
+            <circle cx="200" cy="80" r="2.5" fill="var(--cyan)" opacity="0.4"><animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.5s" begin="0.5s" repeatCount="indefinite"/></circle>
+            <!-- Routes -->
+            <path d="M30 40 Q70 60 96 47" stroke="var(--violet)" stroke-width="1" opacity="0.3" stroke-dasharray="3 3"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="2s" repeatCount="indefinite"/></path>
+            <path d="M250 40 Q210 60 184 47" stroke="#f7931a" stroke-width="1" opacity="0.3" stroke-dasharray="3 3"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="2.2s" repeatCount="indefinite"/></path>
+            <circle cx="28" cy="38" r="5" fill="none" stroke="var(--violet)" stroke-width="1" opacity="0.4"/>
+            <circle cx="252" cy="38" r="5" fill="none" stroke="#f7931a" stroke-width="1" opacity="0.4"/>
+          </svg>
+        </div>
         <span class="research-type">Whitepaper</span>
         <h3>Ika Network</h3>
         <p>The architecture, protocol design, and economic model behind Ika&rsquo;s programmable signing infrastructure.</p>
@@ -2305,7 +2335,22 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
-    /* ── 13f. TRIPTYCH PANELS SLIDE-IN ── */
+    /* ── 13f0. SOLUTION STEP ICON STROKE DRAW ── */
+    document.querySelectorAll('.step-icon svg').forEach(function(svg) {
+      var drawEls = svg.querySelectorAll('circle, path, rect');
+      drawEls.forEach(function(el) {
+        if (el.getTotalLength) {
+          var len = el.getTotalLength();
+          gsap.set(el, { strokeDasharray: len, strokeDashoffset: len });
+          gsap.to(el, {
+            strokeDashoffset: 0, duration: 0.8, ease: 'power2.out',
+            scrollTrigger: { trigger: svg, start: 'top 85%', once: true }
+          });
+        }
+      });
+    });
+
+    /* ── 13f1. TRIPTYCH PANELS SLIDE-IN ── */
     gsap.utils.toArray('.triptych-panel').forEach(function(panel, i) {
       gsap.from(panel, {
         x: 60, opacity: 0, duration: 0.7,
@@ -2414,6 +2459,12 @@ document.addEventListener('DOMContentLoaded', function() {
       logEntries.forEach(function(e, i) { e.classList.toggle('show', i <= si); });
 
       var dim = 'var(--stroke-1)';
+      // Apply CSS transitions on SVG elements
+      [seg1, seg2, agentRing, agentCore, ethRing, ethCore, ikaPR, ikaCR, routeLabel].forEach(function(el) {
+        if (el) el.style.transition = 'stroke 0.5s, fill 0.5s, opacity 0.5s';
+      });
+      vDots.forEach(function(d) { d.style.transition = 'fill 0.5s, opacity 0.5s'; });
+
       if (s === 'idle') {
         seg1.setAttribute('stroke', dim); seg2.setAttribute('stroke', dim);
         agentRing.setAttribute('stroke', 'var(--text-2)'); agentCore.setAttribute('fill', 'var(--text-2)');
