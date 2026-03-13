@@ -815,7 +815,10 @@ p { color: var(--text-1); }
 /* ═══════════════════════════════════════════
    BACKERS
    ═══════════════════════════════════════════ */
-.backers { padding: clamp(80px, 10vw, 120px) 0; }
+.backers {
+  padding: clamp(80px, 10vw, 120px) 0;
+  border-top: 1px solid var(--stroke-1);
+}
 .backers-header { text-align: center; margin-bottom: clamp(40px, 5vw, 56px); }
 .backers-logos {
   display: flex; flex-wrap: wrap;
@@ -823,10 +826,11 @@ p { color: var(--text-1); }
   gap: clamp(32px, 5vw, 64px);
 }
 .backers-logos img {
-  height: 32px; filter: grayscale(1) brightness(1.4);
-  opacity: 0.4; transition: opacity .4s, filter .4s;
+  height: 32px; filter: grayscale(1) brightness(1.4) blur(0px);
+  opacity: 0.4; transition: opacity .5s, filter .5s;
 }
-.backers-logos img:hover { opacity: 0.85; filter: grayscale(0); }
+.backers-logos img:hover { opacity: 0.9; filter: grayscale(0) brightness(1) blur(0px); }
+.backers-logos.color-reveal img { opacity: 0.55; filter: grayscale(0.5) brightness(1.2) blur(0px); }
 
 /* ═══════════════════════════════════════════
    FINAL CTA
@@ -2351,15 +2355,23 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    /* ── 13c. BACKER LOGOS STAGGER ── */
+    /* ── 13c. BACKER LOGOS STAGGER + COLOR REVEAL ── */
+    var backersWrap = document.querySelector('.backers-logos');
     gsap.utils.toArray('.backers-logos img').forEach(function(img, i) {
       gsap.from(img, {
-        opacity: 0, y: 20, filter: 'blur(4px)',
-        duration: 0.6, delay: i * 0.08,
+        opacity: 0, y: 24, filter: 'blur(6px)',
+        duration: 0.7, delay: i * 0.1,
         ease: 'power3.out',
         scrollTrigger: { trigger: img, start: 'top 90%', once: true }
       });
     });
+    if (backersWrap) {
+      ScrollTrigger.create({
+        trigger: backersWrap, start: 'top 70%', end: 'bottom 60%', scrub: 1,
+        onEnter: function() { backersWrap.classList.add('color-reveal'); },
+        onLeaveBack: function() { backersWrap.classList.remove('color-reveal'); }
+      });
+    }
 
     /* ── 13d. PROOF STRIP BADGE STAGGER ── */
     gsap.utils.toArray('.proof-token').forEach(function(tok, i) {
@@ -2407,15 +2419,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /* ── 13g. PROBLEM CARD SVG STROKE DRAW ── */
     document.querySelectorAll('.problem-card-svg svg').forEach(function(svg) {
-      var paths = svg.querySelectorAll('line, path, circle[stroke-width], rect');
+      var paths = svg.querySelectorAll('path, rect');
       paths.forEach(function(p) {
         if (p.getTotalLength) {
-          var len = p.getTotalLength();
-          gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
-          gsap.to(p, {
-            strokeDashoffset: 0, duration: 1.2, ease: 'power2.inOut',
-            scrollTrigger: { trigger: svg, start: 'top 82%', once: true }
-          });
+          try {
+            var len = p.getTotalLength();
+            if (len > 0 && len < 2000) {
+              gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
+              gsap.to(p, {
+                strokeDashoffset: 0, duration: 1.2, ease: 'power2.inOut',
+                scrollTrigger: { trigger: svg, start: 'top 82%', once: true }
+              });
+            }
+          } catch(e) {}
         }
       });
     });
