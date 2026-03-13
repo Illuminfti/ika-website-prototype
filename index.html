@@ -423,10 +423,15 @@ p { color: var(--text-1); }
 }
 .interlude h2 {
   opacity: 0.15;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  max-width: 800px; margin: 0 auto;
   transition: opacity 1.2s cubic-bezier(.22,1,.36,1);
 }
 .interlude h2.vis { opacity: 1; }
-.interlude h2 em { font-style: italic; color: var(--violet); text-shadow: 0 0 40px rgba(183,140,255,0.15); }
+.interlude h2 em {
+  font-style: italic; color: var(--violet);
+  text-shadow: 0 0 60px rgba(183,140,255,0.25), 0 0 120px rgba(183,140,255,0.1);
+}
 .interlude-rule {
   width: 0; height: 1px;
   background: linear-gradient(90deg, transparent, var(--violet), transparent);
@@ -434,6 +439,18 @@ p { color: var(--text-1); }
   transition: width 1.4s cubic-bezier(.22,1,.36,1);
 }
 .interlude-rule.vis { width: min(500px, 70vw); }
+.interlude-orbit {
+  position: absolute; left: 50%; top: 50%;
+  width: 600px; height: 600px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.interlude-orbit circle {
+  fill: none; stroke-width: 0.5;
+}
+.interlude-orbit .orbit-1 { stroke: rgba(183,140,255,0.06); }
+.interlude-orbit .orbit-2 { stroke: rgba(117,241,255,0.04); }
+.interlude-orbit .orbit-3 { stroke: rgba(238,43,91,0.03); }
 
 /* ═══════════════════════════════════════════
    SOLANA TRIPTYCH
@@ -554,6 +571,20 @@ p { color: var(--text-1); }
   display: flex; align-items: center; justify-content: center; min-height: 380px;
 }
 .agent-route svg { width: 100%; max-width: 500px; }
+.agent-guardrails {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 16px; margin-top: 24px;
+}
+.guardrail-card {
+  padding: clamp(20px, 3vw, 28px); border-radius: 20px;
+  position: relative;
+}
+.guardrail-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  margin-bottom: 12px;
+}
+.guardrail-card h3 { font-size: 1rem; margin-bottom: 6px; }
+.guardrail-card p { font-size: 13px; }
 
 /* ═══════════════════════════════════════════
    ZUD
@@ -861,6 +892,7 @@ p { color: var(--text-1); }
   .triptych-grid { grid-template-columns: 1fr; }
   .triptych-panel { min-height: 300px; }
   .agent-demo { grid-template-columns: 1fr; }
+  .agent-guardrails { grid-template-columns: 1fr 1fr; }
   .zud-grid { grid-template-columns: 1fr; }
   .zud-pillar { min-height: 320px; }
   .uc-grid { grid-template-columns: 1fr 1fr; }
@@ -879,6 +911,7 @@ p { color: var(--text-1); }
   body { font-size: 16px; }
   .hero h1 { font-size: clamp(2.5rem, 10vw, 3.5rem); }
   .perm-chips { display: none; }
+  .agent-guardrails { grid-template-columns: 1fr; }
   .uc-grid { grid-template-columns: 1fr; }
   .uc-hero-card, .uc-pano { grid-column: span 1; }
   .footer-grid { grid-template-columns: 1fr; }
@@ -1357,6 +1390,25 @@ body::after {
 
 <!-- ═══════════════ INTERLUDE ═══════════════ -->
 <section class="interlude section-fade-top" id="interlude">
+  <div class="interlude-orbit">
+    <svg viewBox="0 0 600 600" aria-hidden="true">
+      <circle class="orbit-1" cx="300" cy="300" r="200">
+        <animateTransform attributeName="transform" type="rotate" from="0 300 300" to="360 300 300" dur="40s" repeatCount="indefinite"/>
+      </circle>
+      <circle class="orbit-2" cx="300" cy="300" r="260">
+        <animateTransform attributeName="transform" type="rotate" from="360 300 300" to="0 300 300" dur="55s" repeatCount="indefinite"/>
+      </circle>
+      <circle class="orbit-3" cx="300" cy="300" r="140" stroke-dasharray="8 12">
+        <animateTransform attributeName="transform" type="rotate" from="0 300 300" to="360 300 300" dur="30s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="2" fill="var(--violet)" opacity="0.4">
+        <animateMotion dur="40s" repeatCount="indefinite" path="M500,300 A200,200 0 1 1 499.99,300"/>
+      </circle>
+      <circle r="1.5" fill="var(--cyan)" opacity="0.3">
+        <animateMotion dur="55s" repeatCount="indefinite" path="M560,300 A260,260 0 1 0 560.01,300"/>
+      </circle>
+    </svg>
+  </div>
   <div class="container">
     <h2 id="interlude-heading"><em>Public logic on Solana.</em><br>Native control everywhere.</h2>
     <div class="interlude-rule" id="interlude-rule"></div>
@@ -1472,7 +1524,7 @@ body::after {
       </div>
 
       <!-- Right: Execution Route Map -->
-      <div class="panel agent-route reveal-tilt rd-3">
+      <div class="panel agent-route reveal-tilt rd-2">
         <svg viewBox="0 0 500 240" aria-hidden="true" id="agent-route-svg">
           <defs>
             <filter id="agent-glow">
@@ -1508,6 +1560,30 @@ body::after {
           <circle cx="214" cy="120" r="2" fill="var(--text-2)" class="v-dot" opacity="0.3"/>
           <circle cx="220" cy="90" r="2" fill="var(--text-2)" class="v-dot" opacity="0.3"/>
         </svg>
+      </div>
+    </div>
+
+    <!-- Guardrails -->
+    <div class="agent-guardrails" id="agent-guardrails">
+      <div class="panel guardrail-card reveal-scale rd-1">
+        <div class="guardrail-dot" style="background:var(--cyan);box-shadow:0 0 8px var(--cyan);"></div>
+        <h3>Spending Limits</h3>
+        <p>Hard per-tx and per-session caps enforced at the signing layer.</p>
+      </div>
+      <div class="panel guardrail-card reveal-scale rd-2">
+        <div class="guardrail-dot" style="background:var(--mint);box-shadow:0 0 8px var(--mint);"></div>
+        <h3>Contract Allowlist</h3>
+        <p>Only pre-approved contract addresses can be called.</p>
+      </div>
+      <div class="panel guardrail-card reveal-scale rd-3">
+        <div class="guardrail-dot" style="background:var(--violet);box-shadow:0 0 8px var(--violet);"></div>
+        <h3>Time-bounded Sessions</h3>
+        <p>Authority expires automatically. No permanent keys.</p>
+      </div>
+      <div class="panel guardrail-card reveal-scale rd-4">
+        <div class="guardrail-dot" style="background:var(--brand);box-shadow:0 0 8px var(--brand);"></div>
+        <h3>Human Escalation</h3>
+        <p>High-value actions pause for human approval.</p>
       </div>
     </div>
   </div>
@@ -2089,10 +2165,20 @@ document.addEventListener('DOMContentLoaded', function() {
     /* ── 10. INTERLUDE — scroll-scrubbed reveal ── */
     var intHead = document.getElementById('interlude-heading');
     if (intHead) {
-      gsap.fromTo(intHead, { opacity: 0.1 }, {
-        opacity: 1,
-        scrollTrigger: { trigger: '#interlude', start: 'top 70%', end: 'center 50%', scrub: 1 }
+      gsap.fromTo(intHead, { opacity: 0.08, scale: 0.96 }, {
+        opacity: 1, scale: 1,
+        scrollTrigger: { trigger: '#interlude', start: 'top 75%', end: 'center 50%', scrub: 1 }
       });
+      // Intensify em glow on scroll
+      var intEm = intHead.querySelector('em');
+      if (intEm) {
+        gsap.fromTo(intEm,
+          { textShadow: '0 0 20px rgba(183,140,255,0)' },
+          { textShadow: '0 0 80px rgba(183,140,255,0.4), 0 0 160px rgba(183,140,255,0.15)',
+            scrollTrigger: { trigger: '#interlude', start: 'top 65%', end: 'center 45%', scrub: 1 }
+          }
+        );
+      }
     }
     ScrollTrigger.create({
       trigger: '.interlude-rule',
@@ -2154,14 +2240,39 @@ document.addEventListener('DOMContentLoaded', function() {
     /* ── 13. AGENT DEMO ── */
     initAgentDemo();
 
-    /* ── 13b. AGENT STEPS PROGRESSIVE REVEAL ── */
-    var agentStepEls = document.querySelectorAll('.agent-section .solution-step, .agent-section .agent-console, .agent-section .agent-route');
-    agentStepEls.forEach(function(el, i) {
-      gsap.from(el, {
-        x: -30, opacity: 0, duration: 0.7,
-        delay: i * 0.12, ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 85%', once: true }
+    /* ── 13b. AGENT CONSOLE + ROUTE REVEAL ── */
+    var agentConsole = document.querySelector('.agent-console');
+    var agentRoute = document.querySelector('.agent-route');
+    if (agentConsole) {
+      gsap.from(agentConsole, {
+        x: -40, opacity: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: agentConsole, start: 'top 82%', once: true }
       });
+    }
+    if (agentRoute) {
+      gsap.from(agentRoute, {
+        x: 40, opacity: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: agentRoute, start: 'top 82%', once: true }
+      });
+    }
+
+    /* ── 13b2. GUARDRAIL CARDS STAGGER ── */
+    gsap.utils.toArray('.guardrail-card').forEach(function(card, i) {
+      gsap.from(card, {
+        y: 24, opacity: 0, duration: 0.5,
+        delay: i * 0.1, ease: 'power3.out',
+        scrollTrigger: { trigger: card, start: 'top 88%', once: true }
+      });
+      // Dot scale animation
+      var dot = card.querySelector('.guardrail-dot');
+      if (dot) {
+        gsap.from(dot, {
+          scale: 0, duration: 0.4,
+          delay: i * 0.1 + 0.2,
+          ease: 'back.out(2)',
+          scrollTrigger: { trigger: card, start: 'top 88%', once: true }
+        });
+      }
     });
 
     /* ── 13c. BACKER LOGOS STAGGER ── */
@@ -2194,7 +2305,16 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
-    /* ── 13f. PROBLEM CARD SVG STROKE DRAW ── */
+    /* ── 13f. TRIPTYCH PANELS SLIDE-IN ── */
+    gsap.utils.toArray('.triptych-panel').forEach(function(panel, i) {
+      gsap.from(panel, {
+        x: 60, opacity: 0, duration: 0.7,
+        delay: i * 0.12, ease: 'power3.out',
+        scrollTrigger: { trigger: panel, start: 'top 82%', once: true }
+      });
+    });
+
+    /* ── 13g. PROBLEM CARD SVG STROKE DRAW ── */
     document.querySelectorAll('.problem-card-svg svg').forEach(function(svg) {
       var paths = svg.querySelectorAll('line, path, circle[stroke-width], rect');
       paths.forEach(function(p) {
