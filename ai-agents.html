@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <title>AI Agents — Ika</title>
+  <meta name="description" content="Give AI agents constrained authority across chains. Scoped permissions, spending limits, and human escalation — enforced in cryptography.">
+  <meta property="og:title" content="AI Agents — Ika">
+  <meta property="og:description" content="Let agents trade, rebalance, settle, and coordinate across chains — inside cryptographic guardrails.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script>
+    document.documentElement.classList.add(
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'motion-reduce' : 'motion-safe'
+    );
+  </script>
+  <style>
+    /* ═══════════════════════════════════════════
+       AI AGENTS — Page-specific styles
+    ═══════════════════════════════════════════ */
+
+    /* Problem cards — red-tinted warning feel */
+    .problem-card{position:relative}
+    .problem-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,rgba(238,43,91,.4),rgba(238,43,91,.08));
+      border-radius:var(--r-lg) var(--r-lg) 0 0;
+    }
+    .problem-card .card-icon{
+      background:rgba(238,43,91,.06);border-color:rgba(238,43,91,.12);
+    }
+    .problem-card .card-icon svg{color:var(--brand)}
+
+    /* Guardrail cards — elevated */
+    .guardrail-card .card-icon{
+      background:rgba(153,69,255,.05);border-color:rgba(153,69,255,.1);
+    }
+    .guardrail-card .card-icon svg{color:var(--solana-purple)}
+
+    /* Step flow */
+    .flow-grid{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+      position:relative;margin-top:56px;
+    }
+    .flow-step{
+      position:relative;padding:32px 24px;
+      background:var(--bg-card);border:1px solid var(--border-1);
+      transition:border-color .35s,background .35s;
+    }
+    .flow-step:first-child{border-radius:var(--r-lg) 0 0 var(--r-lg)}
+    .flow-step:last-child{border-radius:0 var(--r-lg) var(--r-lg) 0}
+    .flow-step:not(:last-child){border-right:none}
+    .flow-step:hover{border-color:var(--border-2);background:var(--bg-card-hover)}
+    .flow-step:not(:last-child)::after{
+      content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%);
+      width:10px;height:10px;border-right:1.5px solid var(--brand);border-top:1.5px solid var(--brand);
+      transform:translateY(-50%) rotate(45deg);z-index:2;
+    }
+    .flow-num{
+      font-family:var(--font-m);font-size:.55rem;letter-spacing:.2em;color:var(--brand);
+      margin-bottom:14px;display:block;
+    }
+    .flow-step h3{
+      font-family:var(--font-h);font-size:1.15rem;font-weight:600;margin-bottom:8px;
+      letter-spacing:-.01em;line-height:1.2;
+    }
+    .flow-step p{font-size:.84rem;line-height:1.6;color:var(--text-2)}
+
+    /* Ecosystem cards — purple accent */
+    .eco-card{position:relative}
+    .eco-card::after{
+      content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,var(--solana-purple),var(--brand));
+      opacity:0;transition:opacity .35s;border-radius:var(--r-lg) var(--r-lg) 0 0;
+    }
+    .eco-card:hover::after{opacity:1}
+    .eco-card .card-icon{
+      background:rgba(153,69,255,.05);border-color:rgba(153,69,255,.1);
+    }
+    .eco-card .card-icon svg{color:var(--solana-purple)}
+
+    /* Cross-chain diagram */
+    .xchain-diagram{
+      margin-top:56px;display:flex;align-items:center;justify-content:center;
+      gap:0;flex-wrap:wrap;
+    }
+    .xchain-node{
+      padding:14px 22px;border:1px solid var(--border-1);border-radius:var(--r-md);
+      background:var(--bg-card);font-family:var(--font-m);font-size:.7rem;
+      letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);
+      display:flex;align-items:center;gap:8px;transition:border-color .3s,background .3s;
+      white-space:nowrap;
+    }
+    .xchain-node:hover{border-color:var(--border-2);background:var(--bg-card-hover)}
+    .xchain-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+    .xchain-connector{
+      width:48px;height:1px;background:linear-gradient(90deg,var(--border-1),var(--brand),var(--border-1));
+      flex-shrink:0;position:relative;
+    }
+    .xchain-connector-long{
+      width:64px;height:1px;
+      background:linear-gradient(90deg,var(--brand),rgba(238,43,91,.2));
+      flex-shrink:0;position:relative;
+    }
+    .xchain-center{
+      padding:18px 28px;border:1.5px solid rgba(238,43,91,.2);border-radius:var(--r-lg);
+      background:rgba(238,43,91,.03);display:flex;flex-direction:column;align-items:center;gap:4px;
+    }
+    .xchain-center-label{font-family:var(--font-m);font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:var(--brand)}
+    .xchain-center-title{font-family:var(--font-h);font-size:1rem;font-weight:700;color:var(--text-1)}
+    .xchain-agent{
+      padding:14px 22px;border:1.5px solid rgba(153,69,255,.2);border-radius:var(--r-md);
+      background:rgba(153,69,255,.03);font-family:var(--font-m);font-size:.7rem;
+      letter-spacing:.08em;text-transform:uppercase;color:var(--solana-purple);
+      display:flex;align-items:center;gap:8px;
+    }
+    .xchain-agent-dot{width:6px;height:6px;border-radius:50%;background:var(--solana-purple);box-shadow:0 0 6px rgba(153,69,255,.5)}
+    .xchain-policy{
+      padding:10px 18px;border:1px dashed rgba(238,43,91,.2);border-radius:var(--r-sm);
+      font-family:var(--font-m);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+      color:var(--brand);background:rgba(238,43,91,.02);
+    }
+    .xchain-chains{display:flex;flex-direction:column;gap:8px}
+
+    /* Diagram responsive layout */
+    .xchain-row{display:flex;align-items:center;gap:0;justify-content:center}
+
+    /* Section body text */
+    .section-body{
+      font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.7;color:var(--text-2);
+      max-width:600px;margin-bottom:48px;
+    }
+    .section-center .section-body{margin-left:auto;margin-right:auto}
+
+    /* Card grid spacing */
+    .card-grid-mt{margin-top:48px}
+
+    /* Responsive: flow steps */
+    @media(max-width:1024px){
+      .flow-grid{grid-template-columns:repeat(2,1fr)}
+      .flow-step:first-child{border-radius:var(--r-lg) 0 0 0}
+      .flow-step:nth-child(2){border-radius:0 var(--r-lg) 0 0;border-right:1px solid var(--border-1)}
+      .flow-step:nth-child(3){border-radius:0 0 0 var(--r-lg);border-right:none;border-top:none}
+      .flow-step:last-child{border-radius:0 0 var(--r-lg) 0;border-top:none;border-right:1px solid var(--border-1)}
+      .flow-step:nth-child(2)::after{display:none}
+      .xchain-diagram{flex-direction:column;gap:0}
+      .xchain-row{flex-direction:column;gap:0}
+      .xchain-connector,.xchain-connector-long{width:1px;height:32px;background:linear-gradient(180deg,var(--border-1),var(--brand),var(--border-1))}
+      .xchain-chains{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:8px}
+    }
+    @media(max-width:768px){
+      .flow-grid{grid-template-columns:1fr}
+      .flow-step,.flow-step:first-child,.flow-step:nth-child(2),.flow-step:nth-child(3),.flow-step:last-child{
+        border-radius:var(--r-lg);border:1px solid var(--border-1);margin-bottom:12px;
+      }
+      .flow-step::after{display:none!important}
+      .xchain-connector,.xchain-connector-long{height:24px}
+    }
+  </style>
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- NAV -->
+  <nav class="nav" role="navigation" aria-label="Main">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Ika home"><img src="./assets/logo.svg" alt="Ika" width="96" height="26" /></a>
+      <div class="nav-links" id="navLinks">
+        <a href="developers.html">Developers</a>
+        <a href="ai-agents.html" class="active">AI Agents</a>
+        <a href="use-cases.html">Use Cases</a>
+        <a href="research.html">Research</a>
+        <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
+        <a href="blog.html">Blog</a>
+        <a href="#cta" class="nav-cta">Start Building</a>
+      </div>
+      <button class="nav-hamburger" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mobileNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="nav-mobile" id="mobileNav" role="dialog" aria-label="Navigation menu">
+    <a href="developers.html">Developers</a>
+    <a href="ai-agents.html">AI Agents</a>
+    <a href="use-cases.html">Use Cases</a>
+    <a href="research.html">Research</a>
+    <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
+    <a href="blog.html">Blog</a>
+    <a href="#cta" class="btn-p" style="margin-top:8px">Start Building</a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════════ -->
+  <main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <div class="eyebrow reveal">
+        <span class="eyebrow-dot"></span>
+        Agentic authority
+      </div>
+      <h1 class="page-hero-h1 reveal rd-1">Give agents <em>constrained authority</em></h1>
+      <p class="subhead reveal rd-2">Let agents trade, rebalance, settle, and coordinate across chains &mdash; inside cryptographic guardrails.</p>
+      <div class="hero-ctas reveal rd-3">
+        <a href="https://docs.ika.network" target="_blank" rel="noopener" class="btn-p">Start Building &rarr;</a>
+        <a href="research.html" class="btn-s">Read the Research</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════
+       THE PROBLEM
+  ═══════════════════════════════════════════ -->
+  <section class="section-dark section-pad">
+    <div class="container section-center">
+      <span class="tag reveal">The problem</span>
+      <h2 class="headline reveal char-reveal">Full keys or nothing isn't good enough.</h2>
+      <p class="section-body reveal rd-1">Today's agents hold full private keys or none at all. There's no way to scope what an agent can do, enforce spending limits, or require human approval for high-stakes actions.</p>
+
+      <div class="grid-3 card-grid-mt">
+        <article class="card problem-card reveal rd-1">
+          <div class="card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/><line x1="12" y1="16" x2="12" y2="19"/></svg>
+          </div>
+          <h3>Key exposure risk</h3>
+          <p>One compromised agent leaks keys to everything it controls.</p>
+        </article>
+        <article class="card problem-card reveal rd-2">
+          <div class="card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
+          </div>
+          <h3>No spending boundaries</h3>
+          <p>Agents can drain entire balances with no programmatic limit.</p>
+        </article>
+        <article class="card problem-card reveal rd-3">
+          <div class="card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+          </div>
+          <h3>No escalation path</h3>
+          <p>When an action needs human judgment, there's no built-in mechanism.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════
+       PERMISSION PRIMITIVES
+  ═══════════════════════════════════════════ -->
+  <section class="section-alt section-pad">
+    <div class="container section-center">
+      <span class="tag reveal">Guardrails</span>
+      <h2 class="headline reveal char-reveal">Cryptographic permissions, not API rules</h2>
+      <p class="subhead reveal rd-1" style="margin:0 auto 48px">Ika enforces agent boundaries at the signing layer. Not in middleware, not in a dashboard &mdash; in the cryptography itself.</p>
+
+      <div class="grid-4 card-grid-mt">
+        <article class="card guardrail-card reveal rd-1">
+          <div class="card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <h3>Spending limits</h3>
+          <p>Per-transaction and daily volume ceilings. Enforced before signing, not after.</p>
+        </article>
+        <article class="card guardrail-card reveal rd-2">
+          <div class="card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <h3>Contract allowlists</h3>
+          <p>Restrict which protocols and addresses an agent can interact with.</p>
+        </article>
+        <article class="card guardrail-card reveal rd-3">
+          <div class="card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h3>Session windows</h3>
+          <p>Time-scoped delegation that expires automatically. No revocation needed.</p>
+        </article>
+        <article class="card guardrail-card reveal rd-4">
+          <div class="card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+          </div>
+          <h3>User escalation</h3>
+          <p>High-stakes actions route to human co-signature. Configurable thresholds.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════
+       AGENT FLOW
+  ═══════════════════════════════════════════ -->
+  <section class="section-dark section-pad">
+    <div class="container section-center">
+      <span class="tag reveal">How it works</span>
+      <h2 class="headline reveal char-reveal">From connection to constrained action</h2>
+
+      <div class="flow-grid">
+        <div class="flow-step reveal rd-1">
+          <span class="flow-num">01</span>
+          <h3>Connect</h3>
+          <p>Agent authenticates via Solana identity</p>
+        </div>
+        <div class="flow-step reveal rd-2">
+          <span class="flow-num">02</span>
+          <h3>Define scope</h3>
+          <p>Set spending limits, allowlists, session duration</p>
+        </div>
+        <div class="flow-step reveal rd-3">
+          <span class="flow-num">03</span>
+          <h3>Act within bounds</h3>
+          <p>Agent executes cross-chain actions under policy</p>
+        </div>
+        <div class="flow-step reveal rd-4">
+          <span class="flow-num">04</span>
+          <h3>Escalate when needed</h3>
+          <p>High-value actions require human co-signature</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════
+       SOLANA STACK COMPATIBILITY
+  ═══════════════════════════════════════════ -->
+  <section class="section-alt section-pad">
+    <div class="container section-center">
+      <span class="tag reveal">Ecosystem</span>
+      <h2 class="headline reveal char-reveal">Works with Solana's agent stack</h2>
+      <p class="section-body reveal rd-1">Ika adds the missing authority layer to existing Solana agent infrastructure.</p>
+
+      <div class="grid-3 card-grid-mt">
+        <article class="card eco-card reveal rd-1">
+          <div class="card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <h3>Identity</h3>
+          <p>Compatible with Solana keypairs, DIDs, and agent registries</p>
+        </article>
+        <article class="card eco-card reveal rd-2">
+          <div class="card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          </div>
+          <h3>Payments</h3>
+          <p>Works alongside Solana token programs and payment rails</p>
+        </article>
+        <article class="card eco-card reveal rd-3">
+          <div class="card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <h3>Tools</h3>
+          <p>Integrates with existing agent frameworks and tool registries</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════
+       CROSS-CHAIN EXECUTION
+  ═══════════════════════════════════════════ -->
+  <section class="section-dark section-pad">
+    <div class="container section-center">
+      <span class="tag reveal">Execution</span>
+      <h2 class="headline reveal char-reveal">Native actions on any chain</h2>
+      <p class="section-body reveal rd-1">Agents don't bridge. They sign natively on Bitcoin, Ethereum, and every chain Ika supports &mdash; with full policy enforcement.</p>
+
+      <div class="xchain-diagram reveal rd-2">
+        <div class="xchain-row">
+          <!-- Agent -->
+          <div class="xchain-agent">
+            <span class="xchain-agent-dot"></span>
+            Agent
+          </div>
+
+          <div class="xchain-connector-long"></div>
+
+          <!-- Policy Check -->
+          <div class="xchain-policy">Policy Check</div>
+
+          <div class="xchain-connector-long"></div>
+
+          <!-- Ika Network -->
+          <div class="xchain-center">
+            <span class="xchain-center-label">Network</span>
+            <span class="xchain-center-title">Ika</span>
+          </div>
+
+          <div class="xchain-connector-long"></div>
+
+          <!-- Target chains -->
+          <div class="xchain-chains">
+            <div class="xchain-node">
+              <span class="xchain-dot" style="background:#F7931A;box-shadow:0 0 6px rgba(247,147,26,.5)"></span>
+              Bitcoin
+            </div>
+            <div class="xchain-node">
+              <span class="xchain-dot" style="background:#627EEA;box-shadow:0 0 6px rgba(98,126,234,.5)"></span>
+              Ethereum
+            </div>
+            <div class="xchain-node">
+              <span class="xchain-dot" style="background:#28A0F0;box-shadow:0 0 6px rgba(40,160,240,.5)"></span>
+              Arbitrum
+            </div>
+            <div class="xchain-node">
+              <span class="xchain-dot" style="background:#6F7390;box-shadow:0 0 6px rgba(111,115,144,.5)"></span>
+              Cosmos
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════
+       FINAL CTA
+  ═══════════════════════════════════════════ -->
+  <section class="s-cta" id="cta">
+    <div class="container">
+      <h2 class="headline reveal char-reveal">Build agents that can act everywhere.</h2>
+      <p class="subhead reveal rd-1">Scoped authority, cross-chain reach, cryptographic guarantees.</p>
+      <div class="cta-btns reveal rd-2">
+        <a href="https://docs.ika.network" target="_blank" rel="noopener" class="btn-p">Start Building &rarr;</a>
+        <a href="use-cases.html" class="btn-s">Explore Use Cases</a>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="./assets/logo.svg" alt="Ika" width="72" height="20" />
+          <p>The control layer for Solana apps and agents.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="developers.html">Developers</a>
+          <a href="ai-agents.html">AI Agents</a>
+          <a href="use-cases.html">Use Cases</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
+          <a href="research.html">Research</a>
+          <a href="blog.html">Blog</a>
+          <a href="https://github.com/nicedoc" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <div class="footer-col">
+          <h4>Community</h4>
+          <a href="https://twitter.com/AnyoneIka" target="_blank" rel="noopener">Twitter</a>
+          <a href="https://discord.gg/ika" target="_blank" rel="noopener">Discord</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Ika Network</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./main.js" defer></script>
+</body>
+</html>

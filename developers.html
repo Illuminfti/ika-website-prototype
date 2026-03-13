@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <title>Developers — Ika Network</title>
+  <meta name="description" content="Programmable signing for Solana builders. Build wallets, treasuries, agent permissions, and cross-chain workflows with policy-enforced control.">
+  <meta property="og:title" content="Developers — Ika Network">
+  <meta property="og:description" content="Build cross-chain apps with programmable signing authority on Solana.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <link rel="stylesheet" href="./styles.css">
+  <script>
+    document.documentElement.classList.add(
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'motion-reduce' : 'motion-safe'
+    );
+  </script>
+  <style>
+    /* ── Page-specific styles ── */
+
+    /* Authority model cards — icon area */
+    .authority-icon {
+      width: 48px; height: 48px; margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--r-md);
+      background: rgba(238,43,91,.04);
+      border: 1px solid rgba(238,43,91,.07);
+    }
+    .authority-icon svg { width: 24px; height: 24px; }
+
+    /* Code section layout */
+    .code-section-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+    .code-block pre {
+      margin: 0;
+      white-space: pre;
+      font-family: var(--font-m);
+      font-size: .78rem;
+      line-height: 1.7;
+      color: var(--text-2);
+    }
+
+    /* Architecture flow */
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      position: relative;
+    }
+    .flow-step {
+      padding: 32px 24px;
+      position: relative;
+      border: 1px solid var(--border-1);
+      margin: -0.5px;
+      transition: border-color .35s, background .35s;
+    }
+    .flow-step:hover {
+      border-color: var(--border-2);
+      background: var(--bg-card);
+    }
+    .flow-num {
+      font-family: var(--font-m);
+      font-size: .6rem;
+      letter-spacing: .2em;
+      color: var(--brand);
+      margin-bottom: 12px;
+      display: block;
+    }
+    .flow-step h3 {
+      font-family: var(--font-h);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -.01em;
+      line-height: 1.25;
+      color: var(--text-1);
+    }
+    .flow-step::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: -8px;
+      width: 14px;
+      height: 14px;
+      border-right: 1.5px solid var(--brand);
+      border-bottom: 1.5px solid var(--brand);
+      transform: translateY(-50%) rotate(-45deg);
+      z-index: 2;
+      opacity: .4;
+    }
+    .flow-step:nth-child(3n)::after,
+    .flow-step:last-child::after {
+      display: none;
+    }
+    /* Vertical connector between rows */
+    .flow-step:nth-child(3)::before {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      width: 14px;
+      height: 14px;
+      border-right: 1.5px solid var(--brand);
+      border-bottom: 1.5px solid var(--brand);
+      transform: translateX(-50%) rotate(45deg);
+      z-index: 2;
+      opacity: .4;
+    }
+
+    @media (max-width: 768px) {
+      .flow-grid {
+        grid-template-columns: 1fr;
+      }
+      .flow-step::after {
+        display: none;
+      }
+      .flow-step:nth-child(3)::before {
+        display: none;
+      }
+      .flow-step:not(:last-child)::after {
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: -8px;
+        left: 32px;
+        width: 14px;
+        height: 14px;
+        border-right: 1.5px solid var(--brand);
+        border-bottom: 1.5px solid var(--brand);
+        transform: rotate(45deg);
+        z-index: 2;
+        opacity: .4;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ═══════════════════════════════════════════
+       NAV
+  ═══════════════════════════════════════════ -->
+  <nav class="nav" role="navigation" aria-label="Main">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Ika home"><img src="./assets/logo.svg" alt="Ika" width="96" height="26" /></a>
+      <div class="nav-links" id="navLinks">
+        <a href="developers.html" class="active">Developers</a>
+        <a href="ai-agents.html">AI Agents</a>
+        <a href="use-cases.html">Use Cases</a>
+        <a href="research.html">Research</a>
+        <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
+        <a href="blog.html">Blog</a>
+        <a href="#cta" class="nav-cta">Start Building</a>
+      </div>
+      <button class="nav-hamburger" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mobileNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="nav-mobile" id="mobileNav" role="dialog" aria-label="Navigation menu">
+    <a href="developers.html">Developers</a>
+    <a href="ai-agents.html">AI Agents</a>
+    <a href="use-cases.html">Use Cases</a>
+    <a href="research.html">Research</a>
+    <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
+    <a href="blog.html">Blog</a>
+    <a href="#cta" class="btn-p" style="margin-top:8px">Start Building</a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════════ -->
+  <main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <div class="eyebrow reveal">
+        <span class="eyebrow-dot"></span>
+        For builders
+      </div>
+      <h1 class="page-hero-h1 char-reveal">Programmable signing for <em>Solana builders</em></h1>
+      <p class="subhead reveal rd-1">Build wallets, treasuries, agent permissions, and cross-chain workflows with policy-enforced control.</p>
+      <div class="hero-ctas reveal rd-2">
+        <a href="https://docs.ika.network" target="_blank" rel="noopener" class="btn-p">Read the Docs</a>
+        <a href="#code" class="btn-s">View Examples</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════
+       AUTHORITY MODELS
+  ═══════════════════════════════════════════ -->
+  <section class="section-dark section-pad">
+    <div class="container">
+      <div class="section-center">
+        <span class="tag reveal">Choose your model</span>
+        <h2 class="headline char-reveal">Three authority patterns, one primitive</h2>
+      </div>
+      <div class="grid-3" style="margin-top:56px">
+
+        <div class="card card-accent reveal rd-1">
+          <div class="authority-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <h3>User-required</h3>
+          <p>Human co-signs every action. Full sovereignty, maximum security.</p>
+        </div>
+
+        <div class="card card-accent reveal rd-2">
+          <div class="authority-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <path d="M8 21h8"/><path d="M12 17v4"/>
+              <path d="M7 8h2m2 0h2m2 0h2"/>
+            </svg>
+          </div>
+          <h3>Policy-automated</h3>
+          <p>Actions execute within predefined rules. No human needed for routine operations.</p>
+        </div>
+
+        <div class="card card-accent reveal rd-3">
+          <div class="authority-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h3>Hybrid delegation</h3>
+          <p>Agents act freely within bounds. Escalate to user when limits are hit.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════
+       INTEGRATION PATTERNS
+  ═══════════════════════════════════════════ -->
+  <section class="section-alt section-pad">
+    <div class="container">
+      <div class="section-center">
+        <span class="tag reveal">Integration</span>
+        <h2 class="headline char-reveal">Build with familiar patterns</h2>
+        <p class="subhead reveal rd-1">Ika integrates with Solana programs through standard transaction flows. No custom VMs, no proprietary SDKs.</p>
+      </div>
+      <div class="grid-4" style="margin-top:56px">
+
+        <div class="card card-accent reveal rd-1">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="6" width="20" height="12" rx="2"/>
+              <path d="M2 10h20"/>
+              <path d="M6 14h4"/>
+            </svg>
+          </div>
+          <h3>Wallet SDK</h3>
+          <p>Embed cross-chain wallets in any Solana app. Social recovery, spending limits, multi-party approval.</p>
+        </div>
+
+        <div class="card card-accent reveal rd-2">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
+              <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
+              <path d="M18 12a2 2 0 0 0 0 4h4v-4z"/>
+            </svg>
+          </div>
+          <h3>Treasury API</h3>
+          <p>Programmable spending policies for DAOs and protocols. Multi-sig with cross-chain reach.</p>
+        </div>
+
+        <div class="card card-accent reveal rd-3">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 8V4H8"/>
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <path d="M2 12h5l2 3h6l2-3h5"/>
+            </svg>
+          </div>
+          <h3>Agent Framework</h3>
+          <p>Give AI agents scoped signing authority. Define limits, allowlists, and escalation paths.</p>
+        </div>
+
+        <div class="card card-accent reveal rd-4">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              <path d="M2 12h20"/>
+            </svg>
+          </div>
+          <h3>Intent Engine</h3>
+          <p>Express cross-chain intents. Ika resolves the signing path natively on each target chain.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════
+       CODE SAMPLE
+  ═══════════════════════════════════════════ -->
+  <section id="code" class="section-dark section-pad">
+    <div class="container">
+      <div class="section-center">
+        <span class="tag reveal">Quick start</span>
+        <h2 class="headline char-reveal">Define authority in a few lines</h2>
+      </div>
+      <div class="code-section-grid reveal rd-1" style="margin-top:48px">
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-dot"></span>
+            <span class="code-dot"></span>
+            <span class="code-dot"></span>
+            <span class="code-lang">TypeScript</span>
+          </div>
+          <pre><span class="cm">// Define a cross-chain wallet with spending policy</span>
+<span class="kw">const</span> wallet = <span class="kw">await</span> ika.<span class="fn">createWallet</span>({
+  owner: solanaPubkey,
+  chains: [<span class="str">"bitcoin"</span>, <span class="str">"ethereum"</span>],
+  policy: {
+    spendingLimit: { daily: <span class="str">"1000 USDC"</span> },
+    allowlist: [<span class="str">"uniswap.eth"</span>, <span class="str">"aave.eth"</span>],
+    requireUser: { above: <span class="str">"500 USDC"</span> },
+  }
+});
+
+<span class="cm">// Sign a cross-chain transaction</span>
+<span class="kw">const</span> sig = <span class="kw">await</span> wallet.<span class="fn">sign</span>(ethTransaction);</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════
+       ARCHITECTURE — HOW SIGNING FLOWS WORK
+  ═══════════════════════════════════════════ -->
+  <section class="section-alt section-pad">
+    <div class="container">
+      <div class="section-center">
+        <span class="tag reveal">Under the hood</span>
+        <h2 class="headline char-reveal">How signing flows work</h2>
+      </div>
+      <div class="flow-grid reveal rd-1" style="margin-top:56px">
+
+        <div class="flow-step">
+          <span class="flow-num">01</span>
+          <h3>Define authority on Solana</h3>
+        </div>
+
+        <div class="flow-step">
+          <span class="flow-num">02</span>
+          <h3>Create or import a dWallet</h3>
+        </div>
+
+        <div class="flow-step">
+          <span class="flow-num">03</span>
+          <h3>Precompute signing material</h3>
+        </div>
+
+        <div class="flow-step">
+          <span class="flow-num">04</span>
+          <h3>Request cross-chain action</h3>
+        </div>
+
+        <div class="flow-step">
+          <span class="flow-num">05</span>
+          <h3>Check policy &amp; approvals</h3>
+        </div>
+
+        <div class="flow-step">
+          <span class="flow-num">06</span>
+          <h3>Sign &amp; execute natively</h3>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════
+       CTA
+  ═══════════════════════════════════════════ -->
+  <section id="cta" class="s-cta">
+    <div class="container">
+      <h2 class="headline char-reveal">Start building cross-chain apps today.</h2>
+      <p class="subhead reveal rd-1">Documentation, examples, and SDKs ready to go.</p>
+      <div class="cta-btns reveal rd-2">
+        <a href="https://docs.ika.network" target="_blank" rel="noopener" class="btn-p">Read the Docs</a>
+        <a href="https://discord.gg/ika" target="_blank" rel="noopener" class="btn-s">Join Discord</a>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="./assets/logo.svg" alt="Ika" width="72" height="20" />
+          <p>The control layer for Solana apps and agents</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="developers.html">Developers</a>
+          <a href="ai-agents.html">AI Agents</a>
+          <a href="use-cases.html">Use Cases</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
+          <a href="research.html">Research</a>
+          <a href="blog.html">Blog</a>
+          <a href="https://github.com/nicedoc" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <div class="footer-col">
+          <h4>Community</h4>
+          <a href="https://twitter.com/AnyoneIka" target="_blank" rel="noopener">Twitter</a>
+          <a href="https://discord.gg/ika" target="_blank" rel="noopener">Discord</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Ika Network</span>
+        <div class="footer-bottom-links">
+          <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
+          <a href="https://twitter.com/AnyoneIka" target="_blank" rel="noopener">Twitter</a>
+          <a href="https://discord.gg/ika" target="_blank" rel="noopener">Discord</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./main.js" defer></script>
+</body>
+</html>

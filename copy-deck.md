@@ -1,21 +1,25 @@
-# Ika Website Copy Deck v1
+# Ika Website Copy Deck v2
 
 ## Page Job: Make developers want to build with Ika (5 words)
 ## Framework: PAS (Problem-Agitate-Solve) → audience is solution-aware
-## Target: Crypto developers building cross-chain applications
+## Target: Crypto developers building Solana applications and AI agents
+## Positioning: Ika is the control layer for Solana apps and agents
 
 ---
 
 ## HERO
 
 ### Status pill
-`LIVE ON SOLANA & SUI`
+`LIVE ON SOLANA`
 
 ### Headline
-**Every chain is yours.**
+**The *control layer* for Solana apps and agents**
 
 ### Sub-headline
-Ika is the fastest MPC network. Your Sui program signs transactions on Bitcoin, Ethereum, and every other chain in under a second. No bridges. No trust assumptions. Just cryptography.
+Let Solana programs and AI agents control assets and actions on any chain — without bridges, custodians, or handing over the keys.
+
+### Micro-tagline
+Solana decides. Ika signs.
 
 ### CTAs
 - Primary: `Start Building →`
@@ -23,23 +27,11 @@ Ika is the fastest MPC network. Your Sui program signs transactions on Bitcoin, 
 
 ---
 
-## METRICS BAR
+## PROOF STRIP
 
-| 10,000× | < 1s | 100+ |
-|---------|------|------|
-| Faster than legacy MPC | Signing latency | Validator nodes |
-
----
-
-## "IKA IS" SECTION (Sui-style tagline list)
-
-Tag: `What makes Ika different`
-
-- **Fast by design** — Sub-second signatures where legacy MPC takes 30+ seconds
-- **Trustless by proof** — 2PC-MPC: no single party ever holds your key. Mathematically guaranteed.
-- **Scalable without limits** — Hundreds of nodes signing in parallel. Not the 4-8 node ceiling of legacy networks.
-- **Programmable in Rust** — Write signing policies as smart contracts. Gate, compose, automate.
-- **Native to every chain** — Not a bridge. Not a wrapper. Real signatures on real chains.
+| Sub-second | 200+ | Any chain |
+|------------|------|-----------|
+| Signing latency | Validator nodes | Native execution |
 
 ---
 
@@ -47,9 +39,9 @@ Tag: `What makes Ika different`
 
 Tag: `The problem`
 
-### Today's cross-chain is broken.
+### Solana apps can execute fast. Control is still fragmented.
 
-Bridges get hacked. Wrapped assets lose their peg. MPC networks max out at 8 nodes and call it "decentralized." You're told to trust relayers, validators, and committees with your assets. Then they get exploited, and you lose everything.
+Solana programs can swap, lend, and settle in milliseconds. But the moment an action needs to touch another chain — bridging, wrapping, trusting a committee with your keys — speed doesn't matter if security is the bottleneck.
 
 ---
 
@@ -57,70 +49,122 @@ Bridges get hacked. Wrapped assets lose their peg. MPC networks max out at 8 nod
 
 Tag: `The Ika approach`
 
-### Your key never exists in one place.
+### Signing as a programmable primitive.
 
-Ika uses 2PC-MPC — a breakthrough in threshold cryptography where no single party, not even Ika, can reconstruct your private key. Ever. You hold one share. The network holds the other across hundreds of nodes. Signing requires both. That's not a feature. That's the architecture.
-
----
-
-## USE CASES (Bento Grid)
-
-### On-chain Fireblocks
-Enterprise custody without the enterprise. Programmable signing policies give you institutional-grade key management, on-chain.
-
-### Native Bitcoin on Sui  
-Not wrapped. Not bridged. Real BTC controlled by Sui smart contracts. Programmable Bitcoin DeFi becomes possible.
-
-### Cross-chain DeFi
-Lend against assets on any chain. Execute atomic swaps. Build protocols that treat all of crypto as one liquidity pool.
-
-### Smart Wallet
-Account recovery, spending limits, multi-party approval — all enforced cryptographically, not by a custodian.
-
-### AI Agent Guardrails
-Give AI agents the ability to transact across chains, with cryptographic guardrails that ensure they can't go rogue.
-
-### Universal Staking
-Stake any asset to secure any protocol. Cross-chain staking that actually works.
+Ika turns signing into something your Solana program can call — with rules, limits, and policies attached. No party ever holds the full key. The network and the user each hold a share. Signing requires both. That's programmable authority.
 
 ---
 
-## COMPARISON SECTION
+## INTERLUDE
 
-Tag: `Why Ika`
+Public logic on Solana. Native control everywhere.
 
-### Not another bridge.
+---
 
-|  | Ika | Bridges | Legacy MPC | Multisig |
-|--|-----|---------|-----------|----------|
-| Latency | < 1 second | Minutes | 30+ seconds | Manual |
-| Trust | Zero-trust | Trusted relayers | Trusted committee | Trusted signers |
-| Key security | Non-collusive | N/A | Collusion risk | Key exposure |
-| Programmability | Rust smart contracts | Limited | None | None |
-| Chains | Universal | Pair-specific | Limited | Per-chain |
+## SOLANA ALIGNMENT SECTION
+
+Tag: `Solana-native`
+
+### Built for Solana's next chapter
+
+- **Solana program → Ika signer** — Your program calls Ika like any other on-chain primitive. Define who can sign, when, and under what conditions.
+- **Real signatures, not bridges** — Ika doesn't wrap or relay. It produces native signatures on destination chains. Bitcoin sees a Bitcoin signature. Ethereum sees an Ethereum signature.
+- **Composable with the Solana stack** — Works with SPL tokens, PDAs, CPIs. Fits into the execution model Solana developers already use.
+
+---
+
+## AI AGENTS SECTION
+
+Tag: `Agentic authority`
+
+### Give agents rules, not keys.
+
+AI agents need to act across chains. But giving an agent a private key is giving it unlimited power. Ika lets you define what an agent can sign, how much, how often — enforced cryptographically.
+
+- Scoped signing authority
+- Programmable spend limits
+- Revocable at any time
+- Cross-chain execution with guardrails
+
+---
+
+## ZERO-TRUST SECTION
+
+Tag: `Architecture`
+
+### Zero-trust. Usable. Decentralized.
+
+Ika is built on 2PC-MPC — a breakthrough where no single party ever holds a complete key. Not Ika. Not the validators. Not anyone. The user holds one share. The network holds the other across 200+ nodes. Signing requires both. Collusion is mathematically impossible.
+
+---
+
+## USE CASES
+
+Tag: `Use cases`
+
+### Policy decides what gets signed.
+
+- **Consumer wallets** — Social recovery, spending limits, multi-device approval — cryptographic, not custodial.
+- **Treasury management** — Multi-party signing with time-locks, thresholds, and audit trails. On-chain governance for real.
+- **Cross-chain DeFi** — Lend, borrow, and swap across chains without bridges. One liquidity layer.
+- **Autonomous agents** — Agents that trade, rebalance, and execute — within boundaries you define.
+- **Embedded signing** — Add cross-chain signing to any app. No key management infrastructure required.
+- **Institutional custody** — Programmable policies that meet compliance requirements. On-chain Fireblocks.
+
+---
+
+## ARCHITECTURE SECTION
+
+Tag: `Under the hood`
+
+### How Ika works
+
+1. Solana program defines a signing policy
+2. Policy specifies rules, limits, and authorized callers
+3. Ika's 2PC-MPC network validates the request
+4. Native signature produced on the destination chain
+5. No bridges, no wrapping, no trust assumptions
+
+---
+
+## RESEARCH SECTION
+
+Tag: `Research`
+
+### The cryptography behind programmable authority
+
+- 2PC-MPC: Two-Party Computation with Multi-Party Confidentiality
+- Non-collusive threshold signatures across 200+ nodes
+- Sub-second signing latency at scale
+- Peer-reviewed cryptographic foundations
 
 ---
 
 ## BACKED BY
 
-DCG · Mysten Labs · FalconX · Big Brain Holdings · Blockchange · Amplify · Liquid2 Ventures · Sui · dWallet Labs
+DCG · Mysten Labs · FalconX · Big Brain Holdings · Blockchange · Amplify · Liquid2 Ventures · Node Capital · dWallet Labs
 
 ---
 
 ## FINAL CTA
 
-### Build what wasn't possible before.
+### Build the apps and agents that act everywhere.
 
-Your Sui program can now sign transactions on Bitcoin. On Ethereum. On any chain. The only limit is what you imagine.
+Solana programs that control Bitcoin. AI agents with cryptographic guardrails. Cross-chain DeFi without bridges. Start building with Ika.
 
 `Start Building →`
 
 ---
 
-## DESIGN NOTES
+## KEY MESSAGES (preserve exactly)
+- "The control layer for Solana apps and agents"
+- "Solana decides. Ika signs."
+- "Give agents rules, not keys."
+- "Zero-trust. Usable. Decentralized."
 
-- Steal from Sui.io: alternating dark/light sections, oversized typography bleeding off viewport, inline icons mixed into text, scroll-driven reveals
-- Hero should have abstract generative art (not particles, not network viz)
-- Each section transition should feel like a new "room" you're entering
-- Color: dark sections use #050507 with coral (#EE2B5B) accents, light sections use off-white (#F5F5F7) with dark text
-- Typography: oversized display font, text that doesn't fit the viewport (confidence)
+## TONE
+- High-conviction, premium, product-forward
+- Technical credibility underneath, not leading
+- No empty crypto cliches, no jargon-first framing
+- Capability and outcome first, cryptography second
+- Solana-first GTM, AI agents as primary use case
