@@ -589,7 +589,14 @@ p { color: var(--text-1); }
 /* ═══════════════════════════════════════════
    ZUD
    ═══════════════════════════════════════════ */
-.zud { padding: clamp(80px, 10vw, 160px) 0; background: var(--bg-1); }
+.zud {
+  padding: clamp(80px, 10vw, 160px) 0;
+  background: var(--bg-1);
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
 .zud-header { margin-bottom: clamp(48px, 6vw, 80px); }
 .zud-header h2 { max-width: 500px; }
 .zud-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -665,9 +672,12 @@ p { color: var(--text-1); }
 }
 .uc-hero-card::before {
   content: ''; position: absolute; top: -1px; left: 24px; right: 24px; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--brand), transparent);
-  opacity: 0.4; border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--brand), var(--cyan), transparent);
+  background-size: 200% 100%;
+  animation: border-shimmer 4s linear infinite;
+  opacity: 0.5; border-radius: 2px;
 }
+@keyframes border-shimmer { to { background-position: 200% 0; } }
 .uc-hero-card h3 { font-size: 1.5rem; }
 .uc-hero-card p { font-size: 16px; }
 .uc-pano { grid-column: span 2; min-height: 180px; }
@@ -765,7 +775,8 @@ p { color: var(--text-1); }
 }
 .research-featured::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(ellipse at 20% 80%, rgba(238,43,91,0.06), transparent 60%);
+  background: radial-gradient(ellipse at 20% 30%, rgba(238,43,91,0.08), transparent 50%),
+              radial-gradient(ellipse at 80% 80%, rgba(117,241,255,0.04), transparent 50%);
   pointer-events: none;
 }
 .research-featured-visual {
@@ -2224,6 +2235,41 @@ document.addEventListener('DOMContentLoaded', function() {
         scrollTrigger: { trigger: glyph.parentElement, start: 'top 80%', once: true }
       });
     });
+
+    /* ── 11b. CTA HEADLINE WORD REVEAL ── */
+    var ctaH2 = document.querySelector('.final-cta h2');
+    if (ctaH2) {
+      var ctaText = ctaH2.textContent;
+      ctaH2.setAttribute('aria-label', ctaText);
+      ctaH2.innerHTML = '';
+      var ctaWords = [];
+      ctaText.split(/(\s+)/).forEach(function(w) {
+        if (/^\s+$/.test(w)) {
+          ctaH2.appendChild(document.createTextNode(' '));
+        } else if (w) {
+          var wrap = document.createElement('span');
+          wrap.style.display = 'inline-block';
+          wrap.style.overflow = 'hidden';
+          wrap.style.verticalAlign = 'top';
+          var inner = document.createElement('span');
+          inner.style.display = 'inline-block';
+          inner.textContent = w;
+          wrap.appendChild(inner);
+          ctaH2.appendChild(wrap);
+          ctaWords.push(inner);
+        }
+      });
+      gsap.set(ctaWords, { y: '110%' });
+      ScrollTrigger.create({
+        trigger: ctaH2, start: 'top 80%', once: true,
+        onEnter: function() {
+          gsap.to(ctaWords, { y: '0%', stagger: 0.05, duration: 0.6, ease: 'power3.out' });
+        }
+      });
+      // Remove the reveal-scale class since we handle it ourselves
+      ctaH2.classList.remove('reveal-scale');
+      ctaH2.style.opacity = '1';
+    }
 
     /* ── 12. CTA GLOW PULSE + RING ROTATION ── */
     gsap.to('#cta-glow', {
