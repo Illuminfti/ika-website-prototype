@@ -1580,8 +1580,19 @@ document.addEventListener('DOMContentLoaded', function() {
   /* ── WAIT FOR GSAP + ScrollTrigger ── */
   function waitForGSAP(cb) {
     if (window.gsap && window.ScrollTrigger) { cb(); return; }
+    var attempts = 0;
     var check = setInterval(function() {
+      attempts++;
       if (window.gsap && window.ScrollTrigger) { clearInterval(check); cb(); }
+      else if (attempts > 60) {
+        // GSAP failed to load — show everything anyway
+        clearInterval(check);
+        document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('vis'); });
+        // Show hero elements that had .reveal removed
+        var heroEls = document.querySelectorAll('.hero-eyebrow, .hero h1, .hero-sub, .hero-ctas, .hero-micro, .hero-visual, .perm-chip');
+        heroEls.forEach(function(el) { el.style.opacity = '1'; el.style.transform = 'none'; });
+        initAgentDemo();
+      }
     }, 50);
   }
 
@@ -1596,8 +1607,9 @@ document.addEventListener('DOMContentLoaded', function() {
       gsap.ticker.lagSmoothing(0);
     }
 
-    /* ── 5. REVEAL SYSTEM ── */
+    /* ── 5. REVEAL SYSTEM (skip hero — it has its own timeline) ── */
     document.querySelectorAll('.reveal').forEach(function(el) {
+      if (el.closest('.hero')) return;
       ScrollTrigger.create({
         trigger: el,
         start: 'top 88%',
@@ -1607,18 +1619,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     /* ── 6. HERO ENTRANCE CHOREOGRAPHY ── */
+    // Remove .reveal from hero elements so CSS doesn't fight GSAP
+    document.querySelectorAll('.hero .reveal').forEach(function(el) {
+      el.classList.remove('reveal');
+    });
+    // Set initial hidden state via GSAP (not CSS)
+    gsap.set('.hero-eyebrow, .hero h1, .hero-sub, .hero-ctas, .hero-micro', { opacity: 0, y: 20 });
+    gsap.set('.hero-visual', { opacity: 0, scale: 0.92 });
+    gsap.set('.perm-chip', { opacity: 0, scale: 0.8 });
+
     var heroTl = gsap.timeline({ delay: 0.3 });
     heroTl
-      .from('.hero-eyebrow', { opacity: 0, y: 20, duration: 0.6 })
-      .from('.hero h1', { opacity: 0, y: 30, duration: 0.7 }, '-=0.3')
-      .from('.hero-sub', { opacity: 0, y: 20, duration: 0.5 }, '-=0.3')
-      .from('.hero-ctas', { opacity: 0, y: 16, duration: 0.5 }, '-=0.2')
-      .from('.hero-micro', { opacity: 0, duration: 0.4 }, '-=0.2')
-      .from('.hero-visual', { opacity: 0, scale: 0.92, duration: 0.9, ease: 'power2.out' }, '-=0.6')
-      .from('.perm-chip', { opacity: 0, scale: 0.8, stagger: 0.1, duration: 0.4 }, '-=0.3');
-
-    // Mark hero reveals done
-    document.querySelectorAll('.hero .reveal').forEach(function(el) { el.classList.add('vis'); });
+      .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' })
+      .to('.hero h1', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.3')
+      .to('.hero-sub', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.3')
+      .to('.hero-ctas', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.2')
+      .to('.hero-micro', { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, '-=0.2')
+      .to('.hero-visual', { opacity: 1, scale: 1, duration: 0.9, ease: 'power2.out' }, '-=0.6')
+      .to('.perm-chip', { opacity: 1, scale: 1, stagger: 0.1, duration: 0.4, ease: 'back.out(1.5)' }, '-=0.3');
 
     /* ── 7. HERO PARALLAX (desktop) ── */
     if (!isMobile) {
