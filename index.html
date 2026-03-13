@@ -1,938 +1,1806 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ika — The control layer for Solana apps and agents</title>
-  <meta name="description" content="Let Solana programs and AI agents control assets and actions on any chain — without bridges, custodians, or handing over the keys.">
-  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400;500;600;700&f[]=satoshi@400;500;700&display=swap" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js" defer></script>
-  <style>
-/* ═══════════════════════════════════
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ika — The Control Layer for Solana</title>
+<meta name="description" content="Let Solana programs and AI agents control assets and actions on any chain — without bridges, custodians, or handing over the keys.">
+<link rel="icon" href="./assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,700;0,800;1,700;1,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════
    TOKENS
-═══════════════════════════════════ */
+   ═══════════════════════════════════════════ */
 :root {
-  --brand:#EE2B5B; --brand-light:#FF6B8A; --brand-dim:#C41E49;
-  --brand-glow:rgba(238,43,91,.3); --brand-subtle:rgba(238,43,91,.06);
-  --sol:#9945FF; --sol-subtle:rgba(153,69,255,.06);
-  --btc:#F7931A; --eth:#627EEA;
-  --bg-0:#000; --bg-1:#060609; --bg-2:#0B0B14;
-  --bg-card:rgba(255,255,255,.018);
-  --text-1:#F5F5F7; --text-2:rgba(255,255,255,.55); --text-3:rgba(255,255,255,.25);
-  --border-1:rgba(255,255,255,.05); --border-2:rgba(255,255,255,.09); --border-3:rgba(255,255,255,.14);
-  --font-h:"Clash Display",system-ui,sans-serif;
-  --font-b:"Satoshi",system-ui,sans-serif;
-  --font-m:"JetBrains Mono",ui-monospace,monospace;
-  --ease:cubic-bezier(.16,1,.3,1); --ease-out:cubic-bezier(.22,1,.36,1);
-  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-pill:100px;
-  --space-s:clamp(100px,12vw,160px);
-  --text-xs:clamp(.65rem,.6rem + .15vw,.72rem);
-  --text-sm:clamp(.78rem,.74rem + .2vw,.88rem);
-  --text-base:clamp(.88rem,.84rem + .2vw,1rem);
-  --text-lg:clamp(1rem,.92rem + .4vw,1.18rem);
-  --text-xl:clamp(1.1rem,1rem + .5vw,1.35rem);
-  --text-2xl:clamp(1.8rem,1.4rem + 2vw,2.8rem);
-  --text-3xl:clamp(2.2rem,1.6rem + 3vw,3.75rem);
-  --text-hero:clamp(3rem,2rem + 4.5vw,5.2rem);
+  --bg-0: #050816;
+  --bg-1: #0b1020;
+  --bg-2: #11182d;
+  --text-0: rgba(248, 250, 255, 0.96);
+  --text-1: rgba(211, 220, 238, 0.74);
+  --text-2: rgba(160, 170, 200, 0.45);
+  --stroke-1: rgba(255,255,255,0.09);
+  --stroke-2: rgba(120,140,190,0.18);
+  --panel: rgba(10, 15, 30, 0.62);
+  --panel-strong: rgba(14, 20, 38, 0.86);
+  --brand: #EE2B5B;
+  --brand-light: #FF6B8A;
+  --brand-dim: #C41E49;
+  --brand-glow: rgba(238,43,91,0.2);
+  --cyan: #75f1ff;
+  --violet: #b78cff;
+  --mint: #5dffb7;
+  --danger: #ff7c98;
+  --shadow-panel: 0 10px 40px rgba(0,0,0,0.28);
+  --glow-cyan: 0 0 80px rgba(117, 241, 255, 0.18);
 }
-@property --angle{syntax:'<angle>';initial-value:0deg;inherits:false}
 
-/* ═══════════════════════════════════
-   RESET & BASE
-═══════════════════════════════════ */
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{background:var(--bg-0);overflow-x:hidden;-webkit-text-size-adjust:100%}
-html.lenis,html.lenis body{height:auto}
-.lenis.lenis-smooth{scroll-behavior:auto}
-body{font-family:var(--font-b);color:var(--text-1);background:var(--bg-0);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden;line-height:1.6;text-rendering:optimizeLegibility}
-a{color:inherit;text-decoration:none}
-button{font-family:inherit;cursor:pointer;border:none;background:none}
-img,svg{max-width:100%;display:block;height:auto}
-/* Grain overlay */
-body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.018;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;mix-blend-mode:overlay}
-.skip-link{position:absolute;top:-100%;left:16px;z-index:9999;padding:12px 24px;background:var(--brand);color:#fff;font-weight:600;border-radius:0 0 var(--r-sm) var(--r-sm);transition:top .2s}
-.skip-link:focus{top:0}
-:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
-a:focus:not(:focus-visible),button:focus:not(:focus-visible){outline:none}
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* ═══════════════════════════════════════════
+   RESET
+   ═══════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: auto; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg-0);
+  color: var(--text-0);
+  font-size: 18px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+ul { list-style: none; }
 
-/* ═══════════════════════════════════
-   LAYOUT
-═══════════════════════════════════ */
-.container{max-width:1200px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
-.container-wide{max-width:1400px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
-.container-narrow{max-width:960px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
+/* ═══════════════════════════════════════════
+   UTILITY
+   ═══════════════════════════════════════════ */
+.container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 48px); }
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+.reveal.vis { opacity: 1; transform: none; }
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-2);
+  margin-bottom: 16px;
+  display: inline-block;
+}
+.tag--brand { color: var(--brand-light); }
+.tag--violet { color: var(--violet); }
+.tag--cyan { color: var(--cyan); }
 
-/* ═══════════════════════════════════
-   TYPOGRAPHY PRIMITIVES
-═══════════════════════════════════ */
-.tag{font-family:var(--font-m);font-size:var(--text-xs);letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin-bottom:20px;display:block}
-.tag-sol{color:var(--sol)}
-.headline{font-family:var(--font-h);font-weight:700;font-size:var(--text-3xl);line-height:1.06;letter-spacing:-.035em;margin-bottom:24px}
-.subhead{font-size:var(--text-lg);line-height:1.72;max-width:560px;color:var(--text-2);margin-bottom:48px}
-.section-center{text-align:center}
-.section-center .headline,.section-center .subhead{margin-left:auto;margin-right:auto}
+h1, h2, h3 { font-family: 'Inter Tight', sans-serif; font-weight: 800; color: var(--text-0); }
+h1 { font-size: clamp(3.5rem, 8vw, 7rem); line-height: .92; letter-spacing: -0.05em; }
+h2 { font-size: clamp(2rem, 4vw, 3.5rem); line-height: .96; letter-spacing: -0.03em; }
+h3 { font-size: clamp(1.15rem, 2vw, 1.4rem); line-height: 1.2; font-weight: 700; }
+p { color: var(--text-1); }
 
-/* ═══════════════════════════════════
-   MOTION / REVEAL
-═══════════════════════════════════ */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out)}
-.reveal.vis{opacity:1;transform:none}
-.rd-1{transition-delay:.1s}.rd-2{transition-delay:.2s}.rd-3{transition-delay:.3s}.rd-4{transition-delay:.4s}.rd-5{transition-delay:.5s}.rd-6{transition-delay:.6s}
-.word-wrap{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:4px}
-.word-inner{display:inline-block}
+/* ═══════════════════════════════════════════
+   PANEL SURFACE
+   ═══════════════════════════════════════════ */
+.panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)), var(--panel);
+  border: 1px solid var(--stroke-1);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(16px) saturate(135%);
+  border-radius: 28px;
+  padding: clamp(28px, 4vw, 48px);
+}
 
-/* ═══════════════════════════════════
+/* ═══════════════════════════════════════════
    PROGRESS BAR
-═══════════════════════════════════ */
-.progress-bar{position:fixed;top:0;left:0;right:0;height:2px;z-index:1001;transform-origin:left;transform:scaleX(0);pointer-events:none;background:linear-gradient(90deg,var(--brand-dim),var(--brand),var(--brand-light))}
+   ═══════════════════════════════════════════ */
+#progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 1001;
+  background: linear-gradient(90deg, var(--brand), var(--brand-light));
+  transform-origin: left; transform: scaleX(0);
+  pointer-events: none;
+}
 
-/* ═══════════════════════════════════
-   NAVBAR
-═══════════════════════════════════ */
-.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,transparent 100%);border-bottom:1px solid transparent;transition:background .45s,backdrop-filter .45s,border-color .45s,box-shadow .45s}
-.nav.scrolled{background:rgba(2,2,6,.88);backdrop-filter:blur(24px) saturate(1.5);-webkit-backdrop-filter:blur(24px) saturate(1.5);border-bottom-color:var(--border-1);box-shadow:0 1px 0 0 var(--border-1),0 8px 32px -8px rgba(0,0,0,.4)}
-.nav-inner{max-width:1200px;margin:0 auto;padding:16px clamp(20px,4vw,40px);display:flex;align-items:center;justify-content:space-between}
-.nav-logo img{height:26px;display:block}
-.nav-links{display:flex;align-items:center;gap:clamp(18px,2.2vw,28px)}
-.nav-links a{font-size:.82rem;font-weight:500;color:var(--text-2);transition:color .25s;letter-spacing:.01em;position:relative;padding-bottom:3px}
-.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1.5px;background:var(--brand);transition:width .3s var(--ease)}
-.nav-links a:hover{color:var(--text-1)}
-.nav-links a:hover::after{width:100%}
-.nav-cta{font-size:.78rem!important;font-weight:600!important;color:#fff!important;background:var(--brand)!important;padding:8px 20px!important;border-radius:var(--r-pill)!important;transition:background .3s,box-shadow .3s!important}
-.nav-cta::after{display:none!important}
-.nav-cta:hover{background:var(--brand-light)!important;box-shadow:0 0 20px var(--brand-glow)!important}
-.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;z-index:1001;padding:4px}
-.nav-hamburger span{display:block;width:22px;height:1.5px;background:var(--text-1);transition:transform .3s,opacity .3s;transform-origin:center}
-.nav-hamburger.active span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
-.nav-hamburger.active span:nth-child(2){opacity:0}
-.nav-hamburger.active span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
-.nav-mobile{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.97);backdrop-filter:blur(24px);flex-direction:column;align-items:center;justify-content:center;gap:24px}
-.nav-mobile.open{display:flex}
-.nav-mobile a{font-family:var(--font-h);font-size:1.3rem;font-weight:600;color:var(--text-1);padding:8px 0;transition:color .2s}
-.nav-mobile a:hover{color:var(--brand)}
-@media(max-width:768px){.nav-links{display:none!important}.nav-hamburger{display:flex}.nav-inner{padding:14px 20px}}
+/* ═══════════════════════════════════════════
+   NAV
+   ═══════════════════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: 72px; display: flex; align-items: center;
+  transition: background .35s, backdrop-filter .35s, border-color .35s;
+  border-bottom: 1px solid transparent;
+}
+.nav.scrolled {
+  background: rgba(5,8,22,.64);
+  backdrop-filter: blur(20px) saturate(140%);
+  border-bottom-color: var(--stroke-1);
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; max-width: 1280px; margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 48px);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.nav-logo img { height: 28px; width: auto; }
+.nav-logo span {
+  font-family: 'Inter Tight', sans-serif; font-weight: 800;
+  font-size: 20px; letter-spacing: -0.02em;
+}
+.nav-links { display: flex; align-items: center; gap: 32px; }
+.nav-links a {
+  font-size: 14px; font-weight: 500; color: var(--text-1);
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--text-0); }
+.nav-cta {
+  background: var(--brand); color: #fff !important;
+  padding: 10px 22px; border-radius: 12px;
+  font-weight: 600; font-size: 14px;
+  transition: background .2s, transform .15s;
+}
+.nav-cta:hover { background: var(--brand-dim); transform: translateY(-1px); }
+.nav-hamburger {
+  display: none; flex-direction: column; gap: 5px; padding: 8px;
+  z-index: 1002;
+}
+.nav-hamburger span {
+  display: block; width: 22px; height: 2px; background: var(--text-0);
+  transition: transform .3s, opacity .2s;
+}
+.nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
-/* ═══════════════════════════════════
+.mobile-nav {
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(5,8,22,.96); backdrop-filter: blur(24px);
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center; gap: 28px;
+  opacity: 0; pointer-events: none; transition: opacity .35s;
+}
+.mobile-nav.open { opacity: 1; pointer-events: all; }
+.mobile-nav a { font-size: 24px; font-weight: 600; color: var(--text-1); transition: color .2s; }
+.mobile-nav a:hover { color: var(--text-0); }
+
+/* ═══════════════════════════════════════════
    BUTTONS
-═══════════════════════════════════ */
-.btn-p,.btn-s{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;border-radius:var(--r-pill);transition:transform .25s var(--ease),box-shadow .3s,background .3s,color .3s,border-color .3s;cursor:pointer;white-space:nowrap}
-.btn-p{color:#fff;background:var(--brand);padding:13px 30px;box-shadow:0 0 0 1px rgba(238,43,91,.15),0 1px 2px rgba(0,0,0,.4),0 0 24px rgba(238,43,91,.18);position:relative;overflow:hidden;z-index:0}
-.btn-p::before{content:'';position:absolute;inset:-1px;border-radius:var(--r-pill);background:conic-gradient(from var(--angle),transparent 0%,rgba(255,255,255,.25) 25%,transparent 50%);z-index:-2;animation:btn-spin 3s linear infinite;opacity:.6}
-.btn-p::after{content:'';position:absolute;inset:1.5px;border-radius:var(--r-pill);background:var(--brand);z-index:-1;transition:background .3s}
-@keyframes btn-spin{to{--angle:360deg}}
-.btn-p:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(238,43,91,.3),0 4px 12px rgba(0,0,0,.5),0 0 40px rgba(238,43,91,.3)}
-.btn-p:hover::after{background:var(--brand-light)}
-.btn-p:active{transform:translateY(0)}
-.btn-s{color:var(--text-2);padding:13px 28px;border:1px solid var(--border-2);background:transparent}
-.btn-s:hover{color:var(--text-1);border-color:var(--border-3);transform:translateY(-1px)}
+   ═══════════════════════════════════════════ */
+.btn-primary {
+  display: inline-flex; align-items: center;
+  background: var(--brand); color: #fff;
+  padding: 14px 32px; border-radius: 14px;
+  font-weight: 600; font-size: 16px;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 4px 24px var(--brand-glow);
+}
+.btn-primary:hover {
+  background: var(--brand-dim); transform: translateY(-2px);
+  box-shadow: 0 8px 32px var(--brand-glow);
+}
+.btn-secondary {
+  display: inline-flex; align-items: center;
+  color: var(--text-1); padding: 14px 28px;
+  border: 1px solid var(--stroke-2); border-radius: 14px;
+  font-weight: 500; font-size: 16px;
+  transition: border-color .2s, color .2s;
+}
+.btn-secondary:hover { border-color: var(--text-1); color: var(--text-0); }
 
-/* ═══════════════════════════════════
-   SECTION PRIMITIVES
-═══════════════════════════════════ */
-.s-dark{background:var(--bg-0)}
-.s-alt{background:var(--bg-1)}
-.s-pad{padding:var(--space-s) 0}
-.s-sep{height:1px;border:0;margin:0;background:linear-gradient(90deg,transparent 5%,var(--border-1) 30%,var(--border-2) 50%,var(--border-1) 70%,transparent 95%)}
-
-/* ═══════════════════════════════════
-   CARD SYSTEM
-═══════════════════════════════════ */
-.card{padding:36px 28px;background:var(--bg-card);border:1px solid var(--border-1);border-radius:var(--r-lg);transition:border-color .4s var(--ease),transform .4s var(--ease),box-shadow .4s;position:relative;overflow:hidden}
-.card:hover{border-color:var(--border-2);transform:translateY(-3px);box-shadow:0 12px 40px -12px rgba(0,0,0,.5)}
-.card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--brand),var(--brand-light));opacity:0;transition:opacity .35s}
-.card:hover::after{opacity:1}
-.card-sol::after{background:linear-gradient(90deg,var(--sol),var(--brand))}
-.card h3{font-family:var(--font-h);font-size:1.25rem;font-weight:600;margin-bottom:10px;letter-spacing:-.01em;line-height:1.2}
-.card p{font-size:var(--text-sm);line-height:1.65;color:var(--text-2)}
-.card-tag{font-family:var(--font-m);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin-bottom:14px;display:block}
-.card-tag-sol{color:var(--sol)}
-.card-num{font-family:var(--font-m);font-size:.55rem;letter-spacing:.2em;color:var(--brand);margin-bottom:14px;display:block}
-.card-icon{width:40px;height:40px;margin-bottom:18px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-sm);background:rgba(238,43,91,.05);border:1px solid rgba(238,43,91,.08)}
-.card-icon svg{width:20px;height:20px;stroke:var(--brand);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.card-link{display:inline-flex;align-items:center;gap:5px;margin-top:16px;font-family:var(--font-m);font-size:.62rem;letter-spacing:.05em;color:var(--brand);transition:gap .3s}
-.card:hover .card-link{gap:9px}
-
-/* Grids */
-.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-@media(max-width:1024px){.grid-3{grid-template-columns:1fr}}
-@media(max-width:768px){.grid-2{grid-template-columns:1fr}}
-
-/* ═══════════════════════════════════
+/* ═══════════════════════════════════════════
    HERO
-═══════════════════════════════════ */
-.hero{min-height:100vh;display:flex;align-items:center;padding-top:72px;position:relative;overflow:hidden;background:var(--bg-0)}
-.hero::before{content:'';position:absolute;top:-30%;right:-10%;width:80%;height:80%;background:radial-gradient(ellipse at center,rgba(238,43,91,.06) 0%,transparent 65%);pointer-events:none;filter:blur(50px)}
-.hero::after{content:'';position:absolute;bottom:-20%;left:-10%;width:60%;height:60%;background:radial-gradient(ellipse at center,rgba(153,69,255,.05) 0%,transparent 55%);pointer-events:none;filter:blur(60px)}
-.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,80px);align-items:center;position:relative;z-index:1}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-m);font-size:var(--text-xs);letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);background:rgba(255,255,255,.015);border:1px solid var(--border-1);padding:5px 14px;border-radius:var(--r-pill);margin-bottom:28px}
-.hero-dot{width:5px;height:5px;border-radius:50%;background:var(--brand);flex-shrink:0;animation:pulse-dot 2.5s ease-in-out infinite}
-@keyframes pulse-dot{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(238,43,91,.4)}50%{opacity:.5;box-shadow:0 0 0 4px rgba(238,43,91,0)}}
-.hero-h1{font-family:var(--font-h);font-size:var(--text-hero);font-weight:700;line-height:.98;letter-spacing:-.04em;color:var(--text-1);margin-bottom:28px}
-.hero-h1 em{font-style:normal;background:linear-gradient(135deg,var(--brand) 0%,var(--brand-light) 60%,#FF9CAF 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{font-size:var(--text-lg);color:var(--text-2);line-height:1.72;max-width:520px;margin-bottom:36px}
-.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:28px}
-.hero-micro{font-family:var(--font-m);font-size:var(--text-xs);letter-spacing:.1em;color:var(--text-3)}
+   ═══════════════════════════════════════════ */
+.hero {
+  min-height: 100svh;
+  display: grid; grid-template-columns: repeat(12, 1fr);
+  gap: clamp(24px, 3vw, 48px);
+  align-items: center;
+  padding-top: 72px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 40%, rgba(238,43,91,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 30% 60%, rgba(117,241,255,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-text {
+  grid-column: 1 / 6; position: relative; z-index: 2;
+  padding: clamp(32px, 5vw, 80px) 0;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--mint); margin-bottom: 24px;
+}
+.hero-eyebrow .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 12px var(--mint);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot { 0%,100%{ opacity:1; } 50%{ opacity:.4; } }
+.hero h1 { margin-bottom: 24px; max-width: 600px; }
+.hero h1 em { font-style: italic; color: var(--cyan); }
+.hero-sub {
+  font-size: clamp(16px, 1.8vw, 20px);
+  color: var(--text-1); max-width: 480px;
+  line-height: 1.55; margin-bottom: 36px;
+}
+.hero-ctas { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 32px; }
+.hero-micro {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--text-2);
+  letter-spacing: 0.06em;
+}
+
 /* Hero visual */
-.hero-visual{display:flex;align-items:center;justify-content:center;position:relative}
-.hero-diagram{width:100%;max-width:560px;aspect-ratio:1;position:relative}
-.hero-diagram svg{width:100%;height:100%;overflow:visible}
-.hero-diagram svg .layer-bg,.hero-diagram svg .layer-mid,.hero-diagram svg .layer-fg{will-change:transform}
-.flow-path{stroke-dasharray:6 10;animation:flow-drift 4s linear infinite}
-.flow-path-sol{stroke-dasharray:8 12;animation-duration:3s}
-@keyframes flow-drift{to{stroke-dashoffset:-32}}
-.permission-chips{position:absolute;inset:-8%;pointer-events:none}
-.perm-chip{position:absolute;display:inline-flex;align-items:center;gap:6px;font-family:var(--font-m);font-size:.55rem;letter-spacing:.06em;color:var(--text-2);background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);padding:5px 12px;border-radius:var(--r-pill);white-space:nowrap;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.perm-chip .chip-dot{width:4px;height:4px;border-radius:50%;background:var(--brand);box-shadow:0 0 6px rgba(238,43,91,.4)}
-.perm-chip:nth-child(1){top:12%;left:2%}
-.perm-chip:nth-child(2){top:1%;right:14%}
-.perm-chip:nth-child(3){bottom:24%;right:-3%}
-.perm-chip:nth-child(4){bottom:3%;left:16%}
-.perm-chip:nth-child(5){top:44%;left:-5%}
-@media(max-width:768px){
-  .hero{min-height:auto;padding:120px 0 64px}
-  .hero-inner{grid-template-columns:1fr}
-  .hero-visual{max-width:380px;margin:0 auto}
-  .perm-chip{display:none}
-  .hero-ctas{flex-direction:column;align-items:flex-start}
+.hero-visual {
+  grid-column: 6 / 13; position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.hero-svg-wrap {
+  position: relative; width: 100%; max-width: 600px; aspect-ratio: 1;
+}
+.hero-svg-wrap > svg { width: 100%; height: 100%; }
+
+/* Permission chips */
+.perm-chips { position: absolute; inset: 0; pointer-events: none; }
+.perm-chip {
+  position: absolute;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 400;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-2);
+  background: rgba(10,15,30,0.7);
+  border: 1px solid var(--stroke-1);
+  backdrop-filter: blur(12px);
+  padding: 6px 12px; border-radius: 8px;
+  transition: color .4s, border-color .4s, box-shadow .4s;
+  white-space: nowrap;
+}
+.perm-chip .chip-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--text-2);
+  transition: background .4s, box-shadow .4s;
+}
+.perm-chip.active {
+  color: var(--cyan);
+  border-color: rgba(117,241,255,0.25);
+  box-shadow: 0 0 20px rgba(117,241,255,0.08);
+}
+.perm-chip.active .chip-dot {
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+}
+.perm-chip:nth-child(1) { top: 8%; left: 2%; }
+.perm-chip:nth-child(2) { top: 22%; right: 0; }
+.perm-chip:nth-child(3) { bottom: 30%; right: 2%; }
+.perm-chip:nth-child(4) { bottom: 14%; left: 8%; }
+.perm-chip:nth-child(5) { top: 44%; left: -4%; }
+
+/* ═══════════════════════════════════════════
+   PROOF RAIL
+   ═══════════════════════════════════════════ */
+.proof-rail {
+  padding: 48px 0;
+  border-top: 1px solid var(--stroke-1);
+  border-bottom: 1px solid var(--stroke-1);
+}
+.proof-rail-inner {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 12px 32px;
+}
+.proof-token {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; font-weight: 400;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-2);
+}
+.proof-token::before {
+  content: ''; width: 4px; height: 4px; border-radius: 50%;
+  background: var(--brand);
 }
 
-/* ═══════════════════════════════════
-   PROOF STRIP
-═══════════════════════════════════ */
-.proof-strip{padding:40px 0;border-top:1px solid var(--border-1);border-bottom:1px solid var(--border-1);background:var(--bg-0)}
-.proof-inner{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-.badge{display:flex;align-items:center;gap:7px;padding:6px 16px;border-radius:var(--r-pill);border:1px solid var(--border-1);background:rgba(255,255,255,.012);font-family:var(--font-m);font-size:.6rem;letter-spacing:.05em;color:var(--text-2);transition:border-color .3s,background .3s}
-.badge:hover{border-color:rgba(238,43,91,.15);background:rgba(238,43,91,.025)}
-.badge-dot{width:4px;height:4px;border-radius:50%;background:var(--brand);flex-shrink:0}
-@media(max-width:768px){.proof-inner{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:0 20px;scrollbar-width:none}.proof-inner::-webkit-scrollbar{display:none}}
-
-/* ═══════════════════════════════════
+/* ═══════════════════════════════════════════
    PROBLEM
-═══════════════════════════════════ */
-.s-problem .problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
-.s-problem .card-icon svg{stroke:var(--text-3)}
-@media(max-width:1024px){.s-problem .problem-grid{grid-template-columns:1fr}}
+   ═══════════════════════════════════════════ */
+.problem { padding: clamp(80px, 10vw, 160px) 0; }
+.problem-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 5vw, 80px); align-items: start;
+}
+.problem-left { position: sticky; top: 120px; }
+.problem-left h2 { margin-bottom: 20px; max-width: 480px; }
+.problem-left p { max-width: 440px; font-size: 17px; }
+.problem-cards { display: flex; flex-direction: column; gap: 24px; }
+.problem-card { min-height: 280px; display: flex; flex-direction: column; justify-content: flex-end; }
+.problem-card-svg {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px; padding-top: 24px;
+}
+.problem-card h3 { margin-bottom: 8px; }
+.problem-card p { font-size: 15px; }
 
-/* ═══════════════════════════════════
+/* ═══════════════════════════════════════════
    SOLUTION
-═══════════════════════════════════ */
-.s-solution .solution-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-@media(max-width:768px){.s-solution .solution-grid{grid-template-columns:1fr}}
+   ═══════════════════════════════════════════ */
+.solution { padding: clamp(80px, 10vw, 160px) 0; }
+.solution-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 5vw, 80px); align-items: start;
+}
+.solution-left { position: sticky; top: 120px; }
+.solution-left h2 { margin-bottom: 20px; max-width: 500px; }
+.solution-left > p { max-width: 440px; font-size: 17px; }
+.solution-steps { display: flex; flex-direction: column; gap: 28px; }
+.solution-step {
+  padding: 32px; border-left: 2px solid var(--stroke-1);
+  transition: border-color .3s;
+}
+.solution-step:hover { border-color: var(--brand); }
+.solution-step .step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; font-weight: 500;
+  color: var(--brand-light); margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+.solution-step h3 { margin-bottom: 8px; }
+.solution-step p { font-size: 15px; }
 
-/* ═══════════════════════════════════
+/* ═══════════════════════════════════════════
    INTERLUDE
-═══════════════════════════════════ */
-.s-interlude{padding:clamp(64px,10vw,140px) 0;text-align:center;background:var(--bg-0);position:relative}
-.interlude-text{font-family:var(--font-h);font-weight:600;font-size:var(--text-2xl);line-height:1.15;letter-spacing:-.03em;color:var(--text-2);max-width:680px;margin:0 auto}
-.interlude-text em{font-style:normal;color:var(--brand)}
-.interlude-rule{width:0;height:1px;background:linear-gradient(90deg,transparent,var(--brand),transparent);margin:32px auto 0;transition:width 1.2s var(--ease)}
-.interlude-rule.vis{width:120px}
+   ═══════════════════════════════════════════ */
+.interlude {
+  padding: clamp(100px, 14vw, 220px) 0;
+  text-align: center; position: relative;
+}
+.interlude h2 em { font-style: italic; color: var(--violet); }
+.interlude-rule {
+  width: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--stroke-2), transparent);
+  margin: 40px auto 0;
+  transition: width 1.2s cubic-bezier(.22,1,.36,1);
+}
+.interlude-rule.vis { width: min(400px, 60vw); }
 
-/* ═══════════════════════════════════
-   SOLANA ALIGNMENT
-═══════════════════════════════════ */
-.s-solana .solana-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-@media(max-width:1024px){.s-solana .solana-grid{grid-template-columns:1fr}}
+/* ═══════════════════════════════════════════
+   SOLANA TRIPTYCH
+   ═══════════════════════════════════════════ */
+.triptych { padding: clamp(80px, 10vw, 160px) 0; }
+.triptych-header { margin-bottom: clamp(40px, 5vw, 64px); }
+.triptych-header h2 { max-width: 600px; }
+.triptych-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.triptych-panel {
+  min-height: 420px; display: flex; flex-direction: column;
+  justify-content: flex-end; position: relative; overflow: hidden;
+  transition: border-color .3s;
+}
+.triptych-panel:hover { border-color: var(--stroke-2); }
+.triptych-panel::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--violet), var(--cyan));
+  opacity: 0; transition: opacity .4s;
+}
+.triptych-panel:hover::before { opacity: 1; }
+.triptych-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--violet);
+  margin-bottom: 12px;
+}
+.triptych-panel h3 { margin-bottom: 12px; font-size: 1.3rem; }
+.triptych-panel p { font-size: 15px; }
 
-/* ═══════════════════════════════════
-   AI AGENTS — FLAGSHIP
-═══════════════════════════════════ */
-.s-agents .agents-layout{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,80px);align-items:start;margin-top:8px}
-.agent-flow{display:flex;flex-direction:column;gap:0}
-.agent-step{display:flex;align-items:flex-start;gap:16px;padding:20px 0;position:relative}
-.agent-step:not(:last-child)::after{content:'';position:absolute;left:17px;top:56px;bottom:0;width:1px;background:var(--border-1)}
-.step-num{width:36px;height:36px;border-radius:50%;border:1px solid var(--border-2);display:flex;align-items:center;justify-content:center;font-family:var(--font-m);font-size:var(--text-xs);color:var(--text-3);flex-shrink:0;transition:border-color .3s,color .3s,background .3s}
-.agent-step.active .step-num{border-color:var(--brand);color:var(--brand);background:rgba(238,43,91,.08)}
-.step-body h4{font-family:var(--font-h);font-size:1.05rem;font-weight:600;color:var(--text-1);margin-bottom:4px}
-.step-body p{font-size:var(--text-sm);color:var(--text-3);line-height:1.5}
-.guardrail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.guardrail-card{background:var(--bg-card);border:1px solid var(--border-1);border-radius:var(--r-md);padding:24px;transition:border-color .3s,transform .3s var(--ease)}
-.guardrail-card:hover{border-color:var(--border-2);transform:translateY(-2px)}
-.guardrail-dot{width:6px;height:6px;border-radius:50%;background:var(--brand);margin-bottom:12px}
-.guardrail-card h4{font-family:var(--font-h);font-size:var(--text-sm);font-weight:600;margin-bottom:8px}
-.guardrail-card p{font-size:var(--text-sm);color:var(--text-2);line-height:1.6}
-@media(max-width:768px){.s-agents .agents-layout{grid-template-columns:1fr}.guardrail-grid{grid-template-columns:1fr}}
+/* ═══════════════════════════════════════════
+   AGENT DEMO
+   ═══════════════════════════════════════════ */
+.agent-section { padding: clamp(80px, 10vw, 160px) 0; }
+.agent-header { margin-bottom: clamp(40px, 5vw, 64px); max-width: 640px; }
+.agent-header h2 { margin-bottom: 16px; }
+.agent-demo { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 
-/* ═══════════════════════════════════
+.agent-console {
+  border-radius: 20px; overflow: hidden;
+  background: var(--panel-strong);
+  border: 1px solid var(--stroke-1);
+}
+.console-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 20px;
+  background: rgba(0,0,0,0.3);
+  border-bottom: 1px solid var(--stroke-1);
+}
+.console-dots { display: flex; gap: 6px; }
+.console-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.console-dots span:nth-child(1) { background: #ff5f57; }
+.console-dots span:nth-child(2) { background: #febc2e; }
+.console-dots span:nth-child(3) { background: #28c840; }
+.console-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--text-2); margin-left: 8px;
+}
+.console-body { padding: 24px; }
+.agent-id {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.agent-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px; color: var(--text-0);
+}
+.agent-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.1em; padding: 4px 10px;
+  border-radius: 6px; border: 1px solid;
+  transition: color .3s, border-color .3s, background .3s;
+}
+.agent-badge[data-state="idle"] { color: var(--text-2); border-color: var(--stroke-1); background: transparent; }
+.agent-badge[data-state="validating"] { color: var(--cyan); border-color: rgba(117,241,255,0.3); background: rgba(117,241,255,0.06); }
+.agent-badge[data-state="approved"] { color: var(--mint); border-color: rgba(93,255,183,0.3); background: rgba(93,255,183,0.06); }
+.agent-badge[data-state="settled"] { color: var(--mint); border-color: rgba(93,255,183,0.4); background: rgba(93,255,183,0.1); }
+.agent-perms { margin-bottom: 20px; }
+.agent-perms-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--text-2); margin-bottom: 10px;
+}
+.perm-row {
+  display: flex; justify-content: space-between;
+  padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.perm-row .perm-label {
+  color: var(--text-2); font-family: 'JetBrains Mono', monospace; font-size: 11px;
+}
+.perm-row .perm-value {
+  color: var(--text-1); font-family: 'JetBrains Mono', monospace; font-size: 11px;
+}
+.agent-log-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--text-2); margin-bottom: 10px;
+}
+.log-entry {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; padding: 5px 0;
+  color: var(--text-2);
+  opacity: 0; transform: translateY(4px);
+  transition: opacity .3s, transform .3s;
+}
+.log-entry.show { opacity: 1; transform: none; }
+.log-entry .log-time { color: var(--text-2); margin-right: 8px; }
+.log-entry.log-cyan { color: var(--cyan); }
+.log-entry.log-mint { color: var(--mint); }
+
+.agent-route {
+  display: flex; align-items: center; justify-content: center; min-height: 380px;
+}
+.agent-route svg { width: 100%; max-width: 500px; }
+
+/* ═══════════════════════════════════════════
    ZUD
-═══════════════════════════════════ */
-.s-zud .zud-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:left;margin-bottom:24px}
-.zud-letter{font-family:var(--font-h);font-size:clamp(3rem,5vw,5rem);font-weight:700;color:var(--text-3);line-height:1;margin-bottom:16px;transition:color .6s}
-.zud-footnote{font-family:var(--font-m);font-size:var(--text-xs);color:var(--text-3);letter-spacing:.06em;text-align:center}
-@media(max-width:1024px){.s-zud .zud-grid{grid-template-columns:1fr}}
+   ═══════════════════════════════════════════ */
+.zud { padding: clamp(80px, 10vw, 160px) 0; }
+.zud-header { margin-bottom: clamp(48px, 6vw, 80px); }
+.zud-header h2 { max-width: 500px; }
+.zud-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.zud-pillar {
+  min-height: 460px; display: flex; flex-direction: column;
+  justify-content: flex-end; position: relative; overflow: hidden;
+  text-align: center;
+}
+.zud-glyph {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -60%);
+  font-family: 'Inter Tight', sans-serif; font-weight: 800;
+  font-size: clamp(8rem, 14vw, 14rem);
+  color: rgba(255,255,255,0.025);
+  line-height: 1; pointer-events: none; user-select: none;
+}
+.zud-pillar h3 { margin-bottom: 12px; font-size: 1.4rem; position: relative; z-index: 1; }
+.zud-pillar > p { font-size: 15px; position: relative; z-index: 1; max-width: 320px; margin: 0 auto 16px; }
+.zud-proof {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--cyan);
+  position: relative; z-index: 1;
+}
 
-/* ═══════════════════════════════════
+/* ═══════════════════════════════════════════
    USE CASES
-═══════════════════════════════════ */
-.usecase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.usecase-grid .card.featured{grid-column:span 2;padding:40px 32px}
-.usecase-grid .card.featured h3{font-size:var(--text-xl)}
-.card-icon-sol{background:var(--sol-subtle);border-color:rgba(153,69,255,.08)}
-.card-icon-sol svg{stroke:var(--sol)}
-@media(max-width:1024px){.usecase-grid{grid-template-columns:1fr}.usecase-grid .card.featured{grid-column:span 1}}
-
-/* ═══════════════════════════════════
-   ARCHITECTURE — SCROLLYTELLING
-═══════════════════════════════════ */
-.s-arch .arch-layout{display:grid;grid-template-columns:280px 1fr;gap:clamp(40px,6vw,80px);align-items:start}
-.arch-rail{position:relative;padding-left:20px}
-.arch-rail::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--border-1)}
-.arch-rail::after{content:'';position:absolute;left:0;top:0;width:2px;height:calc(var(--arch-prog,0) * 100%);background:var(--brand);transition:height .3s var(--ease)}
-.arch-step{padding:24px 0;cursor:pointer;transition:opacity .3s;opacity:.35}
-.arch-step.active{opacity:1}
-.arch-step-num{font-family:var(--font-m);font-size:var(--text-xs);color:var(--brand);letter-spacing:.08em;margin-bottom:4px}
-.arch-step h4{font-family:var(--font-h);font-size:var(--text-sm);font-weight:600}
-.arch-step-desc{font-size:var(--text-xs);color:var(--text-3);margin-top:4px;line-height:1.5}
-.arch-visual{background:var(--bg-card);border:1px solid var(--border-1);border-radius:var(--r-lg);padding:48px;min-height:420px;display:flex;align-items:center;justify-content:center}
-.arch-diagram{width:100%;max-width:600px}
-.arch-diagram svg{width:100%;height:auto}
-.arch-node{transition:opacity .4s var(--ease)}
-.arch-node.dim{opacity:.12}
-.arch-edge{transition:opacity .4s var(--ease)}
-.arch-edge.dim{opacity:.06}
-.policy-gate{transition:opacity .4s var(--ease);opacity:0}
-.policy-gate.active{opacity:1}
-@media(max-width:768px){
-  .s-arch .arch-layout{grid-template-columns:1fr}
-  .arch-visual{position:static!important;padding:24px;min-height:260px;margin-bottom:24px}
-  .arch-step{opacity:1;padding:16px 0;border-bottom:1px solid var(--border-1)}
-  .arch-rail::before,.arch-rail::after{display:none}
-  .arch-rail{padding-left:0}
+   ═══════════════════════════════════════════ */
+.use-cases { padding: clamp(80px, 10vw, 160px) 0; }
+.use-cases-header { margin-bottom: clamp(40px, 5vw, 64px); }
+.use-cases-header h2 { max-width: 500px; }
+.uc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto auto auto;
+  gap: 20px;
 }
+.uc-card { display: flex; flex-direction: column; justify-content: flex-end; transition: border-color .3s; }
+.uc-card:hover { border-color: var(--stroke-2); }
+.uc-card h3 { margin-bottom: 8px; font-size: 1.15rem; }
+.uc-card p { font-size: 14px; }
+.uc-hero-card { grid-column: span 2; grid-row: span 2; min-height: 380px; }
+.uc-hero-card h3 { font-size: 1.5rem; }
+.uc-hero-card p { font-size: 16px; }
+.uc-pano { grid-column: span 2; min-height: 180px; }
+.uc-small { min-height: 200px; }
 
-/* ═══════════════════════════════════
+/* ═══════════════════════════════════════════
+   ARCHITECTURE SCROLLYTELLING
+   ═══════════════════════════════════════════ */
+.arch-section { padding: clamp(80px, 10vw, 120px) 0 0; }
+.arch-header { margin-bottom: clamp(40px, 5vw, 64px); }
+.arch-header h2 { max-width: 500px; }
+.arch-body {
+  display: grid; grid-template-columns: 340px 1fr;
+  gap: clamp(40px, 5vw, 80px);
+  min-height: 250vh; position: relative;
+}
+.arch-steps { position: relative; padding: 40px 0; }
+.arch-progress-rail {
+  position: absolute; left: 0; top: 40px; bottom: 40px;
+  width: 2px; background: var(--stroke-1);
+}
+.arch-progress-fill { width: 100%; background: var(--brand); height: 0%; transition: height .15s; }
+.arch-step {
+  padding: 40px 0 40px 32px; position: relative;
+  opacity: 0.25; transition: opacity .4s;
+}
+.arch-step.active { opacity: 1; }
+.arch-step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--brand-light);
+  margin-bottom: 6px; letter-spacing: 0.06em;
+}
+.arch-step h3 { font-size: 1.1rem; margin-bottom: 6px; }
+.arch-step p { font-size: 14px; }
+.arch-visual {
+  position: sticky; top: 15vh; height: 70vh;
+  display: flex; align-items: center; justify-content: center;
+}
+.arch-visual svg { width: 100%; max-width: 560px; height: auto; }
+
+/* ═══════════════════════════════════════════
    MARQUEE
-═══════════════════════════════════ */
-.s-marquee{overflow:hidden;padding:20px 0;border-top:1px solid var(--border-1);border-bottom:1px solid var(--border-1);background:var(--bg-0);mask-image:linear-gradient(90deg,transparent 0%,#000 10%,#000 90%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 10%,#000 90%,transparent 100%)}
-.s-marquee:hover .marquee-track{animation-play-state:paused}
-.marquee-track{display:flex;width:max-content;animation:marquee 40s linear infinite}
-.marquee-set{display:flex;align-items:center;gap:40px;padding-right:40px;font-family:var(--font-h);font-size:var(--text-2xl);font-weight:700}
-.marquee-sep{width:4px;height:4px;border-radius:50%;background:var(--text-3);flex-shrink:0}
-@keyframes marquee{to{transform:translateX(-50%)}}
-.chain-sol{color:#9945FF}.chain-btc{color:#F7931A}.chain-eth{color:#627EEA}.chain-sui{color:#6FBCF0}.chain-apt{color:#4ED8A0}.chain-arb{color:#28A0F0}.chain-cos{color:#6F7390}.chain-dot{color:#E6007A}
-
-/* ═══════════════════════════════════
-   RESEARCH
-═══════════════════════════════════ */
-.research-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.research-grid .card.featured{grid-column:span 2}
-.research-grid .card.featured h3{font-size:var(--text-xl)}
-.research-type{font-family:var(--font-m);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin-bottom:14px;display:block}
-@media(max-width:1024px){.research-grid{grid-template-columns:1fr}.research-grid .card.featured{grid-column:span 1}}
-
-/* ═══════════════════════════════════
-   BACKED BY
-═══════════════════════════════════ */
-.s-backed{padding:clamp(64px,8vw,120px) 0;background:var(--bg-0)}
-.backer-row{display:flex;justify-content:center;align-items:center;gap:clamp(20px,3vw,40px);flex-wrap:wrap;margin-top:40px}
-.backer-row img{height:24px;opacity:.3;filter:grayscale(1) brightness(2);transition:opacity .3s,filter .3s}
-.backer-row img:hover{opacity:.7;filter:grayscale(0) brightness(1)}
-
-/* ═══════════════════════════════════
-   FINAL CTA
-═══════════════════════════════════ */
-.s-cta{padding:var(--space-s) 0;background:var(--bg-0);text-align:center;position:relative;overflow:hidden}
-.cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(238,43,91,.1) 0%,transparent 65%);pointer-events:none;border-radius:50%}
-.s-cta .headline{font-size:clamp(2.4rem,4.5vw,4rem);max-width:720px;margin:0 auto 16px}
-.s-cta .subhead{max-width:520px;margin:0 auto 36px}
-.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
-
-/* ═══════════════════════════════════
-   FOOTER
-═══════════════════════════════════ */
-.footer{padding:48px 0 36px;background:var(--bg-0);border-top:1px solid var(--border-1)}
-.footer-grid{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:40px;margin-bottom:48px}
-.footer-brand img{height:24px;margin-bottom:14px}
-.footer-brand p{font-size:.82rem;color:var(--text-3);max-width:240px;line-height:1.6}
-.footer-col h4{font-family:var(--font-m);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);margin-bottom:16px}
-.footer-col a{display:block;font-size:.84rem;color:var(--text-2);padding:4px 0;transition:color .25s}
-.footer-col a:hover{color:var(--text-1)}
-.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid var(--border-1)}
-.footer-bottom span{font-size:.7rem;color:var(--text-3)}
-.footer-links{display:flex;gap:20px}
-.footer-links a{font-size:.72rem;color:var(--text-3);transition:color .25s}
-.footer-links a:hover{color:var(--text-1)}
-@media(max-width:1024px){.footer-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.footer-grid{grid-template-columns:1fr 1fr}.footer-bottom{flex-direction:column;gap:12px;text-align:center}}
-
-/* ═══════════════════════════════════
-   REDUCED MOTION
-═══════════════════════════════════ */
-@media(prefers-reduced-motion:reduce){
-  *{animation-duration:.01ms!important;animation-iteration-count:1!important}
-  .reveal{opacity:1!important;transform:none!important;transition:none!important}
-  .word-inner{transform:none!important;opacity:1!important}
-  .marquee-track{animation:none!important}
-  .flow-path{animation:none!important}
+   ═══════════════════════════════════════════ */
+.marquee {
+  padding: 48px 0; overflow: hidden;
+  border-top: 1px solid var(--stroke-1);
+  border-bottom: 1px solid var(--stroke-1);
+  position: relative;
 }
-  </style>
+.marquee::before, .marquee::after {
+  content: ''; position: absolute; top: 0; bottom: 0; width: 120px; z-index: 2;
+  pointer-events: none;
+}
+.marquee::before { left: 0; background: linear-gradient(90deg, var(--bg-0), transparent); }
+.marquee::after { right: 0; background: linear-gradient(-90deg, var(--bg-0), transparent); }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+.marquee-track {
+  display: flex; gap: 64px;
+  animation: marquee-scroll 30s linear infinite;
+  width: max-content;
+}
+@keyframes marquee-scroll { to { transform: translateX(-50%); } }
+.marquee-item {
+  font-family: 'Inter Tight', sans-serif; font-weight: 700;
+  font-size: clamp(1.2rem, 2.5vw, 2rem);
+  color: var(--text-2); white-space: nowrap; flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════
+   RESEARCH
+   ═══════════════════════════════════════════ */
+.research { padding: clamp(80px, 10vw, 160px) 0; }
+.research-header { margin-bottom: clamp(40px, 5vw, 64px); }
+.research-header h2 { max-width: 600px; }
+.research-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.research-featured {
+  grid-row: span 2; min-height: 400px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  border-left: 3px solid var(--brand);
+}
+.research-featured .research-type {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.14em; color: var(--brand-light); margin-bottom: 12px;
+}
+.research-featured h3 { font-size: 1.6rem; margin-bottom: 12px; }
+.research-featured p { font-size: 15px; }
+.research-card {
+  min-height: 160px; display: flex; flex-direction: column;
+  justify-content: flex-end; transition: border-color .3s;
+}
+.research-card:hover { border-color: var(--stroke-2); }
+.research-card .research-type {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.14em; color: var(--text-2); margin-bottom: 8px;
+}
+.research-card h3 { font-size: 1.1rem; margin-bottom: 6px; }
+.research-card p { font-size: 13px; }
+
+/* ═══════════════════════════════════════════
+   BACKERS
+   ═══════════════════════════════════════════ */
+.backers { padding: clamp(80px, 10vw, 120px) 0; }
+.backers-header { text-align: center; margin-bottom: clamp(40px, 5vw, 56px); }
+.backers-logos {
+  display: flex; flex-wrap: wrap;
+  justify-content: center; align-items: center;
+  gap: clamp(32px, 5vw, 64px);
+}
+.backers-logos img {
+  height: 28px; filter: grayscale(1) brightness(1.2);
+  opacity: 0.25; transition: opacity .4s, filter .4s;
+}
+.backers-logos img:hover { opacity: 0.7; filter: grayscale(0); }
+
+/* ═══════════════════════════════════════════
+   FINAL CTA
+   ═══════════════════════════════════════════ */
+.final-cta {
+  padding: clamp(100px, 14vw, 200px) 0;
+  text-align: center; position: relative;
+}
+.final-cta::before {
+  content: ''; position: absolute;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse, var(--brand-glow), transparent 70%);
+  pointer-events: none; filter: blur(40px);
+}
+.cta-glow-orb {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px; height: 300px;
+  background: radial-gradient(ellipse, rgba(238,43,91,0.12), transparent 70%);
+  pointer-events: none; border-radius: 50%;
+}
+.final-cta h2 { position: relative; z-index: 1; max-width: 700px; margin: 0 auto 20px; }
+.final-cta p { position: relative; z-index: 1; max-width: 520px; margin: 0 auto 36px; font-size: 17px; }
+.final-cta .hero-ctas { justify-content: center; position: relative; z-index: 1; }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════ */
+.footer { padding: 64px 0 32px; border-top: 1px solid var(--stroke-1); }
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: clamp(32px, 4vw, 64px); margin-bottom: 48px;
+}
+.footer-brand p { font-size: 13px; color: var(--text-2); margin-top: 12px; }
+.footer-col h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--text-2); margin-bottom: 16px;
+}
+.footer-col a {
+  display: block; font-size: 14px; color: var(--text-1);
+  padding: 4px 0; transition: color .2s;
+}
+.footer-col a:hover { color: var(--text-0); }
+.footer-bottom {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 24px; border-top: 1px solid var(--stroke-1);
+  font-size: 13px; color: var(--text-2);
+}
+.footer-bottom-links { display: flex; gap: 24px; }
+.footer-bottom-links a { color: var(--text-2); transition: color .2s; }
+.footer-bottom-links a:hover { color: var(--text-1); }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 100px; }
+  .hero-text { grid-column: 1; padding: 40px 0 0; }
+  .hero-visual { grid-column: 1; max-width: 500px; margin: 0 auto; }
+  .problem-grid, .solution-grid { grid-template-columns: 1fr; }
+  .problem-left, .solution-left { position: static; }
+  .triptych-grid { grid-template-columns: 1fr; }
+  .triptych-panel { min-height: 300px; }
+  .agent-demo { grid-template-columns: 1fr; }
+  .zud-grid { grid-template-columns: 1fr; }
+  .zud-pillar { min-height: 320px; }
+  .uc-grid { grid-template-columns: 1fr 1fr; }
+  .uc-hero-card { grid-column: span 2; grid-row: span 1; min-height: 260px; }
+  .uc-pano { grid-column: span 2; }
+  .arch-body { grid-template-columns: 1fr; min-height: auto; }
+  .arch-visual { position: static; height: auto; margin-bottom: 40px; order: -1; }
+  .research-grid { grid-template-columns: 1fr; }
+  .research-featured { grid-row: span 1; min-height: 280px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .nav { height: 64px; }
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  body { font-size: 16px; }
+  .hero h1 { font-size: clamp(2.5rem, 10vw, 3.5rem); }
+  .perm-chips { display: none; }
+  .uc-grid { grid-template-columns: 1fr; }
+  .uc-hero-card, .uc-pano { grid-column: span 1; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+}
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+  .panel { padding: 24px; border-radius: 20px; }
+}
+
+/* ═══════════════════════════════════════════
+   REDUCED MOTION
+   ═══════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .marquee-track { animation: none !important; }
+  .flow-path { animation: none !important; }
+}
+</style>
 </head>
 <body>
-  <a href="#main" class="skip-link">Skip to main content</a>
-  <div class="progress-bar" aria-hidden="true"></div>
 
-  <!-- ═══════ NAV ═══════ -->
-  <nav class="nav" role="navigation" aria-label="Main">
-    <div class="nav-inner">
-      <a href="/" class="nav-logo" aria-label="Ika home"><img src="./assets/logo.svg" alt="Ika" width="80" height="26"></a>
-      <div class="nav-links">
-        <a href="developers.html">Developers</a>
-        <a href="ai-agents.html">AI Agents</a>
-        <a href="use-cases.html">Use Cases</a>
-        <a href="research.html">Research</a>
-        <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
-        <a href="blog.html">Blog</a>
-        <a href="https://docs.ika.network" target="_blank" rel="noopener" class="nav-cta">Start Building</a>
-      </div>
-      <button class="nav-hamburger" id="navToggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+<!-- Progress Bar -->
+<div id="progress-bar"></div>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="Ika home">
+      <img src="./assets/logo.svg" alt="" width="28" height="28">
+      <span>ika</span>
+    </a>
+    <div class="nav-links">
+      <a href="#developers">Developers</a>
+      <a href="#agent-section">AI Agents</a>
+      <a href="#use-cases">Use Cases</a>
+      <a href="#research">Research</a>
+      <a href="#">Docs</a>
+      <a href="#">Blog</a>
+      <a href="#" class="nav-cta">Start Building</a>
     </div>
-  </nav>
-  <div class="nav-mobile" id="mobileNav" aria-hidden="true">
-    <a href="developers.html">Developers</a>
-    <a href="ai-agents.html">AI Agents</a>
-    <a href="use-cases.html">Use Cases</a>
-    <a href="research.html">Research</a>
-    <a href="https://docs.ika.network" target="_blank" rel="noopener">Docs</a>
-    <a href="blog.html">Blog</a>
-    <a href="https://docs.ika.network" target="_blank" rel="noopener" class="btn-p" style="margin-top:16px">Start Building</a>
+    <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Nav Overlay -->
+<div class="mobile-nav" aria-hidden="true">
+  <a href="#developers">Developers</a>
+  <a href="#agent-section">AI Agents</a>
+  <a href="#use-cases">Use Cases</a>
+  <a href="#research">Research</a>
+  <a href="#">Docs</a>
+  <a href="#">Blog</a>
+  <a href="#" class="nav-cta" style="margin-top:12px;">Start Building</a>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     HERO — SIGNATURE MOMENT #1
+     ═══════════════════════════════════════════════ -->
+<section class="hero container" id="hero">
+  <div class="hero-text">
+    <div class="hero-eyebrow reveal"><span class="dot"></span> LIVE ON SOLANA</div>
+    <h1 class="reveal">The <em>control layer</em> for Solana apps and agents</h1>
+    <p class="hero-sub reveal">Let Solana programs and AI agents control assets and actions on any chain&mdash;without bridges, custodians, or handing over the keys.</p>
+    <div class="hero-ctas reveal">
+      <a href="#" class="btn-primary">Start Building &rarr;</a>
+      <a href="#" class="btn-secondary">Read the Docs</a>
+    </div>
+    <p class="hero-micro reveal">Solana decides. Ika signs.</p>
   </div>
 
-  <main id="main">
+  <div class="hero-visual reveal">
+    <div class="hero-svg-wrap">
+      <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" id="hero-svg">
+        <defs>
+          <radialGradient id="core-grad" cx="50%" cy="50%">
+            <stop offset="0%" stop-color="var(--brand-light)"/>
+            <stop offset="100%" stop-color="var(--brand)"/>
+          </radialGradient>
+          <filter id="glow-core">
+            <feGaussianBlur stdDeviation="12" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="glow-sm">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="glow-ep">
+            <feGaussianBlur stdDeviation="6" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
 
-  <!-- ═══════ HERO ═══════ -->
-  <section class="hero">
-    <div class="container-wide">
-      <div class="hero-inner">
-        <div class="hero-text">
-          <div class="hero-eyebrow reveal"><span class="hero-dot"></span>LIVE ON SOLANA</div>
-          <h1 class="hero-h1 reveal rd-1">The <em>control layer</em> for Solana apps and agents</h1>
-          <p class="hero-sub reveal rd-2">Let Solana programs and AI agents control assets and actions on any chain — without bridges, custodians, or handing over the keys.</p>
-          <div class="hero-ctas reveal rd-3">
-            <a href="https://docs.ika.network" target="_blank" rel="noopener" class="btn-p">Start Building <span aria-hidden="true">&rarr;</span></a>
-            <a href="#research" class="btn-s">Read the Research</a>
-          </div>
-          <p class="hero-micro reveal rd-4">Solana decides. Ika signs.</p>
-        </div>
-        <div class="hero-visual reveal rd-2">
-          <div class="hero-diagram">
-            <svg viewBox="0 0 520 520" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <filter id="gl-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-                <filter id="gl-m" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-                <filter id="gl-l" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="25" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-                <linearGradient id="cg" x1="210" y1="210" x2="310" y2="310"><stop offset="0%" stop-color="#EE2B5B"/><stop offset="100%" stop-color="#FF6B8A"/></linearGradient>
-                <radialGradient id="cf" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(238,43,91,.12)"/><stop offset="100%" stop-color="rgba(238,43,91,.01)"/></radialGradient>
-                <linearGradient id="fs" x1="0%" y1="50%" x2="100%" y2="50%"><stop offset="0%" stop-color="#9945FF" stop-opacity=".5"/><stop offset="100%" stop-color="#EE2B5B" stop-opacity=".25"/></linearGradient>
-                <linearGradient id="fb" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#EE2B5B" stop-opacity=".25"/><stop offset="100%" stop-color="#F7931A" stop-opacity=".35"/></linearGradient>
-                <linearGradient id="fe" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#EE2B5B" stop-opacity=".25"/><stop offset="100%" stop-color="#627EEA" stop-opacity=".35"/></linearGradient>
-              </defs>
-              <!-- Background atmosphere -->
-              <g class="layer-bg">
-                <circle cx="260" cy="260" r="140" fill="rgba(238,43,91,.035)" filter="url(#gl-l)"/>
-                <line x1="260" y1="40" x2="260" y2="480" stroke="rgba(255,255,255,.018)" stroke-width=".5"/>
-                <line x1="40" y1="260" x2="480" y2="260" stroke="rgba(255,255,255,.018)" stroke-width=".5"/>
-                <circle class="hero-ring" cx="260" cy="260" r="220" stroke="rgba(255,255,255,.025)" stroke-width=".5" fill="none"/>
-                <circle class="hero-ring" cx="260" cy="260" r="160" stroke="rgba(255,255,255,.03)" stroke-width=".5" fill="none" stroke-dasharray="2 8"/>
-                <circle class="hero-ring" cx="260" cy="260" r="100" stroke="rgba(255,255,255,.04)" stroke-width=".5" fill="none" stroke-dasharray="1 5"/>
-              </g>
-              <!-- Flow paths -->
-              <g class="layer-mid">
-                <path class="flow-path flow-path-sol" d="M88,260 C140,255 195,255 260,260" stroke="url(#fs)" stroke-width="1.5" fill="none"/>
-                <path class="flow-path" d="M260,260 C310,230 370,170 428,118" stroke="url(#fb)" stroke-width="1" fill="none" style="animation-delay:-1s"/>
-                <path class="flow-path" d="M260,260 C310,295 370,355 428,402" stroke="url(#fe)" stroke-width="1" fill="none" style="animation-delay:-2s"/>
-                <path class="flow-path" d="M260,260 C225,320 175,385 128,428" stroke="rgba(255,255,255,.05)" stroke-width=".75" fill="none" style="animation-delay:-3s"/>
-                <!-- Policy checkpoint -->
-                <g class="policy-vis" opacity=".8">
-                  <rect x="153" y="247" width="44" height="26" rx="5" fill="rgba(238,43,91,.04)" stroke="rgba(238,43,91,.2)" stroke-width=".75" stroke-dasharray="3 2"/>
-                  <text x="175" y="264" text-anchor="middle" fill="rgba(238,43,91,.5)" font-family="JetBrains Mono,monospace" font-size="5.5" font-weight="500" letter-spacing=".1em">POLICY</text>
-                </g>
-                <!-- Flow dots -->
-                <circle r="2.5" fill="#9945FF" opacity="0"><animateMotion dur="3s" repeatCount="indefinite" path="M88,260 C140,255 195,255 260,260"/><animate attributeName="opacity" values="0;.7;.7;0" dur="3s" repeatCount="indefinite"/></circle>
-                <circle r="2" fill="#F7931A" opacity="0"><animateMotion dur="4s" repeatCount="indefinite" path="M260,260 C310,230 370,170 428,118" begin=".8s"/><animate attributeName="opacity" values="0;.5;.5;0" dur="4s" repeatCount="indefinite" begin=".8s"/></circle>
-                <circle r="2" fill="#627EEA" opacity="0"><animateMotion dur="4s" repeatCount="indefinite" path="M260,260 C310,295 370,355 428,402" begin="1.8s"/><animate attributeName="opacity" values="0;.5;.5;0" dur="4s" repeatCount="indefinite" begin="1.8s"/></circle>
-              </g>
-              <!-- Ika core -->
-              <g class="layer-fg">
-                <circle cx="260" cy="260" r="58" fill="none" stroke="rgba(238,43,91,.1)" stroke-width="1" filter="url(#gl-m)"/>
-                <circle cx="260" cy="260" r="50" fill="url(#cf)"/>
-                <circle cx="260" cy="260" r="50" fill="none" stroke="url(#cg)" stroke-width="1.5" filter="url(#gl-s)"/>
-                <circle cx="260" cy="260" r="42" fill="none" stroke="rgba(255,255,255,.035)" stroke-width=".5"/>
-                <text x="260" y="256" text-anchor="middle" fill="#F5F5F7" font-family="Clash Display,sans-serif" font-size="18" font-weight="700" letter-spacing=".02em">ika</text>
-                <text x="260" y="273" text-anchor="middle" fill="rgba(255,255,255,.22)" font-family="JetBrains Mono,monospace" font-size="5.5" letter-spacing=".15em">CONTROL LAYER</text>
-                <circle cx="260" cy="260" r="50" fill="rgba(238,43,91,.05)" filter="url(#gl-m)"><animate attributeName="opacity" values=".3;.7;.3" dur="4s" repeatCount="indefinite"/></circle>
-              </g>
-              <!-- Chain nodes -->
-              <g class="layer-fg">
-                <g class="chain-node"><rect x="28" y="243" width="62" height="34" rx="8" fill="rgba(153,69,255,.06)" stroke="rgba(153,69,255,.18)" stroke-width=".75"/><circle cx="46" cy="260" r="3.5" fill="#9945FF" filter="url(#gl-s)"/><text x="71" y="264" text-anchor="middle" fill="rgba(153,69,255,.85)" font-family="JetBrains Mono,monospace" font-size="9" font-weight="600">SOL</text></g>
-                <g class="chain-node"><rect x="404" y="100" width="52" height="30" rx="7" fill="rgba(247,147,26,.04)" stroke="rgba(247,147,26,.14)" stroke-width=".75"/><circle cx="419" cy="115" r="2.5" fill="rgba(247,147,26,.7)"/><text x="441" y="119" text-anchor="middle" fill="rgba(247,147,26,.75)" font-family="JetBrains Mono,monospace" font-size="8" font-weight="500">BTC</text></g>
-                <g class="chain-node"><rect x="404" y="388" width="52" height="30" rx="7" fill="rgba(98,126,234,.04)" stroke="rgba(98,126,234,.14)" stroke-width=".75"/><circle cx="419" cy="403" r="2.5" fill="rgba(98,126,234,.7)"/><text x="441" y="407" text-anchor="middle" fill="rgba(98,126,234,.75)" font-family="JetBrains Mono,monospace" font-size="8" font-weight="500">ETH</text></g>
-                <g class="chain-node"><rect x="96" y="414" width="64" height="30" rx="7" fill="rgba(255,255,255,.015)" stroke="rgba(255,255,255,.06)" stroke-width=".75"/><circle cx="113" cy="429" r="2" fill="rgba(255,255,255,.2)"/><text x="140" y="433" text-anchor="middle" fill="rgba(255,255,255,.28)" font-family="JetBrains Mono,monospace" font-size="8" font-weight="500">ANY</text></g>
-                <circle cx="88" cy="260" r="2" fill="rgba(153,69,255,.35)"/>
-                <circle cx="428" cy="118" r="1.5" fill="rgba(247,147,26,.25)"/>
-                <circle cx="428" cy="402" r="1.5" fill="rgba(98,126,234,.25)"/>
-              </g>
+        <!-- Layer 1: Backdrop grid -->
+        <g class="hero-layer" data-depth="0.02" opacity="0.15">
+          <circle cx="300" cy="300" r="280" fill="none" stroke="var(--stroke-1)" stroke-width="0.5"/>
+          <circle cx="300" cy="300" r="240" fill="none" stroke="var(--stroke-1)" stroke-width="0.5"/>
+          <circle cx="300" cy="300" r="200" fill="none" stroke="var(--stroke-1)" stroke-width="0.3"/>
+          <line x1="300" y1="20" x2="300" y2="580" stroke="var(--stroke-1)" stroke-width="0.3"/>
+          <line x1="20" y1="300" x2="580" y2="300" stroke="var(--stroke-1)" stroke-width="0.3"/>
+          <line x1="100" y1="100" x2="500" y2="500" stroke="var(--stroke-1)" stroke-width="0.2"/>
+          <line x1="500" y1="100" x2="100" y2="500" stroke="var(--stroke-1)" stroke-width="0.2"/>
+        </g>
+
+        <!-- Layer 2: Policy rings -->
+        <g class="hero-layer" data-depth="0.04">
+          <circle cx="300" cy="300" r="220" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          <circle cx="300" cy="300" r="170" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="8 6"/>
+          <circle cx="300" cy="300" r="120" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="2 5"/>
+          <!-- Rotating cyan arc -->
+          <circle cx="300" cy="300" r="170" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-dasharray="80 990" stroke-linecap="round" opacity="0.6">
+            <animateTransform attributeName="transform" type="rotate" from="0 300 300" to="360 300 300" dur="20s" repeatCount="indefinite"/>
+          </circle>
+          <!-- Rotating violet arc -->
+          <circle cx="300" cy="300" r="220" fill="none" stroke="var(--violet)" stroke-width="1.5" stroke-dasharray="50 1340" stroke-linecap="round" opacity="0.3">
+            <animateTransform attributeName="transform" type="rotate" from="180 300 300" to="540 300 300" dur="35s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+
+        <!-- Layer 3: Route traces -->
+        <g class="hero-layer" data-depth="0.06">
+          <!-- SOL (left) to center -->
+          <path d="M 80 300 Q 160 280 240 295" fill="none" stroke="var(--violet)" stroke-width="1.5" opacity="0.5" stroke-dasharray="4 4">
+            <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="2s" repeatCount="indefinite"/>
+          </path>
+          <!-- Center to BTC (upper right) -->
+          <path id="route-btc" d="M 360 270 Q 420 220 510 160" fill="none" stroke="#f7931a" stroke-width="1.5" opacity="0.4" stroke-dasharray="4 4">
+            <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="2s" repeatCount="indefinite"/>
+          </path>
+          <!-- Center to ETH (lower right) -->
+          <path id="route-eth" d="M 360 320 Q 430 370 520 420" fill="none" stroke="#627eea" stroke-width="1.5" opacity="0.4" stroke-dasharray="4 4">
+            <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="2s" repeatCount="indefinite"/>
+          </path>
+          <!-- Center to ANY (lower left) -->
+          <path id="route-any" d="M 260 340 Q 200 400 120 460" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" opacity="0.3" stroke-dasharray="4 4">
+            <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="2.5s" repeatCount="indefinite"/>
+          </path>
+          <!-- Flowing dots -->
+          <circle r="3" fill="var(--violet)" opacity="0.8" filter="url(#glow-sm)">
+            <animateMotion dur="3s" repeatCount="indefinite" path="M 80 300 Q 160 280 240 295"/>
+          </circle>
+          <circle r="2.5" fill="#f7931a" opacity="0.7" filter="url(#glow-sm)">
+            <animateMotion dur="3.5s" repeatCount="indefinite" path="M 360 270 Q 420 220 510 160"/>
+          </circle>
+          <circle r="2.5" fill="#627eea" opacity="0.7" filter="url(#glow-sm)">
+            <animateMotion dur="3.5s" repeatCount="indefinite" path="M 360 320 Q 430 370 520 420"/>
+          </circle>
+          <circle r="2" fill="rgba(255,255,255,0.5)" opacity="0.5">
+            <animateMotion dur="4s" repeatCount="indefinite" path="M 260 340 Q 200 400 120 460"/>
+          </circle>
+        </g>
+
+        <!-- Layer 4: Control core -->
+        <g class="hero-layer" data-depth="0.08">
+          <circle cx="300" cy="300" r="50" fill="rgba(238,43,91,0.08)" filter="url(#glow-core)"/>
+          <circle cx="300" cy="300" r="45" fill="url(#core-grad)" opacity="0.9" filter="url(#glow-core)">
+            <animate attributeName="r" values="45;47;45" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="300" cy="300" r="36" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+          <text x="300" y="305" text-anchor="middle" font-family="Inter Tight, sans-serif" font-weight="800" font-size="14" fill="white" opacity="0.9">ika</text>
+          <!-- Validator dots at r=65 -->
+          <circle cx="365" cy="300" r="3" fill="var(--cyan)" opacity="0.6"><animate attributeName="opacity" values="0.6;1;0.6" dur="2s" begin="0s" repeatCount="indefinite"/></circle>
+          <circle cx="352" cy="267" r="2.5" fill="var(--cyan)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.2s" begin="0.3s" repeatCount="indefinite"/></circle>
+          <circle cx="325" cy="242" r="2.5" fill="var(--mint)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.4s" begin="0.6s" repeatCount="indefinite"/></circle>
+          <circle cx="300" cy="235" r="3" fill="var(--cyan)" opacity="0.6"><animate attributeName="opacity" values="0.6;1;0.6" dur="2s" begin="0.9s" repeatCount="indefinite"/></circle>
+          <circle cx="275" cy="242" r="2" fill="var(--violet)" opacity="0.4"><animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.6s" begin="0.2s" repeatCount="indefinite"/></circle>
+          <circle cx="248" cy="267" r="2.5" fill="var(--cyan)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.1s" begin="0.5s" repeatCount="indefinite"/></circle>
+          <circle cx="235" cy="300" r="3" fill="var(--mint)" opacity="0.6"><animate attributeName="opacity" values="0.6;1;0.6" dur="2.3s" begin="0.8s" repeatCount="indefinite"/></circle>
+          <circle cx="248" cy="333" r="2" fill="var(--cyan)" opacity="0.4"><animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.5s" begin="0.1s" repeatCount="indefinite"/></circle>
+          <circle cx="275" cy="358" r="2.5" fill="var(--violet)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.2s" begin="0.4s" repeatCount="indefinite"/></circle>
+          <circle cx="300" cy="365" r="3" fill="var(--cyan)" opacity="0.6"><animate attributeName="opacity" values="0.6;1;0.6" dur="2s" begin="0.7s" repeatCount="indefinite"/></circle>
+          <circle cx="325" cy="358" r="2.5" fill="var(--mint)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.4s" begin="0.2s" repeatCount="indefinite"/></circle>
+          <circle cx="352" cy="333" r="2" fill="var(--cyan)" opacity="0.4"><animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.1s" begin="0.6s" repeatCount="indefinite"/></circle>
+        </g>
+
+        <!-- Layer 5: Chain endpoints -->
+        <g class="hero-layer" data-depth="0.1">
+          <!-- SOL (violet) -->
+          <circle cx="80" cy="300" r="18" fill="none" stroke="var(--violet)" stroke-width="1" opacity="0.5"/>
+          <circle cx="80" cy="300" r="8" fill="var(--violet)" opacity="0.8" filter="url(#glow-ep)"/>
+          <!-- BTC (orange) -->
+          <circle cx="510" cy="160" r="16" fill="none" stroke="#f7931a" stroke-width="1" opacity="0.5"/>
+          <circle cx="510" cy="160" r="7" fill="#f7931a" opacity="0.8" filter="url(#glow-ep)"/>
+          <!-- ETH (blue) -->
+          <circle cx="520" cy="420" r="16" fill="none" stroke="#627eea" stroke-width="1" opacity="0.5"/>
+          <circle cx="520" cy="420" r="7" fill="#627eea" opacity="0.8" filter="url(#glow-ep)"/>
+          <!-- ANY (white) -->
+          <circle cx="120" cy="460" r="14" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1" opacity="0.4"/>
+          <circle cx="120" cy="460" r="5" fill="rgba(255,255,255,0.5)" opacity="0.5"/>
+        </g>
+      </svg>
+
+      <!-- Permission chips overlay -->
+      <div class="perm-chips">
+        <div class="perm-chip active"><span class="chip-dot"></span>spending limit</div>
+        <div class="perm-chip"><span class="chip-dot"></span>contract allowlist</div>
+        <div class="perm-chip"><span class="chip-dot"></span>session duration</div>
+        <div class="perm-chip"><span class="chip-dot"></span>user required</div>
+        <div class="perm-chip"><span class="chip-dot"></span>auto-approve</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ PROOF RAIL ═══════════════ -->
+<section class="proof-rail">
+  <div class="container">
+    <div class="proof-rail-inner">
+      <span class="proof-token">Built on 2PC-MPC</span>
+      <span class="proof-token">Zero-trust signing</span>
+      <span class="proof-token">Programmable approvals</span>
+      <span class="proof-token">Cross-chain control</span>
+      <span class="proof-token">Agent guardrails</span>
+      <span class="proof-token">Native asset workflows</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ PROBLEM ═══════════════ -->
+<section class="problem" id="developers">
+  <div class="container">
+    <div class="problem-grid">
+      <div class="problem-left reveal">
+        <span class="tag">The problem</span>
+        <h2>Solana apps can execute fast. Control is still fragmented.</h2>
+        <p>Solana programs can swap, lend, and settle in milliseconds. But the moment an action needs to touch another chain&mdash;speed doesn&rsquo;t matter if security is the bottleneck.</p>
+      </div>
+      <div class="problem-cards">
+
+        <!-- Bridges -->
+        <div class="panel problem-card reveal">
+          <div class="problem-card-svg">
+            <svg viewBox="0 0 280 120" width="280" height="120" aria-hidden="true">
+              <circle cx="50" cy="60" r="16" fill="none" stroke="var(--violet)" stroke-width="1.5" opacity="0.7"/>
+              <circle cx="50" cy="60" r="5" fill="var(--violet)" opacity="0.6"/>
+              <circle cx="230" cy="60" r="16" fill="none" stroke="var(--cyan)" stroke-width="1.5" opacity="0.7"/>
+              <circle cx="230" cy="60" r="5" fill="var(--cyan)" opacity="0.6"/>
+              <line x1="70" y1="60" x2="105" y2="60" stroke="var(--text-2)" stroke-width="1" stroke-dasharray="3 3"/>
+              <line x1="175" y1="60" x2="210" y2="60" stroke="var(--text-2)" stroke-width="1" stroke-dasharray="3 3"/>
+              <rect x="110" y="45" width="18" height="18" rx="3" fill="none" stroke="var(--danger)" stroke-width="1" opacity="0.5" transform="rotate(15 119 54)"/>
+              <rect x="135" y="50" width="14" height="14" rx="3" fill="none" stroke="var(--danger)" stroke-width="1" opacity="0.4" transform="rotate(-10 142 57)"/>
+              <rect x="155" y="43" width="16" height="16" rx="3" fill="none" stroke="var(--danger)" stroke-width="1" opacity="0.45" transform="rotate(8 163 51)"/>
+              <line x1="116" y1="50" x2="122" y2="56" stroke="var(--danger)" stroke-width="1" opacity="0.6"/>
+              <line x1="122" y1="50" x2="116" y2="56" stroke="var(--danger)" stroke-width="1" opacity="0.6"/>
             </svg>
-            <div class="permission-chips">
-              <div class="perm-chip"><span class="chip-dot"></span>spending limit</div>
-              <div class="perm-chip"><span class="chip-dot"></span>user required</div>
-              <div class="perm-chip"><span class="chip-dot"></span>contract allowlist</div>
-              <div class="perm-chip"><span class="chip-dot"></span>session duration</div>
-              <div class="perm-chip"><span class="chip-dot"></span>auto-approve</div>
-            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════ PROOF STRIP ═══════ -->
-  <section class="proof-strip" aria-label="Key features">
-    <div class="container-wide">
-      <div class="proof-inner">
-        <div class="badge reveal"><span class="badge-dot"></span>Built on 2PC-MPC</div>
-        <div class="badge reveal rd-1"><span class="badge-dot"></span>Zero-trust signing</div>
-        <div class="badge reveal rd-2"><span class="badge-dot"></span>Programmable approvals</div>
-        <div class="badge reveal rd-3"><span class="badge-dot"></span>Cross-chain control</div>
-        <div class="badge reveal rd-4"><span class="badge-dot"></span>Agent guardrails</div>
-        <div class="badge reveal rd-5"><span class="badge-dot"></span>Native asset workflows</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════ PROBLEM ═══════ -->
-  <section class="s-dark s-pad s-problem" id="developers">
-    <div class="container">
-      <span class="tag reveal">The problem</span>
-      <h2 class="headline reveal rd-1">Solana apps can execute fast.<br>Control is still fragmented.</h2>
-      <p class="subhead reveal rd-2">Solana programs can swap, lend, and settle in milliseconds. But the moment an action needs to touch another chain — speed doesn't matter if security is the bottleneck.</p>
-      <div class="problem-grid">
-        <div class="card reveal rd-1">
-          <div class="card-icon"><svg viewBox="0 0 20 20"><path d="M4 10h4M12 10h4"/><circle cx="10" cy="10" r="2.5"/><path d="M2 6l2 4-2 4M18 6l-2 4 2 4"/></svg></div>
           <h3>Bridges add trust and fragmentation</h3>
           <p>Every bridge introduces relayers, attestors, and wrapped assets that fracture liquidity and add attack surface.</p>
         </div>
-        <div class="card reveal rd-2">
-          <div class="card-icon"><svg viewBox="0 0 20 20"><rect x="5" y="8" width="10" height="8" rx="1.5"/><path d="M7 8V6a3 3 0 016 0v2"/><circle cx="10" cy="12.5" r="1" fill="currentColor" stroke="none"/></svg></div>
+
+        <!-- Custody -->
+        <div class="panel problem-card reveal">
+          <div class="problem-card-svg">
+            <svg viewBox="0 0 280 120" width="280" height="120" aria-hidden="true">
+              <circle cx="140" cy="60" r="20" fill="none" stroke="var(--danger)" stroke-width="1.5" opacity="0.6"/>
+              <rect x="133" y="52" width="14" height="12" rx="2" fill="none" stroke="var(--danger)" stroke-width="1.2" opacity="0.7"/>
+              <path d="M136 52 v-5 a4 4 0 0 1 8 0 v5" fill="none" stroke="var(--danger)" stroke-width="1.2" opacity="0.7"/>
+              <line x1="30" y1="30" x2="120" y2="55" stroke="var(--text-2)" stroke-width="0.8" opacity="0.4"/>
+              <line x1="30" y1="90" x2="120" y2="65" stroke="var(--text-2)" stroke-width="0.8" opacity="0.4"/>
+              <line x1="50" y1="60" x2="120" y2="60" stroke="var(--text-2)" stroke-width="0.8" opacity="0.4"/>
+              <line x1="160" y1="55" x2="250" y2="30" stroke="var(--text-2)" stroke-width="0.8" opacity="0.4"/>
+              <line x1="160" y1="65" x2="250" y2="90" stroke="var(--text-2)" stroke-width="0.8" opacity="0.4"/>
+              <line x1="160" y1="60" x2="240" y2="60" stroke="var(--text-2)" stroke-width="0.8" opacity="0.4"/>
+              <circle cx="30" cy="30" r="5" fill="var(--violet)" opacity="0.4"/>
+              <circle cx="30" cy="90" r="5" fill="var(--cyan)" opacity="0.4"/>
+              <circle cx="50" cy="60" r="5" fill="var(--mint)" opacity="0.4"/>
+              <circle cx="250" cy="30" r="5" fill="#f7931a" opacity="0.4"/>
+              <circle cx="250" cy="90" r="5" fill="#627eea" opacity="0.4"/>
+              <circle cx="240" cy="60" r="5" fill="var(--text-2)" opacity="0.4"/>
+            </svg>
+          </div>
           <h3>Custody stacks break sovereignty</h3>
           <p>Enterprise custody solutions impose vendor lock-in, centralized key control, and opaque policy engines.</p>
         </div>
-        <div class="card reveal rd-3">
-          <div class="card-icon"><svg viewBox="0 0 20 20"><circle cx="10" cy="7" r="3"/><path d="M5 17c0-2.76 2.24-5 5-5s5 2.24 5 5"/><path d="M14 5l2 2M14 7l2-2"/></svg></div>
+
+        <!-- Agents -->
+        <div class="panel problem-card reveal">
+          <div class="problem-card-svg">
+            <svg viewBox="0 0 280 120" width="280" height="120" aria-hidden="true">
+              <circle cx="140" cy="60" r="18" fill="none" stroke="var(--danger)" stroke-width="1.5" opacity="0.6"/>
+              <text x="140" y="64" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--danger)" opacity="0.7">AI</text>
+              <line x1="140" y1="42" x2="140" y2="10" stroke="var(--danger)" stroke-width="1" opacity="0.4"/>
+              <line x1="158" y1="50" x2="250" y2="20" stroke="var(--danger)" stroke-width="1" opacity="0.4"/>
+              <line x1="158" y1="60" x2="260" y2="60" stroke="var(--danger)" stroke-width="1" opacity="0.4"/>
+              <line x1="158" y1="70" x2="250" y2="100" stroke="var(--danger)" stroke-width="1" opacity="0.4"/>
+              <line x1="140" y1="78" x2="140" y2="110" stroke="var(--danger)" stroke-width="1" opacity="0.4"/>
+              <line x1="122" y1="70" x2="30" y2="100" stroke="var(--danger)" stroke-width="1" opacity="0.4"/>
+              <line x1="122" y1="60" x2="20" y2="60" stroke="var(--danger)" stroke-width="1" opacity="0.4"/>
+              <line x1="122" y1="50" x2="30" y2="20" stroke="var(--danger)" stroke-width="1" opacity="0.4"/>
+              <circle cx="248" cy="20" r="6" fill="none" stroke="#f7931a" stroke-width="1" opacity="0.5"/>
+              <line x1="254" y1="20" x2="270" y2="20" stroke="#f7931a" stroke-width="1" opacity="0.5"/>
+              <line x1="265" y1="20" x2="265" y2="26" stroke="#f7931a" stroke-width="1" opacity="0.5"/>
+            </svg>
+          </div>
           <h3>AI agents need rules, not root access</h3>
-          <p>Agents get full keys or nothing. There's no way to scope authority, enforce limits, or require human approval.</p>
+          <p>Agents get full keys or nothing. There&rsquo;s no way to scope authority, enforce limits, or require human approval.</p>
         </div>
       </div>
-    </div>
-  </section>
-
-  <hr class="s-sep">
-
-  <!-- ═══════ SOLUTION ═══════ -->
-  <section class="s-alt s-pad s-solution">
-    <div class="container">
-      <span class="tag reveal">The Ika approach</span>
-      <h2 class="headline reveal rd-1">Signing as a programmable primitive.</h2>
-      <p class="subhead reveal rd-2">Define who can act, on what, under which rules. The network and the user each hold a key share. Signing requires both. That's programmable authority.</p>
-      <div class="solution-grid">
-        <div class="card reveal rd-1"><span class="card-num">01</span><h3>User-required signatures</h3><p>Keep the human in the loop for high-stakes actions. Cryptographic proof, not a checkbox.</p></div>
-        <div class="card reveal rd-2"><span class="card-num">02</span><h3>Policy-based approvals</h3><p>Spending caps, allowlists, time windows. Enforced by Rust contracts, not API rules.</p></div>
-        <div class="card reveal rd-3"><span class="card-num">03</span><h3>Shared automated workflows</h3><p>Automated actions within defined boundaries. No keys exposed, no trust delegation.</p></div>
-        <div class="card reveal rd-4"><span class="card-num">04</span><h3>Cross-chain native execution</h3><p>Real signatures on real chains. Not wrapped assets, not relay messages. Native settlement.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════ INTERLUDE ═══════ -->
-  <div class="s-interlude">
-    <div class="container">
-      <p class="interlude-text reveal"><em>Public logic on Solana.</em> Native control everywhere.</p>
-      <div class="interlude-rule"></div>
     </div>
   </div>
+</section>
 
-  <!-- ═══════ SOLANA ALIGNMENT ═══════ -->
-  <section class="s-dark s-pad s-solana">
-    <div class="container">
-      <span class="tag tag-sol reveal">Solana-native</span>
-      <h2 class="headline reveal rd-1">Built for Solana's next chapter</h2>
-      <p class="subhead reveal rd-2">Solana is becoming the home of internet capital markets and autonomous agents. Ika gives Solana programs the missing capability: programmable authority over assets on every other chain.</p>
-      <div class="solana-grid">
-        <div class="card card-sol reveal rd-1"><span class="card-tag card-tag-sol">Capital Markets</span><h3>Cross-chain DeFi without fragmentation</h3><p>Lend against ETH, trade native BTC, execute atomic swaps. All from a Solana program, all settling natively.</p></div>
-        <div class="card card-sol reveal rd-2"><span class="card-tag card-tag-sol">Agentic Finance</span><h3>Agents that act across chains under constraints</h3><p>AI agents trade, rebalance, and settle with cryptographic guardrails. Scoped authority, not full keys.</p></div>
-        <div class="card card-sol reveal rd-3"><span class="card-tag card-tag-sol">Consumer UX</span><h3>One wallet, every chain, invisible complexity</h3><p>Users hold one address. Social recovery, spending limits, multi-party approval. No bridge mechanics.</p></div>
+
+<!-- ═══════════════ SOLUTION ═══════════════ -->
+<section class="solution">
+  <div class="container">
+    <div class="solution-grid">
+      <div class="solution-left reveal">
+        <span class="tag tag--brand">The Ika approach</span>
+        <h2>Signing as a programmable primitive.</h2>
+        <p>Define who can act, on what, under which rules. The network and the user each hold a key share. Signing requires both. That&rsquo;s programmable authority.</p>
       </div>
-    </div>
-  </section>
-
-  <hr class="s-sep">
-
-  <!-- ═══════ AI AGENTS — FLAGSHIP ═══════ -->
-  <section class="s-alt s-pad s-agents" id="agents">
-    <div class="container">
-      <span class="tag reveal">Agentic Authority</span>
-      <h2 class="headline reveal rd-1">Give agents rules, not keys.</h2>
-      <p class="subhead reveal rd-2">AI agents need to act across chains. But giving an agent a private key is giving it unlimited power. Ika lets you define what an agent can sign, how much, how often — enforced cryptographically.</p>
-      <div class="agents-layout">
-        <div class="agent-flow reveal rd-3">
-          <div class="agent-step active"><div class="step-num">1</div><div class="step-body"><h4>Connect</h4><p>Solana program binds the agent to an Ika dWallet</p></div></div>
-          <div class="agent-step"><div class="step-num">2</div><div class="step-body"><h4>Identify</h4><p>Policy contract defines what this agent can sign</p></div></div>
-          <div class="agent-step"><div class="step-num">3</div><div class="step-body"><h4>Pay</h4><p>Gas abstracted — agent never touches fee tokens</p></div></div>
-          <div class="agent-step"><div class="step-num">4</div><div class="step-body"><h4>Act</h4><p>Native signature lands on the destination chain</p></div></div>
+      <div class="solution-steps">
+        <div class="solution-step reveal">
+          <div class="step-num">01</div>
+          <h3>User-required signatures</h3>
+          <p>Keep the human in the loop for high-stakes actions. Cryptographic proof, not a checkbox.</p>
         </div>
-        <div class="guardrail-grid reveal rd-4">
-          <div class="guardrail-card"><div class="guardrail-dot"></div><h4>Spending limits</h4><p>Per-trade caps and daily volume ceilings enforced at the signing layer.</p></div>
-          <div class="guardrail-card"><div class="guardrail-dot"></div><h4>Contract allowlists</h4><p>Restrict which protocols and addresses an agent can interact with.</p></div>
-          <div class="guardrail-card"><div class="guardrail-dot"></div><h4>Session windows</h4><p>Time-scoped delegation that expires automatically.</p></div>
-          <div class="guardrail-card"><div class="guardrail-dot"></div><h4>User escalation</h4><p>High-stakes actions automatically require human co-signature.</p></div>
+        <div class="solution-step reveal">
+          <div class="step-num">02</div>
+          <h3>Policy-based approvals</h3>
+          <p>Spending caps, allowlists, time windows. Enforced by contracts, not API rules.</p>
+        </div>
+        <div class="solution-step reveal">
+          <div class="step-num">03</div>
+          <h3>Shared automated workflows</h3>
+          <p>Automated actions within defined boundaries. No keys exposed, no trust delegation.</p>
+        </div>
+        <div class="solution-step reveal">
+          <div class="step-num">04</div>
+          <h3>Cross-chain native execution</h3>
+          <p>Real signatures on real chains. Not wrapped assets, not relay messages. Native settlement.</p>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <hr class="s-sep">
 
-  <!-- ═══════ ZUD ═══════ -->
-  <section class="s-dark s-pad s-zud section-center">
-    <div class="container">
-      <span class="tag reveal">Design principles</span>
-      <h2 class="headline reveal rd-1" style="max-width:600px">Zero-trust. Usable. Decentralized.</h2>
-      <p class="subhead reveal rd-2" style="max-width:520px">Most systems give you two. Ika is built for all three.</p>
-      <div class="zud-grid">
-        <div class="card reveal rd-1"><div class="zud-letter">Z</div><h3>Zero-trust</h3><p>No single party — not even Ika — can reconstruct your private key. 2PC-MPC guarantees mathematical non-collusion.</p></div>
-        <div class="card reveal rd-2"><div class="zud-letter">U</div><h3>Usable</h3><p>Sub-second signing. Programmable policies in Rust. Seamless integration with existing Solana programs.</p></div>
-        <div class="card reveal rd-3"><div class="zud-letter">D</div><h3>Decentralized</h3><p>200+ validator nodes signing in parallel. Not the 4-8 node ceiling of legacy MPC networks.</p></div>
-      </div>
-      <p class="zud-footnote reveal rd-4">ZUD — the design framework behind every decision in Ika's architecture.</p>
+<!-- ═══════════════ INTERLUDE ═══════════════ -->
+<section class="interlude">
+  <div class="container">
+    <h2 class="reveal"><em>Public logic on Solana.</em><br>Native control everywhere.</h2>
+    <div class="interlude-rule reveal"></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ SOLANA TRIPTYCH ═══════════════ -->
+<section class="triptych">
+  <div class="container">
+    <div class="triptych-header reveal">
+      <span class="tag tag--violet">Solana-native</span>
+      <h2>Built for Solana&rsquo;s next chapter</h2>
     </div>
-  </section>
-
-  <hr class="s-sep">
-
-  <!-- ═══════ USE CASES ═══════ -->
-  <section class="s-alt s-pad" id="usecases">
-    <div class="container">
-      <span class="tag reveal">Programmable control</span>
-      <h2 class="headline reveal rd-1">Policy decides what can sign.</h2>
-      <div class="usecase-grid">
-        <div class="card featured reveal rd-1"><div class="card-icon"><svg viewBox="0 0 20 20"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 8h16"/><circle cx="6" cy="12" r="1.5"/></svg></div><h3>Universal wallet infrastructure</h3><p>One address, every chain. Social recovery, spending limits, and multi-party approval enforced cryptographically.</p></div>
-        <div class="card reveal rd-2"><div class="card-icon"><svg viewBox="0 0 20 20"><path d="M3 10h4l2-5 2 10 2-5h4"/></svg></div><h3>Cross-chain intents</h3><p>Express what you want. Ika signs the execution path natively on each target chain.</p></div>
-        <div class="card reveal rd-3"><div class="card-icon"><svg viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M3 8h14M8 8v9"/></svg></div><h3>Treasury and governance</h3><p>Multi-sig treasuries with programmable spending policies across every chain.</p></div>
-        <div class="card reveal rd-4"><div class="card-icon"><svg viewBox="0 0 20 20"><circle cx="10" cy="7" r="3"/><path d="M5 17c0-2.76 2.24-5 5-5s5 2.24 5 5"/><path d="M14 5l2-1M14 9l2 1"/></svg></div><h3>Agent permissions</h3><p>Give AI agents scoped signing authority with hard cryptographic limits.</p></div>
-        <div class="card reveal rd-5"><div class="card-icon"><svg viewBox="0 0 20 20"><circle cx="7" cy="10" r="3.5"/><circle cx="13" cy="10" r="3.5"/></svg></div><h3>Native-asset DeFi</h3><p>Real BTC, real ETH. Controlled by Solana programs, settled natively.</p></div>
-        <div class="card reveal rd-6"><div class="card-icon"><svg viewBox="0 0 20 20"><rect x="5" y="2" width="10" height="16" rx="2.5"/><path d="M8 15h4"/></svg></div><h3>Consumer apps</h3><p>Invisible cross-chain complexity. Users experience one interface.</p></div>
+    <div class="triptych-grid">
+      <div class="panel triptych-panel reveal">
+        <div class="triptych-label">Capital Markets</div>
+        <h3>Cross-chain DeFi without fragmentation</h3>
+        <p>Lend against ETH, trade native BTC, execute atomic swaps. All from a Solana program, all settling natively.</p>
+      </div>
+      <div class="panel triptych-panel reveal">
+        <div class="triptych-label">Agentic Finance</div>
+        <h3>Agents that act across chains under constraints</h3>
+        <p>AI agents trade, rebalance, and settle with cryptographic guardrails. Scoped authority, not full keys.</p>
+      </div>
+      <div class="panel triptych-panel reveal">
+        <div class="triptych-label">Consumer UX</div>
+        <h3>One wallet, every chain, invisible complexity</h3>
+        <p>Users hold one address. Social recovery, spending limits, multi-party approval. No bridge mechanics.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <hr class="s-sep">
 
-  <!-- ═══════ ARCHITECTURE — SCROLLYTELLING ═══════ -->
-  <section class="s-dark s-pad s-arch" id="architecture">
-    <div class="container">
-      <span class="tag reveal">Under the hood</span>
-      <h2 class="headline reveal rd-1">How Ika works</h2>
-      <p class="subhead reveal rd-2">From authority definition to native execution. Every step enforces policy boundaries.</p>
-      <div class="arch-layout">
-        <div class="arch-rail">
-          <div class="arch-step active" data-step="0"><div class="arch-step-num">01</div><h4>Define authority on Solana</h4></div>
-          <div class="arch-step" data-step="1"><div class="arch-step-num">02</div><h4>Create or import a dWallet</h4><p class="arch-step-desc">Generate a signing identity or bring an existing key</p></div>
-          <div class="arch-step" data-step="2"><div class="arch-step-num">03</div><h4>Precompute signing material</h4><p class="arch-step-desc">Distributed key shares prepared across the network</p></div>
-          <div class="arch-step" data-step="3"><div class="arch-step-num">04</div><h4>Request cross-chain action</h4><p class="arch-step-desc">Solana program initiates a signing request to Ika</p></div>
-          <div class="arch-step" data-step="4"><div class="arch-step-num">05</div><h4>Check policy &amp; approval</h4><p class="arch-step-desc">Policy contract validates rules, limits, and authorization</p></div>
-          <div class="arch-step" data-step="5"><div class="arch-step-num">06</div><h4>Sign &amp; execute natively</h4><p class="arch-step-desc">Native signature produced and settled on destination chain</p></div>
+<!-- ═══════════════════════════════════════════════
+     AI AGENTS — SIGNATURE MOMENT #2
+     ═══════════════════════════════════════════════ -->
+<section class="agent-section" id="agent-section">
+  <div class="container">
+    <div class="agent-header reveal">
+      <span class="tag tag--cyan">Agentic authority</span>
+      <h2>Give agents rules, not keys.</h2>
+      <p>AI agents need to act across chains. But giving an agent a private key is giving it unlimited power. Ika lets you define what an agent can sign, how much, how often&mdash;enforced cryptographically.</p>
+    </div>
+
+    <div class="agent-demo reveal" id="agent-demo">
+      <!-- Left: Agent Console -->
+      <div class="agent-console" style="padding:0;">
+        <div class="console-header">
+          <div class="console-dots"><span></span><span></span><span></span></div>
+          <span class="console-title">Agent Authority Console</span>
         </div>
-        <div class="arch-visual">
-          <div class="arch-diagram">
-            <svg viewBox="0 0 600 360" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect class="arch-node" data-nodes="0,1,3" x="20" y="120" width="140" height="120" rx="8" fill="rgba(153,69,255,.06)" stroke="rgba(153,69,255,.3)" stroke-width="1"/>
-              <text class="arch-node" data-nodes="0,1,3" x="90" y="175" text-anchor="middle" fill="#9945FF" font-family="JetBrains Mono,monospace" font-size="11" font-weight="500">SOLANA</text>
-              <text class="arch-node" data-nodes="0,1,3" x="90" y="195" text-anchor="middle" fill="rgba(153,69,255,.5)" font-family="JetBrains Mono,monospace" font-size="8">Program</text>
-              <rect class="arch-node" data-nodes="1,2,4" x="220" y="80" width="160" height="200" rx="8" fill="rgba(238,43,91,.04)" stroke="rgba(238,43,91,.3)" stroke-width="1"/>
-              <text class="arch-node" data-nodes="1,2,4" x="300" y="130" text-anchor="middle" fill="#EE2B5B" font-family="JetBrains Mono,monospace" font-size="11" font-weight="500">IKA NETWORK</text>
-              <text class="arch-node" data-nodes="2" x="300" y="155" text-anchor="middle" fill="rgba(238,43,91,.4)" font-family="JetBrains Mono,monospace" font-size="8">dWallet + 2PC-MPC</text>
-              <rect class="policy-gate" x="248" y="190" width="104" height="36" rx="6" fill="rgba(238,43,91,.1)" stroke="#EE2B5B" stroke-width="1" stroke-dasharray="4 4"/>
-              <text class="policy-gate" x="300" y="213" text-anchor="middle" fill="#EE2B5B" font-family="JetBrains Mono,monospace" font-size="8" font-weight="500">POLICY CHECK</text>
-              <rect class="arch-node" data-nodes="3,5" x="440" y="40" width="140" height="60" rx="8" fill="rgba(247,147,26,.06)" stroke="rgba(247,147,26,.2)" stroke-width="1"/>
-              <text class="arch-node" data-nodes="3,5" x="510" y="75" text-anchor="middle" fill="#F7931A" font-family="JetBrains Mono,monospace" font-size="10" font-weight="500">BITCOIN</text>
-              <rect class="arch-node" data-nodes="3,5" x="440" y="150" width="140" height="60" rx="8" fill="rgba(98,126,234,.06)" stroke="rgba(98,126,234,.2)" stroke-width="1"/>
-              <text class="arch-node" data-nodes="3,5" x="510" y="185" text-anchor="middle" fill="#627EEA" font-family="JetBrains Mono,monospace" font-size="10" font-weight="500">ETHEREUM</text>
-              <rect class="arch-node" data-nodes="3,5" x="440" y="260" width="140" height="60" rx="8" fill="rgba(255,255,255,.02)" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
-              <text class="arch-node" data-nodes="3,5" x="510" y="295" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="JetBrains Mono,monospace" font-size="10" font-weight="500">ANY CHAIN</text>
-              <line class="arch-edge" data-edges="0,1,3" x1="160" y1="180" x2="220" y2="180" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
-              <line class="arch-edge" data-edges="3,5" x1="380" y1="150" x2="440" y2="70" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
-              <line class="arch-edge" data-edges="3,5" x1="380" y1="180" x2="440" y2="180" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
-              <line class="arch-edge" data-edges="3,5" x1="380" y1="210" x2="440" y2="290" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
-            </svg>
+        <div class="console-body">
+          <div class="agent-id">
+            <span class="agent-name">rebalancer-v3</span>
+            <span class="agent-badge" id="agent-badge" data-state="idle">Idle</span>
+          </div>
+          <div class="agent-perms">
+            <div class="agent-perms-title">Permissions</div>
+            <div class="perm-row"><span class="perm-label">Spending Limit</span><span class="perm-value">$5,000/tx</span></div>
+            <div class="perm-row"><span class="perm-label">Contracts</span><span class="perm-value">Raydium, Jupiter, Orca</span></div>
+            <div class="perm-row"><span class="perm-label">Session</span><span class="perm-value">23h remaining</span></div>
+            <div class="perm-row"><span class="perm-label">Escalation</span><span class="perm-value" style="color:var(--cyan);">ON &gt;$2,500</span></div>
+          </div>
+          <div class="agent-log">
+            <div class="agent-log-title">Event Log</div>
+            <div class="log-entry" data-step="0"><span class="log-time">12:00:01</span> Agent initialized, session active</div>
+            <div class="log-entry log-cyan" data-step="1"><span class="log-time">12:00:03</span> Validating: rebalance ETH &rarr; checking policy...</div>
+            <div class="log-entry log-mint" data-step="2"><span class="log-time">12:00:04</span> Policy approved: $3,200 within limits</div>
+            <div class="log-entry log-mint" data-step="3"><span class="log-time">12:00:05</span> Settled: native ETH transfer confirmed</div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ═══════ MARQUEE ═══════ -->
-  <section class="s-marquee" aria-label="Supported chains">
-    <div class="marquee-track">
-      <div class="marquee-set"><span class="chain-sol">Solana</span><span class="marquee-sep"></span><span class="chain-btc">Bitcoin</span><span class="marquee-sep"></span><span class="chain-eth">Ethereum</span><span class="marquee-sep"></span><span class="chain-sui">Sui</span><span class="marquee-sep"></span><span class="chain-apt">Aptos</span><span class="marquee-sep"></span><span class="chain-arb">Arbitrum</span><span class="marquee-sep"></span><span class="chain-cos">Cosmos</span><span class="marquee-sep"></span><span class="chain-dot">Polkadot</span><span class="marquee-sep"></span></div>
-      <div class="marquee-set" aria-hidden="true"><span class="chain-sol">Solana</span><span class="marquee-sep"></span><span class="chain-btc">Bitcoin</span><span class="marquee-sep"></span><span class="chain-eth">Ethereum</span><span class="marquee-sep"></span><span class="chain-sui">Sui</span><span class="marquee-sep"></span><span class="chain-apt">Aptos</span><span class="marquee-sep"></span><span class="chain-arb">Arbitrum</span><span class="marquee-sep"></span><span class="chain-cos">Cosmos</span><span class="marquee-sep"></span><span class="chain-dot">Polkadot</span><span class="marquee-sep"></span></div>
-    </div>
-  </section>
-
-  <!-- ═══════ RESEARCH ═══════ -->
-  <section class="s-alt s-pad" id="research">
-    <div class="container">
-      <span class="tag reveal">Research-backed control</span>
-      <h2 class="headline reveal rd-1">The cryptography behind programmable authority</h2>
-      <div class="research-grid">
-        <div class="card featured reveal rd-1"><span class="research-type">Whitepaper</span><h3>Ika Network</h3><p>The architecture, protocol design, and economic model behind Ika's programmable signing infrastructure.</p><a href="#" class="card-link">Read <span aria-hidden="true">&rarr;</span></a></div>
-        <div class="card reveal rd-2"><span class="research-type">Cryptography</span><h3>2PC-MPC v2</h3><p>Breakthrough threshold cryptography where no single party ever holds a reconstructable private key.</p><a href="#" class="card-link">Read <span aria-hidden="true">&rarr;</span></a></div>
-        <div class="card reveal rd-3"><span class="research-type">Security Model</span><h3>Zero-trust Architecture</h3><p>Mathematical non-collusion guarantees across 200+ validator nodes.</p><a href="#" class="card-link">Read <span aria-hidden="true">&rarr;</span></a></div>
-        <div class="card reveal rd-4"><span class="research-type">Integration</span><h3>Move on Sui</h3><p>How dWallet contracts integrate with Move programs for policy enforcement.</p><a href="#" class="card-link">Read <span aria-hidden="true">&rarr;</span></a></div>
-        <div class="card reveal rd-5"><span class="research-type">Example</span><h3>KeySpring</h3><p>Reference implementation for session-style key delegation with automatic expiration.</p><a href="#" class="card-link">Read <span aria-hidden="true">&rarr;</span></a></div>
-        <div class="card reveal rd-6"><span class="research-type">Case Study</span><h3>Wallet-as-a-Protocol</h3><p>Universal wallet infrastructure built on programmable signing.</p><a href="#" class="card-link">Read <span aria-hidden="true">&rarr;</span></a></div>
+      <!-- Right: Execution Route Map -->
+      <div class="panel agent-route">
+        <svg viewBox="0 0 500 240" aria-hidden="true" id="agent-route-svg">
+          <defs>
+            <filter id="agent-glow">
+              <feGaussianBlur stdDeviation="6" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <!-- Agent node -->
+          <circle cx="60" cy="120" r="22" fill="none" stroke="var(--text-2)" stroke-width="1.5" id="agent-node-ring"/>
+          <circle cx="60" cy="120" r="8" fill="var(--text-2)" id="agent-node-core"/>
+          <text x="60" y="124" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="var(--bg-0)" font-weight="600">AI</text>
+          <!-- Path Agent to Ika -->
+          <path d="M 85 120 L 200 120" fill="none" stroke="var(--stroke-1)" stroke-width="1.5" id="route-seg-1" stroke-dasharray="3 3"/>
+          <!-- Ika core -->
+          <circle cx="250" cy="120" r="35" fill="none" stroke="var(--stroke-1)" stroke-width="1" stroke-dasharray="6 4" id="ika-policy-ring"/>
+          <circle cx="250" cy="120" r="22" fill="var(--brand)" opacity="0.15" id="ika-core-bg"/>
+          <circle cx="250" cy="120" r="22" fill="none" stroke="var(--brand)" stroke-width="1.5" opacity="0.5" id="ika-core-ring"/>
+          <text x="250" y="124" text-anchor="middle" font-family="Inter Tight, sans-serif" font-weight="800" font-size="11" fill="white" opacity="0.7">ika</text>
+          <!-- State label -->
+          <text x="250" y="76" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--text-2)" id="route-state-label">IDLE</text>
+          <!-- Path Ika to ETH -->
+          <path d="M 290 120 L 410 120" fill="none" stroke="var(--stroke-1)" stroke-width="1.5" id="route-seg-2" stroke-dasharray="3 3"/>
+          <!-- ETH node -->
+          <circle cx="440" cy="120" r="20" fill="none" stroke="var(--text-2)" stroke-width="1.5" id="eth-node-ring"/>
+          <circle cx="440" cy="120" r="7" fill="var(--text-2)" id="eth-node-core"/>
+          <!-- Validator dots -->
+          <circle cx="250" cy="82" r="2" fill="var(--text-2)" class="v-dot" opacity="0.3"/>
+          <circle cx="280" cy="90" r="2" fill="var(--text-2)" class="v-dot" opacity="0.3"/>
+          <circle cx="286" cy="120" r="2" fill="var(--text-2)" class="v-dot" opacity="0.3"/>
+          <circle cx="280" cy="150" r="2" fill="var(--text-2)" class="v-dot" opacity="0.3"/>
+          <circle cx="250" cy="158" r="2" fill="var(--text-2)" class="v-dot" opacity="0.3"/>
+          <circle cx="220" cy="150" r="2" fill="var(--text-2)" class="v-dot" opacity="0.3"/>
+          <circle cx="214" cy="120" r="2" fill="var(--text-2)" class="v-dot" opacity="0.3"/>
+          <circle cx="220" cy="90" r="2" fill="var(--text-2)" class="v-dot" opacity="0.3"/>
+        </svg>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <hr class="s-sep">
 
-  <!-- ═══════ BACKED BY ═══════ -->
-  <section class="s-backed section-center">
-    <div class="container">
-      <span class="tag reveal">Backed by</span>
-      <div class="backer-row reveal rd-1">
-        <img src="./assets/logo-dcg.png" alt="DCG">
-        <img src="./assets/logo-mysten-labs.png" alt="Mysten Labs">
-        <img src="./assets/logo-falconX.png" alt="FalconX">
-        <img src="./assets/logo-big-brain-holdings.png" alt="Big Brain Holdings">
-        <img src="./assets/logo-blockchange.png" alt="Blockchange">
-        <img src="./assets/logo-amplify.png" alt="Amplify">
-        <img src="./assets/logo-liquid2.png" alt="Liquid2">
-        <img src="./assets/logo-sui.png" alt="Sui">
-        <img src="./assets/logo-dwallet-labs.png" alt="dWallet Labs">
+<!-- ═══════════════ ZUD ═══════════════ -->
+<section class="zud">
+  <div class="container">
+    <div class="zud-header reveal">
+      <span class="tag">Architecture</span>
+      <h2>Zero-trust. Usable. Decentralized.</h2>
+    </div>
+    <div class="zud-grid">
+      <div class="panel zud-pillar reveal">
+        <span class="zud-glyph">Z</span>
+        <h3>Zero-trust</h3>
+        <p>No single party&mdash;not even Ika&mdash;can reconstruct your private key. 2PC-MPC guarantees mathematical non-collusion.</p>
+        <span class="zud-proof">200+ nodes, zero key reconstruction</span>
+      </div>
+      <div class="panel zud-pillar reveal">
+        <span class="zud-glyph">U</span>
+        <h3>Usable</h3>
+        <p>Sub-second signing. Programmable policies. Seamless integration with existing Solana programs.</p>
+        <span class="zud-proof">Sub-second latency at scale</span>
+      </div>
+      <div class="panel zud-pillar reveal">
+        <span class="zud-glyph">D</span>
+        <h3>Decentralized</h3>
+        <p>200+ validator nodes signing in parallel. Not the 4&ndash;8 node ceiling of legacy MPC networks.</p>
+        <span class="zud-proof">True parallel threshold signing</span>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <hr class="s-sep">
 
-  <!-- ═══════ CTA ═══════ -->
-  <section class="s-cta">
-    <div class="cta-glow" aria-hidden="true"></div>
-    <div class="container" style="position:relative;z-index:1">
-      <h2 class="headline reveal">Build the apps and agents<br>that can act everywhere.</h2>
-      <p class="subhead reveal rd-1">Start with wallets, treasuries, intents, or agent permissions. Build on Solana. Control any chain.</p>
-      <div class="cta-btns reveal rd-2">
-        <a href="https://docs.ika.network" target="_blank" rel="noopener" class="btn-p">Start Building <span aria-hidden="true">&rarr;</span></a>
-        <a href="use-cases.html" class="btn-s">Explore Use Cases</a>
+<!-- ═══════════════ USE CASES ═══════════════ -->
+<section class="use-cases" id="use-cases">
+  <div class="container">
+    <div class="use-cases-header reveal">
+      <span class="tag tag--brand">Programmable control</span>
+      <h2>Policy decides what can sign.</h2>
+    </div>
+    <div class="uc-grid">
+      <div class="panel uc-card uc-hero-card reveal">
+        <h3>Universal wallet infrastructure</h3>
+        <p>One address, every chain. Social recovery, spending limits, and multi-party approval enforced cryptographically.</p>
+      </div>
+      <div class="panel uc-card uc-small reveal">
+        <h3>Treasury and governance</h3>
+        <p>Multi-sig treasuries with programmable spending policies across every chain.</p>
+      </div>
+      <div class="panel uc-card uc-small reveal">
+        <h3>Agent permissions</h3>
+        <p>Give AI agents scoped signing authority with hard cryptographic limits.</p>
+      </div>
+      <div class="panel uc-card uc-pano reveal">
+        <h3>Cross-chain intents</h3>
+        <p>Express what you want. Ika signs the execution path natively on each target chain.</p>
+      </div>
+      <div class="panel uc-card uc-small reveal">
+        <h3>Native-asset DeFi</h3>
+        <p>Real BTC, real ETH. Controlled by Solana programs, settled natively.</p>
+      </div>
+      <div class="panel uc-card uc-small reveal">
+        <h3>Consumer apps</h3>
+        <p>Invisible cross-chain complexity. Users experience one interface.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  </main>
 
-  <!-- ═══════ FOOTER ═══════ -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand"><img src="./assets/logo.svg" alt="Ika" width="80" height="24"><p>&copy; 2026 Ika Network. All rights reserved.</p></div>
-        <div class="footer-col"><h4>Product</h4><a href="#">Overview</a><a href="#usecases">Use Cases</a><a href="#architecture">Architecture</a><a href="#">Roadmap</a></div>
-        <div class="footer-col"><h4>Developers</h4><a href="https://docs.ika.network" target="_blank" rel="noopener">Documentation</a><a href="#">SDK Reference</a><a href="#">GitHub</a><a href="#">Examples</a></div>
-        <div class="footer-col"><h4>Community</h4><a href="https://discord.gg/ika" target="_blank" rel="noopener">Discord</a><a href="https://twitter.com/IkaNetwork" target="_blank" rel="noopener">Twitter</a><a href="blog.html">Blog</a><a href="#">Forum</a></div>
+<!-- ═══════════════════════════════════════════════
+     ARCHITECTURE — SIGNATURE MOMENT #3
+     ═══════════════════════════════════════════════ -->
+<section class="arch-section" id="architecture">
+  <div class="container">
+    <div class="arch-header reveal">
+      <span class="tag">How it works</span>
+      <h2>From Solana to any chain, in six steps.</h2>
+    </div>
+    <div class="arch-body" id="arch-body">
+      <!-- Step rail -->
+      <div class="arch-steps" id="arch-steps">
+        <div class="arch-progress-rail"><div class="arch-progress-fill" id="arch-progress-fill"></div></div>
+        <div class="arch-step active" data-step="0">
+          <div class="arch-step-num">01</div>
+          <h3>Define authority on Solana</h3>
+        </div>
+        <div class="arch-step" data-step="1">
+          <div class="arch-step-num">02</div>
+          <h3>Create or import a dWallet</h3>
+          <p>Generate a signing identity or bring an existing key</p>
+        </div>
+        <div class="arch-step" data-step="2">
+          <div class="arch-step-num">03</div>
+          <h3>Precompute signing material</h3>
+          <p>Distributed key shares prepared across the network</p>
+        </div>
+        <div class="arch-step" data-step="3">
+          <div class="arch-step-num">04</div>
+          <h3>Request cross-chain action</h3>
+          <p>Solana program initiates a signing request to Ika</p>
+        </div>
+        <div class="arch-step" data-step="4">
+          <div class="arch-step-num">05</div>
+          <h3>Check policy &amp; approval</h3>
+          <p>Policy contract validates rules, limits, and authorization</p>
+        </div>
+        <div class="arch-step" data-step="5">
+          <div class="arch-step-num">06</div>
+          <h3>Sign &amp; execute natively</h3>
+          <p>Native signature produced and settled on destination chain</p>
+        </div>
       </div>
-      <div class="footer-bottom">
-        <span>Ika Network &mdash; The control layer for Solana</span>
-        <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Security</a></div>
+
+      <!-- Sticky diagram -->
+      <div class="arch-visual">
+        <svg viewBox="0 0 560 360" aria-hidden="true" id="arch-svg">
+          <defs>
+            <filter id="arch-glow">
+              <feGaussianBlur stdDeviation="8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <!-- Solana node -->
+          <g id="arch-sol" data-active="true">
+            <circle cx="60" cy="180" r="28" fill="none" stroke="var(--violet)" stroke-width="1.5" opacity="0.8"/>
+            <circle cx="60" cy="180" r="10" fill="var(--violet)" opacity="0.7" filter="url(#arch-glow)"/>
+            <text x="60" y="224" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--text-2)">SOL</text>
+          </g>
+          <!-- Edge Sol to Ika -->
+          <path d="M 92 180 L 210 180" fill="none" stroke="var(--stroke-1)" stroke-width="1.5" id="arch-edge-1" stroke-dasharray="200" stroke-dashoffset="200"/>
+          <!-- Ika core -->
+          <g id="arch-ika" style="opacity:0.2;transition:opacity .6s;">
+            <circle cx="280" cy="180" r="50" fill="none" stroke="var(--stroke-2)" stroke-width="1" stroke-dasharray="6 4"/>
+            <circle cx="280" cy="180" r="32" fill="var(--brand)" opacity="0.12"/>
+            <circle cx="280" cy="180" r="32" fill="none" stroke="var(--brand)" stroke-width="1.5" opacity="0.5"/>
+            <text x="280" y="184" text-anchor="middle" font-family="Inter Tight, sans-serif" font-weight="800" font-size="13" fill="white" opacity="0.7">ika</text>
+          </g>
+          <!-- Validator dots -->
+          <g id="arch-validators" style="opacity:0.1;transition:opacity .6s;">
+            <circle cx="280" cy="122" r="3" fill="var(--cyan)" opacity="0.5"/>
+            <circle cx="316" cy="134" r="2.5" fill="var(--cyan)" opacity="0.5"/>
+            <circle cx="332" cy="164" r="3" fill="var(--mint)" opacity="0.5"/>
+            <circle cx="332" cy="196" r="2.5" fill="var(--cyan)" opacity="0.5"/>
+            <circle cx="316" cy="226" r="3" fill="var(--cyan)" opacity="0.5"/>
+            <circle cx="280" cy="238" r="2.5" fill="var(--mint)" opacity="0.5"/>
+            <circle cx="244" cy="226" r="3" fill="var(--cyan)" opacity="0.5"/>
+            <circle cx="228" cy="196" r="2.5" fill="var(--cyan)" opacity="0.5"/>
+            <circle cx="228" cy="164" r="3" fill="var(--mint)" opacity="0.5"/>
+            <circle cx="244" cy="134" r="2.5" fill="var(--cyan)" opacity="0.5"/>
+          </g>
+          <!-- Policy gate -->
+          <rect x="255" y="130" width="50" height="100" rx="6" fill="none" stroke="var(--cyan)" stroke-width="1" stroke-dasharray="4 3" style="opacity:0;transition:opacity .5s;" id="arch-policy-gate"/>
+          <!-- Edges to chains -->
+          <path d="M 335 160 Q 400 120 480 90" fill="none" stroke="var(--stroke-1)" stroke-width="1.5" id="arch-edge-btc" stroke-dasharray="200" stroke-dashoffset="200"/>
+          <path d="M 335 180 Q 400 180 480 180" fill="none" stroke="var(--stroke-1)" stroke-width="1.5" id="arch-edge-eth" stroke-dasharray="200" stroke-dashoffset="200"/>
+          <path d="M 335 200 Q 400 240 480 270" fill="none" stroke="var(--stroke-1)" stroke-width="1.5" id="arch-edge-any" stroke-dasharray="200" stroke-dashoffset="200"/>
+          <!-- Chain endpoints -->
+          <g id="arch-btc" style="opacity:0.15;transition:opacity .5s;">
+            <circle cx="500" cy="80" r="18" fill="none" stroke="#f7931a" stroke-width="1.5"/>
+            <circle cx="500" cy="80" r="6" fill="#f7931a" opacity="0.7" filter="url(#arch-glow)"/>
+            <text x="500" y="112" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--text-2)">BTC</text>
+          </g>
+          <g id="arch-eth" style="opacity:0.15;transition:opacity .5s;">
+            <circle cx="500" cy="180" r="18" fill="none" stroke="#627eea" stroke-width="1.5"/>
+            <circle cx="500" cy="180" r="6" fill="#627eea" opacity="0.7" filter="url(#arch-glow)"/>
+            <text x="500" y="212" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--text-2)">ETH</text>
+          </g>
+          <g id="arch-any" style="opacity:0.15;transition:opacity .5s;">
+            <circle cx="500" cy="280" r="16" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <circle cx="500" cy="280" r="5" fill="rgba(255,255,255,0.5)"/>
+            <text x="500" y="310" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--text-2)">ANY</text>
+          </g>
+        </svg>
       </div>
     </div>
-  </footer>
+  </div>
+</section>
 
-  <script>
-/* ═══════════════════════════════════
-   IKA — Main Script
-═══════════════════════════════════ */
-(function(){
-  var pRM = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-  /* ── Progress bar ── */
-  var bar = document.querySelector('.progress-bar');
-  function updateBar(){
+<!-- ═══════════════ MARQUEE ═══════════════ -->
+<section class="marquee">
+  <div class="marquee-track">
+    <span class="marquee-item">Solana</span>
+    <span class="marquee-item">Bitcoin</span>
+    <span class="marquee-item">Ethereum</span>
+    <span class="marquee-item">Sui</span>
+    <span class="marquee-item">Aptos</span>
+    <span class="marquee-item">Arbitrum</span>
+    <span class="marquee-item">Cosmos</span>
+    <span class="marquee-item">Polkadot</span>
+    <span class="marquee-item">Solana</span>
+    <span class="marquee-item">Bitcoin</span>
+    <span class="marquee-item">Ethereum</span>
+    <span class="marquee-item">Sui</span>
+    <span class="marquee-item">Aptos</span>
+    <span class="marquee-item">Arbitrum</span>
+    <span class="marquee-item">Cosmos</span>
+    <span class="marquee-item">Polkadot</span>
+  </div>
+</section>
+
+
+<!-- ═══════════════ RESEARCH ═══════════════ -->
+<section class="research" id="research">
+  <div class="container">
+    <div class="research-header reveal">
+      <span class="tag">Research</span>
+      <h2>The cryptography behind programmable authority</h2>
+    </div>
+    <div class="research-grid">
+      <div class="panel research-featured reveal">
+        <span class="research-type">Whitepaper</span>
+        <h3>Ika Network</h3>
+        <p>The architecture, protocol design, and economic model behind Ika&rsquo;s programmable signing infrastructure.</p>
+      </div>
+      <div class="panel research-card reveal">
+        <span class="research-type">Cryptography</span>
+        <h3>2PC-MPC v2</h3>
+        <p>Breakthrough threshold cryptography where no single party ever holds a reconstructable private key.</p>
+      </div>
+      <div class="panel research-card reveal">
+        <span class="research-type">Security Model</span>
+        <h3>Zero-trust Architecture</h3>
+        <p>Mathematical non-collusion guarantees across 200+ validator nodes.</p>
+      </div>
+      <div class="panel research-card reveal">
+        <span class="research-type">Integration</span>
+        <h3>Solana Program Integration</h3>
+        <p>How dWallet contracts integrate with Solana programs for policy enforcement.</p>
+      </div>
+      <div class="panel research-card reveal">
+        <span class="research-type">Example</span>
+        <h3>KeySpring</h3>
+        <p>Reference implementation for session-style key delegation with automatic expiration.</p>
+      </div>
+      <div class="panel research-card reveal">
+        <span class="research-type">Case Study</span>
+        <h3>Wallet-as-a-Protocol</h3>
+        <p>Universal wallet infrastructure built on programmable signing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ BACKERS ═══════════════ -->
+<section class="backers">
+  <div class="container">
+    <div class="backers-header reveal">
+      <span class="tag">Backed by</span>
+    </div>
+    <div class="backers-logos reveal">
+      <img src="./assets/logo-dcg.png" alt="DCG" loading="lazy">
+      <img src="./assets/logo-mysten-labs.png" alt="Mysten Labs" loading="lazy">
+      <img src="./assets/logo-falconX.png" alt="FalconX" loading="lazy">
+      <img src="./assets/logo-big-brain-holdings.png" alt="Big Brain Holdings" loading="lazy">
+      <img src="./assets/logo-blockchange.png" alt="Blockchange" loading="lazy">
+      <img src="./assets/logo-amplify.png" alt="Amplify" loading="lazy">
+      <img src="./assets/logo-liquid2.png" alt="Liquid2" loading="lazy">
+      <img src="./assets/logo-dwallet-labs.png" alt="dWallet Labs" loading="lazy">
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ FINAL CTA ═══════════════ -->
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-glow-orb" id="cta-glow"></div>
+    <h2 class="reveal">Build the apps and agents that act everywhere.</h2>
+    <p class="reveal">Start with wallets, treasuries, intents, or agent permissions. Build on Solana. Control any chain.</p>
+    <div class="hero-ctas reveal">
+      <a href="#" class="btn-primary">Start Building &rarr;</a>
+      <a href="#" class="btn-secondary">Explore Use Cases</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="nav-logo">
+          <img src="./assets/logo.svg" alt="" width="28" height="28">
+          <span style="font-family:'Inter Tight',sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.02em;">ika</span>
+        </a>
+        <p>&copy; 2026 Ika Network. All rights reserved.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#">Overview</a>
+        <a href="#use-cases">Use Cases</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#">Roadmap</a>
+      </div>
+      <div class="footer-col">
+        <h4>Developers</h4>
+        <a href="#">Documentation</a>
+        <a href="#">SDK Reference</a>
+        <a href="#">GitHub</a>
+        <a href="#">Examples</a>
+      </div>
+      <div class="footer-col">
+        <h4>Community</h4>
+        <a href="#">Discord</a>
+        <a href="#">Twitter</a>
+        <a href="#">Blog</a>
+        <a href="#">Forum</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Solana decides. Ika signs.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- CDN Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.1.18/dist/lenis.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   MAIN SCRIPT — all JS in one inline block
+   ═══════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function() {
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var isMobile = window.innerWidth < 768;
+
+  /* ── 1. PROGRESS BAR ── */
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress() {
     var h = document.documentElement.scrollHeight - window.innerHeight;
-    bar.style.transform = 'scaleX(' + (h > 0 ? Math.min(window.scrollY/h,1) : 0) + ')';
+    progressBar.style.transform = 'scaleX(' + (h > 0 ? window.scrollY / h : 0) + ')';
   }
-  window.addEventListener('scroll', updateBar, {passive:true});
+  window.addEventListener('scroll', updateProgress, { passive: true });
 
-  /* ── Nav scroll ── */
+  /* ── 2. NAV SCROLL ── */
   var nav = document.querySelector('.nav');
-  var tick = false;
-  window.addEventListener('scroll', function(){
-    if(!tick){requestAnimationFrame(function(){nav.classList.toggle('scrolled',window.scrollY>50);tick=false});tick=true}
-  }, {passive:true});
-
-  /* ── Mobile nav ── */
-  var tog = document.getElementById('navToggle');
-  var mob = document.getElementById('mobileNav');
-  function toggleMenu(){
-    var open = !mob.classList.contains('open');
-    tog.classList.toggle('active',open);
-    mob.classList.toggle('open',open);
-    tog.setAttribute('aria-expanded',String(open));
-    mob.setAttribute('aria-hidden',String(!open));
-    document.body.style.overflow = open ? 'hidden' : '';
+  function updateNav() {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
   }
-  tog.addEventListener('click',toggleMenu);
-  mob.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){if(mob.classList.contains('open'))toggleMenu()})});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&mob.classList.contains('open'))toggleMenu()});
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
 
-  /* ── Wait for GSAP ── */
-  function init(){
-    if(typeof gsap==='undefined'||typeof ScrollTrigger==='undefined'){setTimeout(init,100);return}
+  /* ── 3. MOBILE NAV ── */
+  var hamburger = document.querySelector('.nav-hamburger');
+  var mobileNav = document.querySelector('.mobile-nav');
+  hamburger.addEventListener('click', function() {
+    var isOpen = hamburger.classList.toggle('open');
+    mobileNav.classList.toggle('open', isOpen);
+    mobileNav.setAttribute('aria-hidden', String(!isOpen));
+    hamburger.setAttribute('aria-expanded', String(isOpen));
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+  mobileNav.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      hamburger.classList.remove('open');
+      mobileNav.classList.remove('open');
+      mobileNav.setAttribute('aria-hidden', 'true');
+      hamburger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    });
+  });
+
+  /* ── REDUCED MOTION: reveal everything, skip animations ── */
+  if (prefersReduced) {
+    document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('vis'); });
+    var rule = document.querySelector('.interlude-rule');
+    if (rule) rule.classList.add('vis');
+    // Still run agent state machine (non-motion)
+    initAgentDemo();
+    return;
+  }
+
+  /* ── WAIT FOR GSAP + ScrollTrigger ── */
+  function waitForGSAP(cb) {
+    if (window.gsap && window.ScrollTrigger) { cb(); return; }
+    var check = setInterval(function() {
+      if (window.gsap && window.ScrollTrigger) { clearInterval(check); cb(); }
+    }, 50);
+  }
+
+  waitForGSAP(function() {
     gsap.registerPlugin(ScrollTrigger);
 
-    /* Lenis */
-    if(typeof Lenis!=='undefined'&&!pRM){
-      var lenis = new Lenis({lerp:.1,smoothWheel:true});
-      lenis.on('scroll',ScrollTrigger.update);
-      gsap.ticker.add(function(t){lenis.raf(t*1000)});
+    /* ── 4. LENIS SMOOTH SCROLL ── */
+    if (window.Lenis && !isMobile) {
+      var lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(function(time) { lenis.raf(time * 1000); });
       gsap.ticker.lagSmoothing(0);
     }
 
-    /* ── Reveal system ── */
-    document.querySelectorAll('.reveal').forEach(function(el){
-      if(el.closest('.hero')) return;
-      if(pRM){el.classList.add('vis');return}
+    /* ── 5. REVEAL SYSTEM ── */
+    document.querySelectorAll('.reveal').forEach(function(el) {
       ScrollTrigger.create({
-        trigger:el, start:'top 88%', once:true,
-        onEnter:function(){el.classList.add('vis')}
+        trigger: el,
+        start: 'top 88%',
+        once: true,
+        onEnter: function() { el.classList.add('vis'); }
       });
     });
 
-    /* Interlude rule */
-    ScrollTrigger.create({trigger:'.interlude-rule',start:'top 75%',once:true,onEnter:function(){document.querySelector('.interlude-rule').classList.add('vis')}});
+    /* ── 6. HERO ENTRANCE CHOREOGRAPHY ── */
+    var heroTl = gsap.timeline({ delay: 0.3 });
+    heroTl
+      .from('.hero-eyebrow', { opacity: 0, y: 20, duration: 0.6 })
+      .from('.hero h1', { opacity: 0, y: 30, duration: 0.7 }, '-=0.3')
+      .from('.hero-sub', { opacity: 0, y: 20, duration: 0.5 }, '-=0.3')
+      .from('.hero-ctas', { opacity: 0, y: 16, duration: 0.5 }, '-=0.2')
+      .from('.hero-micro', { opacity: 0, duration: 0.4 }, '-=0.2')
+      .from('.hero-visual', { opacity: 0, scale: 0.92, duration: 0.9, ease: 'power2.out' }, '-=0.6')
+      .from('.perm-chip', { opacity: 0, scale: 0.8, stagger: 0.1, duration: 0.4 }, '-=0.3');
 
-    /* ── Hero entrance ── */
-    var heroEls = document.querySelectorAll('.hero .reveal');
-    if(!pRM){
-      gsap.set('.hero .reveal',{opacity:0,y:28});
-      gsap.set('.hero-visual',{opacity:0,scale:.96});
-      gsap.set('.perm-chip',{scale:0,opacity:0});
-      gsap.set('.layer-bg',{opacity:0});
-      gsap.set('.layer-mid',{opacity:0});
-      gsap.set('.layer-fg',{opacity:0,scale:.9,transformOrigin:'260px 260px'});
-      gsap.set('.chain-node',{opacity:0,scale:.8,transformOrigin:'center'});
+    // Mark hero reveals done
+    document.querySelectorAll('.hero .reveal').forEach(function(el) { el.classList.add('vis'); });
 
-      var tl = gsap.timeline({delay:.15});
-      /* Text */
-      tl.to('.hero-eyebrow',{opacity:1,y:0,duration:.6,ease:'power3.out'})
-        .to('.hero-h1',{opacity:1,y:0,duration:.7,ease:'power3.out'},'-=-.25')
-        .to('.hero-sub',{opacity:1,y:0,duration:.6,ease:'power3.out'},'-=.35')
-        .to('.hero-ctas',{opacity:1,y:0,duration:.5,ease:'power3.out'},'-=.3')
-        .to('.hero-micro',{opacity:1,y:0,duration:.5,ease:'power3.out'},'-=.2');
-      /* Visual */
-      tl.to('.hero-visual',{opacity:1,scale:1,duration:.8,ease:'power3.out'},.3)
-        .to('.layer-bg',{opacity:1,duration:1,ease:'power2.out'},.4)
-        .to('.layer-fg',{opacity:1,scale:1,duration:.8,ease:'back.out(1.4)'},.7)
-        .to('.layer-mid',{opacity:1,duration:.6,ease:'power2.out'},.9)
-        .to('.chain-node',{opacity:1,scale:1,duration:.5,stagger:.1,ease:'back.out(1.5)'},1.2)
-        .to('.perm-chip',{scale:1,opacity:1,duration:.45,stagger:{each:.07,from:'random'},ease:'back.out(1.7)'},1.5);
-
-      /* Hero parallax departure */
-      gsap.to('.hero-text',{y:-80,opacity:0,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'70% top',scrub:true}});
-      gsap.to('.hero-visual',{y:-30,scale:.93,opacity:0,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'70% top',scrub:true}});
-
-      /* Mouse parallax (desktop) */
-      if(window.innerWidth>768){
-        var heroEl=document.querySelector('.hero');
-        var bg=document.querySelector('.layer-bg');
-        var mid=document.querySelector('.layer-mid');
-        var fgs=document.querySelectorAll('.layer-fg');
-        var chips=document.querySelector('.permission-chips');
-        heroEl.addEventListener('mousemove',function(e){
-          var r=heroEl.getBoundingClientRect();
-          var cx=(e.clientX-r.left)/r.width-.5;
-          var cy=(e.clientY-r.top)/r.height-.5;
-          gsap.to(bg,{x:cx*6,y:cy*4,duration:.8,ease:'power2.out',overwrite:'auto'});
-          gsap.to(mid,{x:cx*12,y:cy*8,duration:.7,ease:'power2.out',overwrite:'auto'});
-          fgs.forEach(function(f){gsap.to(f,{x:cx*18,y:cy*12,duration:.6,ease:'power2.out',overwrite:'auto'})});
-          if(chips)gsap.to(chips,{x:cx*28,y:cy*18,duration:.5,ease:'power2.out',overwrite:'auto'});
+    /* ── 7. HERO PARALLAX (desktop) ── */
+    if (!isMobile) {
+      var heroSection = document.querySelector('.hero');
+      var layers = document.querySelectorAll('.hero-layer');
+      heroSection.addEventListener('mousemove', function(e) {
+        var rect = heroSection.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width - 0.5;
+        var y = (e.clientY - rect.top) / rect.height - 0.5;
+        layers.forEach(function(layer) {
+          var depth = parseFloat(layer.dataset.depth) || 0.03;
+          var mx = x * depth * 400;
+          var my = y * depth * 400;
+          layer.style.transform = 'translate(' + mx + 'px, ' + my + 'px)';
         });
+      });
+    }
+
+    /* ── 8. HERO DEPARTURE ── */
+    gsap.to('.hero-text', {
+      y: -60, opacity: 0,
+      scrollTrigger: { trigger: '.hero', start: 'bottom 90%', end: 'bottom 40%', scrub: 1 }
+    });
+    gsap.to('.hero-visual', {
+      scale: 0.85, opacity: 0,
+      scrollTrigger: { trigger: '.hero', start: 'bottom 90%', end: 'bottom 40%', scrub: 1 }
+    });
+
+    /* ── 9. PERMISSION CHIP CYCLING ── */
+    var chips = document.querySelectorAll('.perm-chip');
+    var chipIdx = 0;
+    setInterval(function() {
+      chips.forEach(function(c) { c.classList.remove('active'); });
+      chipIdx = (chipIdx + 1) % chips.length;
+      chips[chipIdx].classList.add('active');
+    }, 2200);
+
+    /* ── 10. INTERLUDE RULE ── */
+    ScrollTrigger.create({
+      trigger: '.interlude-rule',
+      start: 'top 85%',
+      once: true,
+      onEnter: function() { document.querySelector('.interlude-rule').classList.add('vis'); }
+    });
+
+    /* ── 11. ZUD GLYPH ENTRANCE ── */
+    gsap.utils.toArray('.zud-glyph').forEach(function(glyph) {
+      gsap.from(glyph, {
+        scale: 2.5, opacity: 0, duration: 1.2, ease: 'power3.out',
+        scrollTrigger: { trigger: glyph.parentElement, start: 'top 80%', once: true }
+      });
+    });
+
+    /* ── 12. CTA GLOW PULSE ── */
+    gsap.to('#cta-glow', {
+      scale: 1.15, duration: 2.5, ease: 'sine.inOut',
+      yoyo: true, repeat: -1
+    });
+
+    /* ── 13. AGENT DEMO ── */
+    initAgentDemo();
+
+    /* ── 14. ARCHITECTURE SCROLLYTELLING ── */
+    if (!isMobile) {
+      var archBody = document.getElementById('arch-body');
+      var archSteps = document.querySelectorAll('.arch-step');
+      var archFill = document.getElementById('arch-progress-fill');
+      var totalSteps = archSteps.length;
+      var archIka = document.getElementById('arch-ika');
+      var archValidators = document.getElementById('arch-validators');
+      var archEdge1 = document.getElementById('arch-edge-1');
+      var archPolicyGate = document.getElementById('arch-policy-gate');
+      var archEdgeBtc = document.getElementById('arch-edge-btc');
+      var archEdgeEth = document.getElementById('arch-edge-eth');
+      var archEdgeAny = document.getElementById('arch-edge-any');
+      var archBtc = document.getElementById('arch-btc');
+      var archEth = document.getElementById('arch-eth');
+      var archAny = document.getElementById('arch-any');
+
+      function setArchStep(step) {
+        archSteps.forEach(function(s, i) { s.classList.toggle('active', i <= step); });
+        archFill.style.height = ((step + 1) / totalSteps * 100) + '%';
+        archIka.style.opacity = step >= 1 ? '1' : '0.2';
+        archValidators.style.opacity = step >= 2 ? '0.8' : '0.1';
+        archEdge1.style.strokeDashoffset = step >= 3 ? '0' : '200';
+        archEdge1.style.transition = 'stroke-dashoffset 0.8s ease';
+        archPolicyGate.style.opacity = step >= 4 ? '0.6' : '0';
+        var ev = step >= 5 ? '0' : '200';
+        [archEdgeBtc, archEdgeEth, archEdgeAny].forEach(function(e) {
+          e.style.strokeDashoffset = ev;
+          e.style.transition = 'stroke-dashoffset 0.8s ease 0.1s';
+        });
+        archBtc.style.opacity = step >= 5 ? '0.9' : '0.15';
+        archEth.style.opacity = step >= 5 ? '0.9' : '0.15';
+        archAny.style.opacity = step >= 5 ? '0.7' : '0.15';
       }
+
+      setArchStep(0);
+
+      ScrollTrigger.create({
+        trigger: archBody,
+        start: 'top 20%',
+        end: 'bottom 80%',
+        onUpdate: function(self) {
+          var step = Math.min(totalSteps - 1, Math.floor(self.progress * totalSteps));
+          setArchStep(step);
+        }
+      });
     } else {
-      heroEls.forEach(function(el){el.classList.add('vis')});
+      // Mobile: show all, no pinning
+      document.querySelectorAll('.arch-step').forEach(function(s) { s.classList.add('active'); });
+      document.getElementById('arch-progress-fill').style.height = '100%';
     }
+  });
 
-    /* ── AI Agent step activation ── */
-    if(!pRM){
-      var steps=document.querySelectorAll('.agent-step');
-      steps.forEach(function(step,i){
-        ScrollTrigger.create({
-          trigger:step, start:'top 80%', once:true,
-          onEnter:function(){
-            step.classList.add('active');
-            gsap.from(step,{x:-20,opacity:0,duration:.5,ease:'power3.out'});
-          }
-        });
-      });
-      gsap.from('.guardrail-card',{y:20,opacity:0,duration:.5,stagger:.1,ease:'power3.out',scrollTrigger:{trigger:'.guardrail-grid',start:'top 80%'}});
-      gsap.from('.guardrail-dot',{scale:0,duration:.4,stagger:.08,ease:'back.out(2)',scrollTrigger:{trigger:'.guardrail-grid',start:'top 80%'}});
-    }
+  /* ── AGENT DEMO STATE MACHINE ── */
+  function initAgentDemo() {
+    var states = ['idle', 'validating', 'approved', 'settled'];
+    var labels = { idle: 'Idle', validating: 'Validating', approved: 'Approved', settled: 'Settled' };
+    var agentState = 0;
+    var badge = document.getElementById('agent-badge');
+    var logEntries = document.querySelectorAll('.log-entry');
+    var routeLabel = document.getElementById('route-state-label');
+    var seg1 = document.getElementById('route-seg-1');
+    var seg2 = document.getElementById('route-seg-2');
+    var agentRing = document.getElementById('agent-node-ring');
+    var agentCore = document.getElementById('agent-node-core');
+    var ethRing = document.getElementById('eth-node-ring');
+    var ethCore = document.getElementById('eth-node-core');
+    var ikaPR = document.getElementById('ika-policy-ring');
+    var ikaCR = document.getElementById('ika-core-ring');
+    var routeSvg = document.getElementById('agent-route-svg');
+    var vDots = routeSvg ? routeSvg.querySelectorAll('.v-dot') : [];
 
-    /* ── ZUD letter scale ── */
-    if(!pRM){
-      document.querySelectorAll('.zud-letter').forEach(function(l,i){
-        gsap.from(l,{scale:2.5,opacity:0,duration:1,ease:'expo.out',delay:i*.15,scrollTrigger:{trigger:l,start:'top 85%'}});
-      });
-    }
+    if (!badge || !routeLabel) return;
 
-    /* ── Architecture scrollytelling (desktop) ── */
-    if(window.innerWidth>768){
-      var archSec=document.querySelector('.s-arch');
-      var archVis=document.querySelector('.arch-visual');
-      var archSteps=document.querySelectorAll('.arch-step');
-      var archNodes=document.querySelectorAll('.arch-node');
-      var archEdges=document.querySelectorAll('.arch-edge');
-      var pGates=document.querySelectorAll('.policy-gate');
-      var archRail=document.querySelector('.arch-rail');
+    function apply(si) {
+      var s = states[si];
+      badge.textContent = labels[s];
+      badge.dataset.state = s;
+      routeLabel.textContent = s.toUpperCase();
+      logEntries.forEach(function(e, i) { e.classList.toggle('show', i <= si); });
 
-      function setStep(idx){
-        archSteps.forEach(function(s,i){s.classList.toggle('active',i===idx)});
-        archNodes.forEach(function(n){
-          var ns=n.dataset.nodes?n.dataset.nodes.split(',').map(Number):[];
-          n.classList.toggle('dim',ns.length>0&&ns.indexOf(idx)===-1);
-        });
-        archEdges.forEach(function(e){
-          var es=e.dataset.edges?e.dataset.edges.split(',').map(Number):[];
-          e.classList.toggle('dim',es.length>0&&es.indexOf(idx)===-1);
-          if(!pRM&&es.indexOf(idx)!==-1){
-            var len=e.getTotalLength?e.getTotalLength():100;
-            gsap.fromTo(e,{strokeDasharray:len,strokeDashoffset:len},{strokeDashoffset:0,duration:.7,ease:'power2.out',overwrite:true});
-          }
-        });
-        pGates.forEach(function(g){g.classList.toggle('active',idx===4)});
+      var dim = 'var(--stroke-1)';
+      if (s === 'idle') {
+        seg1.setAttribute('stroke', dim); seg2.setAttribute('stroke', dim);
+        agentRing.setAttribute('stroke', 'var(--text-2)'); agentCore.setAttribute('fill', 'var(--text-2)');
+        ethRing.setAttribute('stroke', 'var(--text-2)'); ethCore.setAttribute('fill', 'var(--text-2)');
+        ikaPR.setAttribute('stroke', dim); ikaCR.setAttribute('stroke', 'var(--brand)');
+        vDots.forEach(function(d) { d.setAttribute('fill', 'var(--text-2)'); d.setAttribute('opacity', '0.3'); });
+        routeLabel.setAttribute('fill', 'var(--text-2)');
+      } else if (s === 'validating') {
+        seg1.setAttribute('stroke', 'var(--cyan)'); seg2.setAttribute('stroke', dim);
+        agentRing.setAttribute('stroke', 'var(--cyan)'); agentCore.setAttribute('fill', 'var(--cyan)');
+        ethRing.setAttribute('stroke', 'var(--text-2)'); ethCore.setAttribute('fill', 'var(--text-2)');
+        ikaPR.setAttribute('stroke', 'var(--cyan)'); ikaCR.setAttribute('stroke', 'var(--cyan)');
+        vDots.forEach(function(d) { d.setAttribute('fill', 'var(--cyan)'); d.setAttribute('opacity', '0.7'); });
+        routeLabel.setAttribute('fill', 'var(--cyan)');
+      } else if (s === 'approved') {
+        seg1.setAttribute('stroke', 'var(--mint)'); seg2.setAttribute('stroke', 'var(--mint)');
+        agentRing.setAttribute('stroke', 'var(--mint)'); agentCore.setAttribute('fill', 'var(--mint)');
+        ethRing.setAttribute('stroke', 'var(--text-2)'); ethCore.setAttribute('fill', 'var(--text-2)');
+        ikaPR.setAttribute('stroke', 'var(--mint)'); ikaCR.setAttribute('stroke', 'var(--mint)');
+        vDots.forEach(function(d) { d.setAttribute('fill', 'var(--mint)'); d.setAttribute('opacity', '0.8'); });
+        routeLabel.setAttribute('fill', 'var(--mint)');
+      } else { // settled
+        seg1.setAttribute('stroke', 'var(--mint)'); seg2.setAttribute('stroke', 'var(--mint)');
+        agentRing.setAttribute('stroke', 'var(--mint)'); agentCore.setAttribute('fill', 'var(--mint)');
+        ethRing.setAttribute('stroke', 'var(--mint)'); ethCore.setAttribute('fill', 'var(--mint)');
+        ikaPR.setAttribute('stroke', 'var(--mint)'); ikaCR.setAttribute('stroke', 'var(--mint)');
+        vDots.forEach(function(d) { d.setAttribute('fill', 'var(--mint)'); d.setAttribute('opacity', '1'); });
+        routeLabel.setAttribute('fill', 'var(--mint)');
       }
-
-      ScrollTrigger.create({trigger:archSec,start:'top top',end:'bottom bottom',pin:archVis,pinSpacing:false});
-      ScrollTrigger.create({trigger:archSec,start:'top top',end:'bottom bottom',scrub:true,onUpdate:function(s){archRail.style.setProperty('--arch-prog',s.progress)}});
-      archSteps.forEach(function(s,i){
-        ScrollTrigger.create({trigger:s,start:'top center',end:'bottom center',onEnter:function(){setStep(i)},onEnterBack:function(){setStep(i)}});
-      });
-      setStep(0);
     }
 
-    /* ── CTA glow pulse ── */
-    if(!pRM){gsap.to('.cta-glow',{scale:1.3,opacity:.6,duration:3,yoyo:true,repeat:-1,ease:'sine.inOut'})}
+    apply(0);
+    setInterval(function() {
+      agentState = (agentState + 1) % states.length;
+      apply(agentState);
+    }, 2500);
   }
-
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(init,50)});
-  else setTimeout(init,50);
-})();
-  </script>
+});
+</script>
 </body>
 </html>
