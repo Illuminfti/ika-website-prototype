@@ -1953,8 +1953,9 @@
         });
       });
 
-      /* ── Reveal on scroll (IntersectionObserver fallback if no GSAP) ── */
-      var revealEls = document.querySelectorAll('.reveal');
+      /* ── Reveal on scroll (IntersectionObserver) ── */
+      /* Exclude hero elements — GSAP handles the hero entrance separately */
+      var revealEls = document.querySelectorAll('.reveal:not(.hero .reveal)');
       if ('IntersectionObserver' in window) {
         var observer = new IntersectionObserver(function(entries) {
           entries.forEach(function(entry) {
@@ -1973,6 +1974,13 @@
         });
       }
 
+      /* Make hero visible immediately if GSAP doesn't load within 2s */
+      var heroFallbackTimer = setTimeout(function() {
+        document.querySelectorAll('.hero .reveal').forEach(function(el) {
+          el.classList.add('visible');
+        });
+      }, 2000);
+
       /* ── Wait for GSAP to be available ── */
       function initGSAP() {
         if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
@@ -1982,20 +1990,26 @@
         gsap.registerPlugin(ScrollTrigger);
 
         /* ── Hero entrance animation ── */
+        clearTimeout(heroFallbackTimer);
         var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var heroReveals = document.querySelectorAll('.hero .reveal');
         if (!prefersReduced) {
-          var heroTimeline = gsap.timeline({ delay: 0.2 });
-          var heroReveals = document.querySelectorAll('.hero .reveal');
-          heroReveals.forEach(function(el) {
-            el.classList.add('visible');
-          });
+          /* Set initial state explicitly so there's no flash */
+          gsap.set('.hero-eyebrow, .hero-headline, .hero-sub, .hero-buttons, .hero-micro', { opacity: 0, y: 20 });
+          gsap.set('.hero-visual', { opacity: 0, scale: 0.95 });
+          /* Mark visible so CSS transition doesn't fight GSAP */
+          heroReveals.forEach(function(el) { el.classList.add('visible'); });
+          var heroTimeline = gsap.timeline({ delay: 0.15 });
           heroTimeline
-            .from('.hero-eyebrow', { opacity: 0, y: 20, duration: 0.6, ease: 'power3.out' })
-            .from('.hero-headline', { opacity: 0, y: 30, duration: 0.7, ease: 'power3.out' }, '-=0.3')
-            .from('.hero-sub', { opacity: 0, y: 20, duration: 0.6, ease: 'power3.out' }, '-=0.4')
-            .from('.hero-buttons', { opacity: 0, y: 20, duration: 0.5, ease: 'power3.out' }, '-=0.3')
-            .from('.hero-micro', { opacity: 0, duration: 0.5, ease: 'power3.out' }, '-=0.2')
-            .from('.hero-visual', { opacity: 0, scale: 0.9, duration: 0.8, ease: 'power3.out' }, '-=0.6');
+            .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' })
+            .to('.hero-headline', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.3')
+            .to('.hero-sub', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.4')
+            .to('.hero-buttons', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.3')
+            .to('.hero-micro', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.2')
+            .to('.hero-visual', { opacity: 1, scale: 1, duration: 0.8, ease: 'power3.out' }, '-=0.6');
+        } else {
+          /* Reduced motion — just show everything */
+          heroReveals.forEach(function(el) { el.classList.add('visible'); });
         }
 
         /* ── Architecture Scrollytelling (desktop only) ── */
