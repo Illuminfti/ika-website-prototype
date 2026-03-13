@@ -77,7 +77,7 @@ ul { list-style: none; }
 .tag--cyan { color: var(--cyan); }
 
 h1, h2, h3 { font-family: 'Inter Tight', sans-serif; font-weight: 800; color: var(--text-0); }
-h1 { font-size: clamp(3.5rem, 8vw, 7rem); line-height: .92; letter-spacing: -0.05em; }
+h1 { font-size: clamp(2.6rem, 5.5vw, 4.8rem); line-height: .94; letter-spacing: -0.04em; overflow-wrap: normal; word-break: keep-all; hyphens: none; }
 h2 { font-size: clamp(2rem, 4vw, 3.5rem); line-height: .96; letter-spacing: -0.03em; }
 h3 { font-size: clamp(1.15rem, 2vw, 1.4rem); line-height: 1.2; font-weight: 700; }
 p { color: var(--text-1); }
@@ -353,7 +353,7 @@ p { color: var(--text-1); }
 .problem-left h2 { margin-bottom: 20px; max-width: 480px; }
 .problem-left p { max-width: 440px; font-size: 17px; }
 .problem-cards { display: flex; flex-direction: column; gap: 24px; }
-.problem-card { min-height: 280px; display: flex; flex-direction: column; justify-content: flex-end; }
+.problem-card { min-height: 320px; display: flex; flex-direction: column; justify-content: flex-end; }
 .problem-card-svg {
   flex: 1; display: flex; align-items: center; justify-content: center;
   margin-bottom: 20px; padding-top: 24px;
@@ -376,22 +376,34 @@ p { color: var(--text-1); }
 .solution-left > p { max-width: 440px; font-size: 17px; }
 .solution-steps { display: flex; flex-direction: column; gap: 28px; }
 .solution-step {
-  padding: 32px; border-left: 2px solid var(--stroke-1);
+  padding: 28px 32px; border-left: 2px solid var(--stroke-1);
   transition: border-color .4s, background .4s, transform .3s;
   border-radius: 0 16px 16px 0;
+  display: flex; gap: 20px; align-items: flex-start;
 }
 .solution-step:hover {
   border-color: var(--brand);
   background: rgba(238,43,91,0.03);
   transform: translateX(4px);
 }
+.step-icon {
+  flex-shrink: 0; width: 48px; height: 48px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(238,43,91,0.06); border-radius: 14px;
+  border: 1px solid rgba(238,43,91,0.1);
+  transition: border-color .3s, background .3s;
+}
+.solution-step:hover .step-icon {
+  border-color: rgba(238,43,91,0.2); background: rgba(238,43,91,0.08);
+}
+.step-content { flex: 1; }
 .solution-step .step-num {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 13px; font-weight: 500;
-  color: var(--brand-light); margin-bottom: 8px;
-  letter-spacing: 0.04em;
+  font-size: 12px; font-weight: 500;
+  color: var(--brand-light); margin-bottom: 6px;
+  letter-spacing: 0.06em;
 }
-.solution-step h3 { margin-bottom: 8px; }
+.solution-step h3 { margin-bottom: 6px; }
 .solution-step p { font-size: 15px; }
 
 /* ═══════════════════════════════════════════
@@ -450,6 +462,12 @@ p { color: var(--text-1); }
 }
 .triptych-panel h3 { margin-bottom: 12px; font-size: 1.3rem; }
 .triptych-panel p { font-size: 15px; }
+.triptych-visual {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  margin-bottom: 24px; min-height: 140px;
+}
+.triptych-visual svg { opacity: 0.7; transition: opacity .4s; }
+.triptych-panel:hover .triptych-visual svg { opacity: 1; }
 
 /* ═══════════════════════════════════════════
    AGENT DEMO
@@ -551,14 +569,29 @@ p { color: var(--text-1); }
 }
 .zud-glyph {
   position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -60%);
+  transform: translate(-50%, -58%);
   font-family: 'Inter Tight', sans-serif; font-weight: 800;
-  font-size: clamp(8rem, 14vw, 14rem);
-  color: rgba(255,255,255,0.04);
+  font-size: clamp(7rem, 12vw, 12rem);
+  color: rgba(255,255,255,0.07);
   line-height: 1; pointer-events: none; user-select: none;
-  text-shadow: 0 0 80px rgba(238,43,91,0.04);
-  transition: color 1s ease;
+  text-shadow: 0 0 120px rgba(238,43,91,0.08), 0 0 60px rgba(238,43,91,0.04);
+  transition: color 1.2s ease, text-shadow 1.2s ease;
 }
+.zud-pillar:hover .zud-glyph {
+  color: rgba(238,43,91,0.12);
+  text-shadow: 0 0 120px rgba(238,43,91,0.15), 0 0 60px rgba(238,43,91,0.08);
+}
+.zud-pillar::before {
+  content: ''; position: absolute; top: 30%; left: 50%;
+  width: 200px; height: 200px; border-radius: 50%;
+  transform: translate(-50%, -30%);
+  pointer-events: none; opacity: 0;
+  transition: opacity .6s;
+}
+.zud-pillar:nth-child(1)::before { background: radial-gradient(circle, rgba(238,43,91,0.06), transparent 70%); }
+.zud-pillar:nth-child(2)::before { background: radial-gradient(circle, rgba(117,241,255,0.06), transparent 70%); }
+.zud-pillar:nth-child(3)::before { background: radial-gradient(circle, rgba(183,140,255,0.06), transparent 70%); }
+.zud-pillar:hover::before { opacity: 1; }
 .zud-pillar h3 { margin-bottom: 12px; font-size: 1.4rem; position: relative; z-index: 1; }
 .zud-pillar > p { font-size: 15px; position: relative; z-index: 1; max-width: 320px; margin: 0 auto 16px; }
 .zud-proof {
@@ -584,6 +617,15 @@ p { color: var(--text-1); }
 .uc-card:hover { border-color: var(--stroke-2); }
 .uc-card h3 { margin-bottom: 8px; font-size: 1.15rem; }
 .uc-card p { font-size: 14px; }
+.uc-icon {
+  width: 44px; height: 44px; margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.03); border-radius: 12px;
+  border: 1px solid var(--stroke-1);
+  transition: border-color .3s, background .3s;
+}
+.uc-card:hover .uc-icon { border-color: var(--stroke-2); background: rgba(255,255,255,0.05); }
+.uc-hero-card .uc-icon { width: 56px; height: 56px; border-radius: 16px; margin-bottom: 20px; }
 .uc-hero-card {
   grid-column: span 2; grid-row: span 2; min-height: 380px;
   border-color: rgba(238,43,91,0.12);
@@ -711,6 +753,13 @@ p { color: var(--text-1); }
 }
 .research-card h3 { font-size: 1.1rem; margin-bottom: 6px; }
 .research-card p { font-size: 13px; }
+.research-card::after {
+  content: '\2192'; position: absolute; bottom: clamp(28px,4vw,48px); right: clamp(28px,4vw,48px);
+  font-size: 18px; color: var(--text-2);
+  transition: transform .3s, color .3s;
+}
+.research-card { position: relative; cursor: pointer; }
+.research-card:hover::after { transform: translateX(4px); color: var(--brand-light); }
 
 /* ═══════════════════════════════════════════
    BACKERS
@@ -723,10 +772,10 @@ p { color: var(--text-1); }
   gap: clamp(32px, 5vw, 64px);
 }
 .backers-logos img {
-  height: 28px; filter: grayscale(1) brightness(1.2);
-  opacity: 0.25; transition: opacity .4s, filter .4s;
+  height: 32px; filter: grayscale(1) brightness(1.4);
+  opacity: 0.4; transition: opacity .4s, filter .4s;
 }
-.backers-logos img:hover { opacity: 0.7; filter: grayscale(0); }
+.backers-logos img:hover { opacity: 0.85; filter: grayscale(0); }
 
 /* ═══════════════════════════════════════════
    FINAL CTA
@@ -757,6 +806,7 @@ p { color: var(--text-1); }
   background: radial-gradient(ellipse, rgba(238,43,91,0.16), transparent 65%);
   pointer-events: none; border-radius: 50%;
 }
+.cta-bg-scene { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .cta-ring-1, .cta-ring-2 {
   position: absolute; left: 50%; top: 50%;
   border-radius: 50%; pointer-events: none;
@@ -838,6 +888,43 @@ p { color: var(--text-1); }
   .container { padding: 0 16px; }
   .panel { padding: 24px; border-radius: 20px; }
 }
+
+/* ═══════════════════════════════════════════
+   AGENT STEP LINES (real divs instead of pseudo-elements)
+   ═══════════════════════════════════════════ */
+.agent-steps-wrap { position: relative; }
+.agent-step-line {
+  width: 2px; height: 0;
+  background: linear-gradient(to bottom, var(--cyan), transparent);
+  margin: 0 auto; transition: height 0.6s cubic-bezier(.22,1,.36,1);
+}
+.agent-step-line.drawn { height: 32px; }
+
+/* ═══════════════════════════════════════════
+   AMBIENT PARTICLES
+   ═══════════════════════════════════════════ */
+@keyframes float-particle {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
+}
+.ambient-particles {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0;
+}
+.ambient-particle {
+  position: absolute; width: 2px; height: 2px; border-radius: 50%;
+  background: var(--cyan); opacity: 0;
+  animation: float-particle linear infinite;
+}
+.ambient-particle:nth-child(1) { left: 10%; bottom: -10%; animation-duration: 12s; animation-delay: 0s; }
+.ambient-particle:nth-child(2) { left: 25%; bottom: -10%; animation-duration: 15s; animation-delay: 2s; background: var(--violet); }
+.ambient-particle:nth-child(3) { left: 45%; bottom: -10%; animation-duration: 18s; animation-delay: 4s; }
+.ambient-particle:nth-child(4) { left: 65%; bottom: -10%; animation-duration: 14s; animation-delay: 1s; background: var(--mint); }
+.ambient-particle:nth-child(5) { left: 80%; bottom: -10%; animation-duration: 16s; animation-delay: 3s; background: var(--violet); }
+.ambient-particle:nth-child(6) { left: 35%; bottom: -10%; animation-duration: 20s; animation-delay: 5s; width: 1.5px; height: 1.5px; }
+.ambient-particle:nth-child(7) { left: 55%; bottom: -10%; animation-duration: 13s; animation-delay: 7s; background: var(--brand); width: 1.5px; height: 1.5px; }
+.ambient-particle:nth-child(8) { left: 90%; bottom: -10%; animation-duration: 17s; animation-delay: 2.5s; width: 1px; height: 1px; }
 
 /* ═══════════════════════════════════════════
    GRAIN TEXTURE OVERLAY
@@ -938,6 +1025,12 @@ body::after {
      HERO — SIGNATURE MOMENT #1
      ═══════════════════════════════════════════════ -->
 <section class="hero container" id="hero">
+  <div class="ambient-particles">
+    <div class="ambient-particle"></div><div class="ambient-particle"></div>
+    <div class="ambient-particle"></div><div class="ambient-particle"></div>
+    <div class="ambient-particle"></div><div class="ambient-particle"></div>
+    <div class="ambient-particle"></div><div class="ambient-particle"></div>
+  </div>
   <div class="hero-glow-follow" id="hero-glow-follow"></div>
   <div class="hero-text">
     <div class="hero-eyebrow reveal"><span class="dot"></span> LIVE ON SOLANA</div>
@@ -1113,7 +1206,7 @@ body::after {
         <!-- Bridges -->
         <div class="panel problem-card reveal-tilt rd-1">
           <div class="problem-card-svg">
-            <svg viewBox="0 0 280 120" width="280" height="120" aria-hidden="true">
+            <svg viewBox="0 0 280 120" width="320" height="140" aria-hidden="true">
               <circle cx="50" cy="60" r="16" fill="none" stroke="var(--violet)" stroke-width="1.5" opacity="0.7"/>
               <circle cx="50" cy="60" r="5" fill="var(--violet)" opacity="0.6"/>
               <circle cx="230" cy="60" r="16" fill="none" stroke="var(--cyan)" stroke-width="1.5" opacity="0.7"/>
@@ -1134,7 +1227,7 @@ body::after {
         <!-- Custody -->
         <div class="panel problem-card reveal-tilt rd-2">
           <div class="problem-card-svg">
-            <svg viewBox="0 0 280 120" width="280" height="120" aria-hidden="true">
+            <svg viewBox="0 0 280 120" width="320" height="140" aria-hidden="true">
               <circle cx="140" cy="60" r="20" fill="none" stroke="var(--danger)" stroke-width="1.5" opacity="0.6"/>
               <rect x="133" y="52" width="14" height="12" rx="2" fill="none" stroke="var(--danger)" stroke-width="1.2" opacity="0.7"/>
               <path d="M136 52 v-5 a4 4 0 0 1 8 0 v5" fill="none" stroke="var(--danger)" stroke-width="1.2" opacity="0.7"/>
@@ -1159,7 +1252,7 @@ body::after {
         <!-- Agents -->
         <div class="panel problem-card reveal-tilt rd-3">
           <div class="problem-card-svg">
-            <svg viewBox="0 0 280 120" width="280" height="120" aria-hidden="true">
+            <svg viewBox="0 0 280 120" width="320" height="140" aria-hidden="true">
               <circle cx="140" cy="60" r="18" fill="none" stroke="var(--danger)" stroke-width="1.5" opacity="0.6"/>
               <text x="140" y="64" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--danger)" opacity="0.7">AI</text>
               <line x1="140" y1="42" x2="140" y2="10" stroke="var(--danger)" stroke-width="1" opacity="0.4"/>
@@ -1195,24 +1288,66 @@ body::after {
       </div>
       <div class="solution-steps">
         <div class="solution-step reveal rd-1">
-          <div class="step-num">01</div>
-          <h3>User-required signatures</h3>
-          <p>Keep the human in the loop for high-stakes actions. Cryptographic proof, not a checkbox.</p>
+          <div class="step-icon">
+            <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+              <circle cx="20" cy="20" r="14" fill="none" stroke="var(--brand)" stroke-width="1.5" opacity="0.4"/>
+              <circle cx="20" cy="12" r="4" fill="none" stroke="var(--cyan)" stroke-width="1"/>
+              <path d="M16 20 l4 4 l4 -4" fill="none" stroke="var(--mint)" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="20" cy="28" r="2" fill="var(--mint)" opacity="0.6"/>
+            </svg>
+          </div>
+          <div class="step-content">
+            <div class="step-num">01</div>
+            <h3>User-required signatures</h3>
+            <p>Keep the human in the loop for high-stakes actions. Cryptographic proof, not a checkbox.</p>
+          </div>
         </div>
         <div class="solution-step reveal rd-2">
-          <div class="step-num">02</div>
-          <h3>Policy-based approvals</h3>
-          <p>Spending caps, allowlists, time windows. Enforced by contracts, not API rules.</p>
+          <div class="step-icon">
+            <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+              <rect x="8" y="12" width="24" height="16" rx="4" fill="none" stroke="var(--violet)" stroke-width="1.5" opacity="0.5"/>
+              <path d="M14 20h12" stroke="var(--cyan)" stroke-width="1" stroke-dasharray="3 2"/>
+              <circle cx="14" cy="20" r="2" fill="var(--cyan)" opacity="0.7"/>
+              <circle cx="26" cy="20" r="2" fill="var(--mint)" opacity="0.7"/>
+              <path d="M17 17l2 3-2 3" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+            </svg>
+          </div>
+          <div class="step-content">
+            <div class="step-num">02</div>
+            <h3>Policy-based approvals</h3>
+            <p>Spending caps, allowlists, time windows. Enforced by contracts, not API rules.</p>
+          </div>
         </div>
         <div class="solution-step reveal rd-3">
-          <div class="step-num">03</div>
-          <h3>Shared automated workflows</h3>
-          <p>Automated actions within defined boundaries. No keys exposed, no trust delegation.</p>
+          <div class="step-icon">
+            <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+              <circle cx="20" cy="20" r="8" fill="none" stroke="var(--cyan)" stroke-width="1" stroke-dasharray="4 3"/>
+              <circle cx="20" cy="20" r="3" fill="var(--brand)" opacity="0.5"/>
+              <path d="M12 12l3 3M28 12l-3 3M12 28l3-3M28 28l-3-3" stroke="var(--mint)" stroke-width="1" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="step-content">
+            <div class="step-num">03</div>
+            <h3>Shared automated workflows</h3>
+            <p>Automated actions within defined boundaries. No keys exposed, no trust delegation.</p>
+          </div>
         </div>
         <div class="solution-step reveal rd-4">
-          <div class="step-num">04</div>
-          <h3>Cross-chain native execution</h3>
-          <p>Real signatures on real chains. Not wrapped assets, not relay messages. Native settlement.</p>
+          <div class="step-icon">
+            <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+              <circle cx="10" cy="20" r="5" fill="none" stroke="var(--violet)" stroke-width="1" opacity="0.6"/>
+              <circle cx="30" cy="20" r="5" fill="none" stroke="#f7931a" stroke-width="1" opacity="0.6"/>
+              <path d="M16 20h8" stroke="var(--mint)" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="20" cy="20" r="2" fill="var(--mint)" opacity="0.8"/>
+              <circle cx="10" cy="20" r="2" fill="var(--violet)" opacity="0.5"/>
+              <circle cx="30" cy="20" r="2" fill="#f7931a" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="step-content">
+            <div class="step-num">04</div>
+            <h3>Cross-chain native execution</h3>
+            <p>Real signatures on real chains. Not wrapped assets, not relay messages. Native settlement.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -1238,16 +1373,55 @@ body::after {
     </div>
     <div class="triptych-grid">
       <div class="panel triptych-panel reveal-slide-right rd-1">
+        <div class="triptych-visual">
+          <svg viewBox="0 0 200 120" width="200" height="120" aria-hidden="true">
+            <defs><filter id="trip-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+            <circle cx="40" cy="60" r="16" fill="none" stroke="var(--violet)" stroke-width="1.5" opacity="0.6"/>
+            <circle cx="40" cy="60" r="6" fill="var(--violet)" opacity="0.5" filter="url(#trip-glow)"/>
+            <circle cx="160" cy="35" r="12" fill="none" stroke="#f7931a" stroke-width="1" opacity="0.5"/>
+            <circle cx="160" cy="35" r="4" fill="#f7931a" opacity="0.5"/>
+            <circle cx="160" cy="85" r="12" fill="none" stroke="#627eea" stroke-width="1" opacity="0.5"/>
+            <circle cx="160" cy="85" r="4" fill="#627eea" opacity="0.5"/>
+            <path d="M58 55 Q100 30 146 35" fill="none" stroke="var(--mint)" stroke-width="1" stroke-dasharray="4 3"><animate attributeName="stroke-dashoffset" from="0" to="-14" dur="2s" repeatCount="indefinite"/></path>
+            <path d="M58 65 Q100 90 146 85" fill="none" stroke="var(--mint)" stroke-width="1" stroke-dasharray="4 3"><animate attributeName="stroke-dashoffset" from="0" to="-14" dur="2.2s" repeatCount="indefinite"/></path>
+            <circle cx="100" cy="60" r="8" fill="none" stroke="var(--brand)" stroke-width="1" stroke-dasharray="3 3" opacity="0.4"/>
+            <circle cx="100" cy="60" r="3" fill="var(--brand)" opacity="0.4"/>
+          </svg>
+        </div>
         <div class="triptych-label">Capital Markets</div>
         <h3>Cross-chain DeFi without fragmentation</h3>
         <p>Lend against ETH, trade native BTC, execute atomic swaps. All from a Solana program, all settling natively.</p>
       </div>
       <div class="panel triptych-panel reveal-slide-right rd-2">
+        <div class="triptych-visual">
+          <svg viewBox="0 0 200 120" width="200" height="120" aria-hidden="true">
+            <circle cx="100" cy="60" r="20" fill="none" stroke="var(--cyan)" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"/>
+            <circle cx="100" cy="60" r="10" fill="none" stroke="var(--brand)" stroke-width="1.5" opacity="0.5"/>
+            <text x="100" y="64" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--brand)" opacity="0.7">AI</text>
+            <path d="M122 55 L165 35" stroke="var(--mint)" stroke-width="1" stroke-dasharray="3 3"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1.8s" repeatCount="indefinite"/></path>
+            <path d="M122 65 L165 85" stroke="var(--mint)" stroke-width="1" stroke-dasharray="3 3"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="2s" repeatCount="indefinite"/></path>
+            <circle cx="170" cy="32" r="8" fill="none" stroke="var(--violet)" stroke-width="1" opacity="0.5"/>
+            <circle cx="170" cy="88" r="8" fill="none" stroke="#f7931a" stroke-width="1" opacity="0.5"/>
+            <path d="M80 55 Q50 40 35 50" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="2 3"/>
+            <rect x="25" y="42" width="18" height="12" rx="3" fill="none" stroke="var(--cyan)" stroke-width="0.8" opacity="0.4"/>
+          </svg>
+        </div>
         <div class="triptych-label">Agentic Finance</div>
         <h3>Agents that act across chains under constraints</h3>
         <p>AI agents trade, rebalance, and settle with cryptographic guardrails. Scoped authority, not full keys.</p>
       </div>
       <div class="panel triptych-panel reveal-slide-right rd-3">
+        <div class="triptych-visual">
+          <svg viewBox="0 0 200 120" width="200" height="120" aria-hidden="true">
+            <rect x="60" y="20" width="80" height="80" rx="12" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+            <circle cx="100" cy="60" r="12" fill="none" stroke="var(--brand)" stroke-width="1.5" opacity="0.5"/>
+            <circle cx="100" cy="60" r="4" fill="var(--brand)" opacity="0.4"/>
+            <circle cx="30" cy="40" r="6" fill="var(--violet)" opacity="0.3"/><path d="M38 42 L60 50" stroke="var(--violet)" stroke-width="0.8" opacity="0.3"/>
+            <circle cx="30" cy="80" r="6" fill="#627eea" opacity="0.3"/><path d="M38 78 L60 70" stroke="#627eea" stroke-width="0.8" opacity="0.3"/>
+            <circle cx="170" cy="40" r="6" fill="#f7931a" opacity="0.3"/><path d="M162 42 L140 50" stroke="#f7931a" stroke-width="0.8" opacity="0.3"/>
+            <circle cx="170" cy="80" r="6" fill="var(--mint)" opacity="0.3"/><path d="M162 78 L140 70" stroke="var(--mint)" stroke-width="0.8" opacity="0.3"/>
+          </svg>
+        </div>
         <div class="triptych-label">Consumer UX</div>
         <h3>One wallet, every chain, invisible complexity</h3>
         <p>Users hold one address. Social recovery, spending limits, multi-party approval. No bridge mechanics.</p>
@@ -1380,26 +1554,32 @@ body::after {
     </div>
     <div class="uc-grid">
       <div class="panel uc-card uc-hero-card reveal-scale">
+        <div class="uc-icon"><svg viewBox="0 0 48 48" width="36" height="36" aria-hidden="true"><circle cx="24" cy="24" r="14" fill="none" stroke="var(--brand)" stroke-width="1.5" opacity="0.5"/><circle cx="24" cy="24" r="8" fill="none" stroke="var(--cyan)" stroke-width="1" stroke-dasharray="4 3"/><circle cx="24" cy="24" r="3" fill="var(--brand)" opacity="0.6"/><circle cx="12" cy="18" r="3" fill="var(--violet)" opacity="0.5"/><circle cx="36" cy="18" r="3" fill="#f7931a" opacity="0.5"/><circle cx="12" cy="30" r="3" fill="#627eea" opacity="0.5"/><circle cx="36" cy="30" r="3" fill="var(--mint)" opacity="0.5"/></svg></div>
         <h3>Universal wallet infrastructure</h3>
         <p>One address, every chain. Social recovery, spending limits, and multi-party approval enforced cryptographically.</p>
       </div>
       <div class="panel uc-card uc-small reveal-tilt rd-1">
+        <div class="uc-icon"><svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><rect x="12" y="14" width="24" height="20" rx="4" fill="none" stroke="var(--violet)" stroke-width="1.5" opacity="0.5"/><circle cx="20" cy="24" r="3" fill="none" stroke="var(--cyan)" stroke-width="1"/><circle cx="28" cy="24" r="3" fill="none" stroke="var(--mint)" stroke-width="1"/><path d="M20 21v-3M28 21v-3" stroke="rgba(255,255,255,0.3)" stroke-width="1"/></svg></div>
         <h3>Treasury and governance</h3>
         <p>Multi-sig treasuries with programmable spending policies across every chain.</p>
       </div>
       <div class="panel uc-card uc-small reveal-tilt rd-2">
+        <div class="uc-icon"><svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><circle cx="24" cy="24" r="10" fill="none" stroke="var(--cyan)" stroke-width="1" stroke-dasharray="5 3"/><circle cx="24" cy="24" r="5" fill="none" stroke="var(--brand)" stroke-width="1.5"/><text x="24" y="27" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--brand)" opacity="0.7">AI</text></svg></div>
         <h3>Agent permissions</h3>
         <p>Give AI agents scoped signing authority with hard cryptographic limits.</p>
       </div>
       <div class="panel uc-card uc-pano reveal-tilt rd-3">
+        <div class="uc-icon"><svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><circle cx="10" cy="24" r="4" fill="var(--violet)" opacity="0.4"/><circle cx="38" cy="24" r="4" fill="#f7931a" opacity="0.4"/><path d="M16 24h16" stroke="var(--mint)" stroke-width="1.5" stroke-linecap="round"/><polygon points="24,18 28,24 24,30" fill="none" stroke="var(--cyan)" stroke-width="1" opacity="0.6"/></svg></div>
         <h3>Cross-chain intents</h3>
         <p>Express what you want. Ika signs the execution path natively on each target chain.</p>
       </div>
       <div class="panel uc-card uc-small reveal-tilt rd-4">
+        <div class="uc-icon"><svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><circle cx="18" cy="24" r="6" fill="none" stroke="#f7931a" stroke-width="1.5" opacity="0.5"/><circle cx="30" cy="24" r="6" fill="none" stroke="#627eea" stroke-width="1.5" opacity="0.5"/><path d="M24 18v12" stroke="var(--mint)" stroke-width="1" stroke-dasharray="2 2"/></svg></div>
         <h3>Native-asset DeFi</h3>
         <p>Real BTC, real ETH. Controlled by Solana programs, settled natively.</p>
       </div>
       <div class="panel uc-card uc-small reveal-tilt rd-5">
+        <div class="uc-icon"><svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><rect x="12" y="14" width="24" height="20" rx="4" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/><circle cx="20" cy="30" r="2" fill="var(--violet)" opacity="0.5"/><circle cx="28" cy="30" r="2" fill="#f7931a" opacity="0.5"/><circle cx="24" cy="30" r="2" fill="var(--cyan)" opacity="0.5"/><line x1="12" y1="20" x2="36" y2="20" stroke="var(--stroke-1)" stroke-width="1"/></svg></div>
         <h3>Consumer apps</h3>
         <p>Invisible cross-chain complexity. Users experience one interface.</p>
       </div>
@@ -1606,6 +1786,22 @@ body::after {
 
 <!-- ═══════════════ FINAL CTA ═══════════════ -->
 <section class="final-cta section-fade-top">
+  <div class="ambient-particles">
+    <div class="ambient-particle"></div><div class="ambient-particle"></div>
+    <div class="ambient-particle"></div><div class="ambient-particle"></div>
+    <div class="ambient-particle"></div><div class="ambient-particle"></div>
+  </div>
+  <div class="cta-bg-scene">
+    <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.15;">
+      <circle cx="400" cy="200" r="120" fill="none" stroke="var(--brand)" stroke-width="0.5" stroke-dasharray="4 6"><animateTransform attributeName="transform" type="rotate" from="0 400 200" to="360 400 200" dur="60s" repeatCount="indefinite"/></circle>
+      <circle cx="400" cy="200" r="180" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.5" stroke-dasharray="2 8"/>
+      <circle cx="400" cy="200" r="250" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+      <circle cx="200" cy="100" r="4" fill="var(--violet)" opacity="0.3"><animate attributeName="opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite"/></circle>
+      <circle cx="600" cy="300" r="4" fill="var(--cyan)" opacity="0.3"><animate attributeName="opacity" values="0.3;0.6;0.3" dur="3.5s" repeatCount="indefinite"/></circle>
+      <circle cx="150" cy="280" r="3" fill="#f7931a" opacity="0.2"><animate attributeName="opacity" values="0.2;0.5;0.2" dur="4s" repeatCount="indefinite"/></circle>
+      <circle cx="650" cy="120" r="3" fill="var(--mint)" opacity="0.2"><animate attributeName="opacity" values="0.2;0.5;0.2" dur="2.8s" repeatCount="indefinite"/></circle>
+    </svg>
+  </div>
   <div class="container">
     <div class="cta-glow-orb" id="cta-glow"></div>
     <div class="cta-ring-1"></div>
@@ -1735,7 +1931,7 @@ document.addEventListener('DOMContentLoaded', function() {
         clearInterval(check);
         document.querySelectorAll('.reveal, .reveal-slide-right, .reveal-tilt, .reveal-scale, .reveal-clip, .reveal-blur').forEach(function(el) { el.classList.add('vis'); });
         // Show hero elements that had .reveal removed
-        var heroEls = document.querySelectorAll('.hero-eyebrow, .hero h1, .hero-sub, .hero-ctas, .hero-micro, .hero-visual, .perm-chip');
+        var heroEls = document.querySelectorAll('.hero-eyebrow, .hero h1, .hero h1 span span, .hero-sub, .hero-ctas, .hero-micro, .hero-visual, .perm-chip');
         heroEls.forEach(function(el) { el.style.opacity = '1'; el.style.transform = 'none'; });
         initAgentDemo();
       }
@@ -1770,20 +1966,82 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.hero .reveal').forEach(function(el) {
       el.classList.remove('reveal');
     });
+
+    // Word-by-word reveal for hero headline
+    var heroH1 = document.querySelector('.hero h1');
+    var heroWords = [];
+    if (heroH1) {
+      var h1Html = heroH1.innerHTML;
+      var h1Text = heroH1.textContent;
+      heroH1.setAttribute('aria-label', h1Text);
+      heroH1.innerHTML = '';
+      // Parse HTML to preserve <em> tags
+      var tempDiv = document.createElement('div');
+      tempDiv.innerHTML = h1Html;
+      function processNode(node) {
+        if (node.nodeType === 3) { // text node
+          var words = node.textContent.split(/(\s+)/);
+          words.forEach(function(w) {
+            if (/^\s+$/.test(w)) {
+              heroH1.appendChild(document.createTextNode(' '));
+            } else if (w) {
+              var wrap = document.createElement('span');
+              wrap.style.display = 'inline-block';
+              wrap.style.overflow = 'hidden';
+              wrap.style.verticalAlign = 'top';
+              var inner = document.createElement('span');
+              inner.style.display = 'inline-block';
+              inner.textContent = w;
+              inner.setAttribute('aria-hidden', 'true');
+              wrap.appendChild(inner);
+              heroH1.appendChild(wrap);
+              heroWords.push(inner);
+            }
+          });
+        } else if (node.nodeName === 'EM') {
+          var words = node.textContent.split(/(\s+)/);
+          words.forEach(function(w) {
+            if (/^\s+$/.test(w)) {
+              heroH1.appendChild(document.createTextNode(' '));
+            } else if (w) {
+              var wrap = document.createElement('span');
+              wrap.style.display = 'inline-block';
+              wrap.style.overflow = 'hidden';
+              wrap.style.verticalAlign = 'top';
+              var em = document.createElement('em');
+              var inner = document.createElement('span');
+              inner.style.display = 'inline-block';
+              inner.textContent = w;
+              inner.setAttribute('aria-hidden', 'true');
+              em.appendChild(inner);
+              wrap.appendChild(em);
+              heroH1.appendChild(wrap);
+              heroWords.push(inner);
+            }
+          });
+        } else {
+          // Clone other elements
+          heroH1.appendChild(node.cloneNode(true));
+        }
+      }
+      tempDiv.childNodes.forEach(processNode);
+    }
+
     // Set initial hidden state via GSAP (not CSS)
-    gsap.set('.hero-eyebrow, .hero h1, .hero-sub, .hero-ctas, .hero-micro', { opacity: 0, y: 20 });
+    gsap.set('.hero-eyebrow, .hero-sub, .hero-ctas, .hero-micro', { opacity: 0, y: 20 });
+    gsap.set(heroWords, { y: '105%' });
     gsap.set('.hero-visual', { opacity: 0, scale: 0.92 });
-    gsap.set('.perm-chip', { opacity: 0, scale: 0.8 });
+    gsap.set('.perm-chip', { opacity: 0, scale: 0 });
 
     var heroTl = gsap.timeline({ delay: 0.3 });
     heroTl
       .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' })
-      .to('.hero h1', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.3')
+      .to(heroWords, { y: '0%', stagger: 0.04, duration: 0.6, ease: 'power3.out' }, '-=0.2')
       .to('.hero-sub', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.3')
       .to('.hero-ctas', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.2')
       .to('.hero-micro', { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, '-=0.2')
       .to('.hero-visual', { opacity: 1, scale: 1, duration: 0.9, ease: 'power2.out' }, '-=0.6')
-      .to('.perm-chip', { opacity: 1, scale: 1, stagger: 0.1, duration: 0.4, ease: 'back.out(1.5)' }, '-=0.3');
+      .to('.perm-chip', { opacity: 1, scale: 1, stagger: { from: 'random', each: 0.08 }, duration: 0.5, ease: 'back.out(1.7)' }, '-=0.3');
 
     /* ── 7. HERO PARALLAX + GLOW FOLLOW (desktop) ── */
     if (!isMobile) {
@@ -1895,6 +2153,61 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /* ── 13. AGENT DEMO ── */
     initAgentDemo();
+
+    /* ── 13b. AGENT STEPS PROGRESSIVE REVEAL ── */
+    var agentStepEls = document.querySelectorAll('.agent-section .solution-step, .agent-section .agent-console, .agent-section .agent-route');
+    agentStepEls.forEach(function(el, i) {
+      gsap.from(el, {
+        x: -30, opacity: 0, duration: 0.7,
+        delay: i * 0.12, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true }
+      });
+    });
+
+    /* ── 13c. BACKER LOGOS STAGGER ── */
+    gsap.utils.toArray('.backers-logos img').forEach(function(img, i) {
+      gsap.from(img, {
+        opacity: 0, y: 20, filter: 'blur(4px)',
+        duration: 0.6, delay: i * 0.08,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: img, start: 'top 90%', once: true }
+      });
+    });
+
+    /* ── 13d. PROOF STRIP BADGE STAGGER ── */
+    gsap.utils.toArray('.proof-token').forEach(function(tok, i) {
+      gsap.from(tok, {
+        scale: 0.8, y: 12, opacity: 0,
+        duration: 0.5, delay: i * 0.06,
+        ease: 'back.out(1.5)',
+        scrollTrigger: { trigger: tok, start: 'top 92%', once: true }
+      });
+    });
+
+    /* ── 13e. USE CASE FEATURED CARD SPECIAL ENTRANCE ── */
+    var heroCard = document.querySelector('.uc-hero-card');
+    if (heroCard) {
+      gsap.from(heroCard, {
+        scale: 0.9, opacity: 0, duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: heroCard, start: 'top 85%', once: true }
+      });
+    }
+
+    /* ── 13f. PROBLEM CARD SVG STROKE DRAW ── */
+    document.querySelectorAll('.problem-card-svg svg').forEach(function(svg) {
+      var paths = svg.querySelectorAll('line, path, circle[stroke-width], rect');
+      paths.forEach(function(p) {
+        if (p.getTotalLength) {
+          var len = p.getTotalLength();
+          gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
+          gsap.to(p, {
+            strokeDashoffset: 0, duration: 1.2, ease: 'power2.inOut',
+            scrollTrigger: { trigger: svg, start: 'top 82%', once: true }
+          });
+        }
+      });
+    });
 
     /* ── 14. ARCHITECTURE SCROLLYTELLING ── */
     if (!isMobile) {
