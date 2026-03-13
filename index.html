@@ -208,9 +208,18 @@ p { color: var(--text-1); }
 /* ═══════════════════════════════════════════
    HERO
    ═══════════════════════════════════════════ */
+/* ── Hero: JS-driven visibility ── */
+.hero--js-ready .hero-eyebrow,
+.hero--js-ready .hero h1,
+.hero--js-ready .hero-sub,
+.hero--js-ready .hero-ctas,
+.hero--js-ready .hero-micro { opacity: 0; }
+.hero--js-ready .hero-visual { opacity: 0; transform: scale(0.92); }
+.hero--js-ready .perm-chip { opacity: 0; transform: scale(0); }
+
 .hero {
   min-height: 100svh;
-  display: grid; grid-template-columns: repeat(12, 1fr);
+  display: grid; grid-template-columns: 5fr 7fr;
   gap: clamp(24px, 3vw, 48px);
   align-items: center;
   padding-top: 72px;
@@ -219,17 +228,18 @@ p { color: var(--text-1); }
 .hero::before {
   content: ''; position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 70% 40%, rgba(238,43,91,0.06) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 50% at 30% 60%, rgba(117,241,255,0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 80% 60% at 70% 40%, rgba(238,43,91,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 30% 60%, rgba(117,241,255,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(183,140,255,0.03) 0%, transparent 50%);
   pointer-events: none;
 }
 .hero-glow-follow {
-  position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), rgba(238,43,91,0.04), transparent 50%);
-  transition: background .15s ease;
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background: radial-gradient(700px circle at var(--mx, 50%) var(--my, 50%), rgba(238,43,91,0.06), transparent 50%);
+  transition: background .1s linear;
 }
 .hero-text {
-  grid-column: 1 / 6; position: relative; z-index: 2;
+  grid-column: 1; position: relative; z-index: 2;
   padding: clamp(32px, 5vw, 80px) 0;
 }
 .hero-eyebrow {
@@ -253,6 +263,13 @@ p { color: var(--text-1); }
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+/* Word-split containers */
+.hero-word-wrap {
+  display: inline-block; overflow: hidden; vertical-align: top;
+  line-height: 1.1; /* prevents clipping with h1 line-height 0.94 */
+  padding-bottom: 0.06em; /* breathing room for descenders */
+}
+.hero-word-inner { display: inline-block; }
 .hero-sub {
   font-size: clamp(16px, 1.8vw, 20px);
   color: var(--text-1); max-width: 480px;
@@ -267,11 +284,12 @@ p { color: var(--text-1); }
 
 /* Hero visual */
 .hero-visual {
-  grid-column: 6 / 13; position: relative; z-index: 1;
+  grid-column: 2; position: relative; z-index: 1;
   display: flex; align-items: center; justify-content: center;
 }
 .hero-svg-wrap {
   position: relative; width: 100%; max-width: 600px; aspect-ratio: 1;
+  perspective: 800px; transform-style: preserve-3d;
 }
 .hero-svg-wrap > svg { width: 100%; height: 100%; }
 
@@ -909,8 +927,8 @@ p { color: var(--text-1); }
    ═══════════════════════════════════════════ */
 @media (max-width: 1024px) {
   .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 100px; }
-  .hero-text { grid-column: 1; padding: 40px 0 0; }
-  .hero-visual { grid-column: 1; max-width: 500px; margin: 0 auto; }
+  .hero-text { grid-column: 1 / -1; padding: 40px 0 0; }
+  .hero-visual { grid-column: 1 / -1; max-width: 500px; margin: 0 auto; }
   .problem-grid, .solution-grid { grid-template-columns: 1fr; }
   .problem-left, .solution-left { position: static; }
   .triptych-grid { grid-template-columns: 1fr; }
@@ -1090,17 +1108,17 @@ body::after {
   </div>
   <div class="hero-glow-follow" id="hero-glow-follow"></div>
   <div class="hero-text">
-    <div class="hero-eyebrow reveal"><span class="dot"></span> LIVE ON SOLANA</div>
-    <h1 class="reveal">The <em>control layer</em> for Solana apps and agents</h1>
-    <p class="hero-sub reveal">Let Solana programs and AI agents control assets and actions on any chain. No bridges. No custodians. No handing over the keys.</p>
-    <div class="hero-ctas reveal">
+    <div class="hero-eyebrow"><span class="dot"></span> LIVE ON SOLANA</div>
+    <h1>The <em>control layer</em> for Solana apps and agents</h1>
+    <p class="hero-sub">Let Solana programs and AI agents control assets and actions on any chain. No bridges. No custodians. No handing over the keys.</p>
+    <div class="hero-ctas">
       <a href="#" class="btn-primary">Start Building &rarr;</a>
       <a href="#" class="btn-secondary">Read the Docs</a>
     </div>
-    <p class="hero-micro reveal">Solana decides. Ika signs.</p>
+    <p class="hero-micro">Solana decides. Ika signs.</p>
   </div>
 
-  <div class="hero-visual reveal">
+  <div class="hero-visual">
     <div class="hero-svg-wrap">
       <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" id="hero-svg">
         <defs>
@@ -2034,6 +2052,7 @@ document.addEventListener('DOMContentLoaded', function() {
   /* ── REDUCED MOTION: reveal everything, skip animations ── */
   if (prefersReduced) {
     document.querySelectorAll('.reveal, .reveal-slide-right, .reveal-tilt, .reveal-scale, .reveal-clip, .reveal-blur').forEach(function(el) { el.classList.add('vis'); });
+    // Hero stays visible (no hero--js-ready class added, so CSS defaults apply)
     var rule = document.querySelector('.interlude-rule');
     if (rule) rule.classList.add('vis');
     initAgentDemo();
@@ -2051,9 +2070,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // GSAP failed to load — show everything anyway
         clearInterval(check);
         document.querySelectorAll('.reveal, .reveal-slide-right, .reveal-tilt, .reveal-scale, .reveal-clip, .reveal-blur').forEach(function(el) { el.classList.add('vis'); });
-        // Show hero elements that had .reveal removed
-        var heroEls = document.querySelectorAll('.hero-eyebrow, .hero h1, .hero h1 span span, .hero-sub, .hero-ctas, .hero-micro, .hero-visual, .perm-chip');
-        heroEls.forEach(function(el) { el.style.opacity = '1'; el.style.transform = 'none'; });
+        // Show hero — remove JS-ready class so CSS defaults show everything
+        var heroFallback = document.querySelector('.hero');
+        if (heroFallback) heroFallback.classList.remove('hero--js-ready');
         initAgentDemo();
       }
     }, 50);
@@ -2083,10 +2102,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     /* ── 6. HERO ENTRANCE CHOREOGRAPHY ── */
-    // Remove .reveal from hero elements so CSS doesn't fight GSAP
-    document.querySelectorAll('.hero .reveal').forEach(function(el) {
-      el.classList.remove('reveal');
-    });
+    // Mark hero as JS-ready so CSS hides elements (progressive enhancement)
+    var heroEl = document.querySelector('.hero');
+    heroEl.classList.add('hero--js-ready');
 
     // Word-by-word reveal for hero headline
     var heroH1 = document.querySelector('.hero h1');
@@ -2099,76 +2117,85 @@ document.addEventListener('DOMContentLoaded', function() {
       // Parse HTML to preserve <em> tags
       var tempDiv = document.createElement('div');
       tempDiv.innerHTML = h1Html;
+      function makeWordWrap(textContent, isEm) {
+        var wrap = document.createElement('span');
+        wrap.className = 'hero-word-wrap';
+        var inner;
+        if (isEm) {
+          var em = document.createElement('em');
+          inner = document.createElement('span');
+          inner.className = 'hero-word-inner';
+          inner.textContent = textContent;
+          em.appendChild(inner);
+          wrap.appendChild(em);
+        } else {
+          inner = document.createElement('span');
+          inner.className = 'hero-word-inner';
+          inner.textContent = textContent;
+          wrap.appendChild(inner);
+        }
+        heroH1.appendChild(wrap);
+        heroWords.push(inner);
+      }
       function processNode(node) {
-        if (node.nodeType === 3) { // text node
-          var words = node.textContent.split(/(\s+)/);
-          words.forEach(function(w) {
-            if (/^\s+$/.test(w)) {
-              heroH1.appendChild(document.createTextNode(' '));
-            } else if (w) {
-              var wrap = document.createElement('span');
-              wrap.style.display = 'inline-block';
-              wrap.style.overflow = 'hidden';
-              wrap.style.verticalAlign = 'top';
-              var inner = document.createElement('span');
-              inner.style.display = 'inline-block';
-              inner.textContent = w;
-              inner.setAttribute('aria-hidden', 'true');
-              wrap.appendChild(inner);
-              heroH1.appendChild(wrap);
-              heroWords.push(inner);
-            }
+        if (node.nodeType === 3) {
+          node.textContent.split(/(\s+)/).forEach(function(w) {
+            if (/^\s+$/.test(w)) { heroH1.appendChild(document.createTextNode(' ')); }
+            else if (w) { makeWordWrap(w, false); }
           });
         } else if (node.nodeName === 'EM') {
-          var words = node.textContent.split(/(\s+)/);
-          words.forEach(function(w) {
-            if (/^\s+$/.test(w)) {
-              heroH1.appendChild(document.createTextNode(' '));
-            } else if (w) {
-              var wrap = document.createElement('span');
-              wrap.style.display = 'inline-block';
-              wrap.style.overflow = 'hidden';
-              wrap.style.verticalAlign = 'top';
-              var em = document.createElement('em');
-              var inner = document.createElement('span');
-              inner.style.display = 'inline-block';
-              inner.textContent = w;
-              inner.setAttribute('aria-hidden', 'true');
-              em.appendChild(inner);
-              wrap.appendChild(em);
-              heroH1.appendChild(wrap);
-              heroWords.push(inner);
-            }
+          node.textContent.split(/(\s+)/).forEach(function(w) {
+            if (/^\s+$/.test(w)) { heroH1.appendChild(document.createTextNode(' ')); }
+            else if (w) { makeWordWrap(w, true); }
           });
         } else {
-          // Clone other elements
           heroH1.appendChild(node.cloneNode(true));
         }
       }
       tempDiv.childNodes.forEach(processNode);
     }
 
-    // Set initial hidden state via GSAP (not CSS)
-    gsap.set('.hero-eyebrow, .hero-sub, .hero-ctas, .hero-micro', { opacity: 0, y: 20 });
-    gsap.set(heroWords, { y: '105%' });
+    // Set initial hidden state via GSAP
+    gsap.set('.hero-eyebrow, .hero-sub, .hero-ctas, .hero-micro', { opacity: 0, y: 24 });
+    gsap.set('.hero-word-inner', { y: '110%' });
     gsap.set('.hero-visual', { opacity: 0, scale: 0.92 });
     gsap.set('.perm-chip', { opacity: 0, scale: 0 });
 
-    var heroTl = gsap.timeline({ delay: 0.3 });
+    // Safety net: if timeline hasn't completed after 4s, force everything visible
+    var heroRevealed = false;
+    function forceHeroVisible() {
+      if (heroRevealed) return;
+      heroRevealed = true;
+      heroEl.classList.remove('hero--js-ready');
+      document.querySelectorAll('.hero-word-inner').forEach(function(el) {
+        el.style.transform = 'none';
+      });
+      ['.hero-eyebrow', '.hero-sub', '.hero-ctas', '.hero-micro', '.hero-visual'].forEach(function(sel) {
+        var el = document.querySelector(sel);
+        if (el) { el.style.opacity = '1'; el.style.transform = 'none'; }
+      });
+      document.querySelectorAll('.perm-chip').forEach(function(el) {
+        el.style.opacity = '1'; el.style.transform = 'none';
+      });
+    }
+    setTimeout(forceHeroVisible, 4000);
+
+    var heroTl = gsap.timeline({ delay: 0.2, onComplete: function() { heroRevealed = true; } });
     heroTl
       .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' })
-      .to(heroWords, { y: '0%', stagger: 0.04, duration: 0.6, ease: 'power3.out' }, '-=0.2')
-      .to('.hero-sub', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.3')
-      .to('.hero-ctas', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.2')
-      .to('.hero-micro', { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, '-=0.2')
-      .to('.hero-visual', { opacity: 1, scale: 1, duration: 0.9, ease: 'power2.out' }, '-=0.6')
-      .to('.perm-chip', { opacity: 1, scale: 1, stagger: { from: 'random', each: 0.08 }, duration: 0.5, ease: 'back.out(1.7)' }, '-=0.3');
+      .to('.hero-word-inner', { y: '0%', stagger: 0.04, duration: 0.55, ease: 'power3.out' }, '-=0.15')
+      .to('.hero-sub', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.25')
+      .to('.hero-ctas', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.15')
+      .to('.hero-micro', { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, '-=0.15')
+      .to('.hero-visual', { opacity: 1, scale: 1, duration: 1, ease: 'power2.out' }, '-=0.7')
+      .to('.perm-chip', { opacity: 1, scale: 1, stagger: { from: 'random', each: 0.08 }, duration: 0.5, ease: 'back.out(1.7)' }, '-=0.4');
 
     /* ── 7. HERO PARALLAX + GLOW FOLLOW (desktop) ── */
     if (!isMobile) {
       var heroSection = document.querySelector('.hero');
       var layers = document.querySelectorAll('.hero-layer');
       var glowFollow = document.getElementById('hero-glow-follow');
+      var heroSVGWrap = document.querySelector('.hero-svg-wrap');
       heroSection.addEventListener('mousemove', function(e) {
         var rect = heroSection.getBoundingClientRect();
         var px = ((e.clientX - rect.left) / rect.width * 100);
@@ -2177,26 +2204,44 @@ document.addEventListener('DOMContentLoaded', function() {
         var y = py / 100 - 0.5;
         layers.forEach(function(layer) {
           var depth = parseFloat(layer.dataset.depth) || 0.03;
-          var mx = x * depth * 400;
-          var my = y * depth * 400;
-          layer.style.transform = 'translate(' + mx + 'px, ' + my + 'px)';
+          gsap.to(layer, {
+            x: x * depth * 500, y: y * depth * 500,
+            duration: 0.8, ease: 'power2.out', overwrite: true
+          });
         });
         if (glowFollow) {
           glowFollow.style.setProperty('--mx', px + '%');
           glowFollow.style.setProperty('--my', py + '%');
         }
+        // SVG wrap subtle tilt
+        if (heroSVGWrap) {
+          gsap.to(heroSVGWrap, {
+            rotateY: x * 4, rotateX: -y * 4,
+            duration: 0.8, ease: 'power2.out', overwrite: true
+          });
+        }
+      });
+      heroSection.addEventListener('mouseleave', function() {
+        layers.forEach(function(layer) {
+          gsap.to(layer, { x: 0, y: 0, duration: 1, ease: 'power2.out' });
+        });
+        if (heroSVGWrap) {
+          gsap.to(heroSVGWrap, { rotateY: 0, rotateX: 0, duration: 1, ease: 'power2.out' });
+        }
       });
     }
 
     /* ── 8. HERO DEPARTURE ── */
-    gsap.to('.hero-text', {
-      y: -60, opacity: 0,
-      scrollTrigger: { trigger: '.hero', start: 'bottom 90%', end: 'bottom 40%', scrub: 1 }
-    });
-    gsap.to('.hero-visual', {
-      scale: 0.85, opacity: 0,
-      scrollTrigger: { trigger: '.hero', start: 'bottom 90%', end: 'bottom 40%', scrub: 1 }
-    });
+    if (!isMobile) {
+      gsap.to('.hero-text', {
+        y: -80, opacity: 0,
+        scrollTrigger: { trigger: '.hero', start: '70% top', end: 'bottom top', scrub: 1 }
+      });
+      gsap.to('.hero-visual', {
+        scale: 0.8, opacity: 0,
+        scrollTrigger: { trigger: '.hero', start: '70% top', end: 'bottom top', scrub: 1 }
+      });
+    }
 
     /* ── 9. PERMISSION CHIP CYCLING ── */
     var chips = document.querySelectorAll('.perm-chip');
