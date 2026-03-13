@@ -20,77 +20,96 @@
 - Capability and outcome first, cryptography second
 
 ## Design Principles
-- Dark, premium, high-contrast
+- Dark, premium, high-contrast — flagship not template
 - Sharp, precise, editorial — architectural surfaces, not bubbly SaaS
 - Cinematic pacing with spacious layout and narrative flow
 - Subtle luxury in detail, hierarchy, and motion
-- Section variety — no two sections should have identical layouts
+- Section variety — no two sections should have identical layouts or motion
+- Grain texture overlay for depth (inline SVG noise filter, opacity 0.03)
 - Brand color: `#EE2B5B` (coral/crimson)
 - Solana purple `#9945FF` used for alignment sections only
 
 ## Typography
-- Headings: Inter Tight (700/800 for h1/h2, 600 for h3/h4)
-- Body: Inter (400/500)
-- Mono: JetBrains Mono (labels, badges, tags, technical metadata)
+- **Headings:** Clash Display (variable, 600–700) via Fontshare CDN
+- **Body:** Satoshi (variable, 400–500) via Fontshare CDN
+- **Mono:** JetBrains Mono (labels, badges, tags, technical metadata) via Google Fonts
 - Strong hierarchy: clamp-based responsive sizing
 - Letter-spacing: tight on headings (-0.03em), wide on mono labels (0.12em)
-- Hero headline: clamp(2.8rem, 2rem + 4vw, 5.2rem), line-height 0.95
+- Hero headline: `clamp(2.8rem, 2rem + 4vw, 5.2rem)`, line-height 0.95
+- Font loading: `<link>` tags in `<head>`, `font-display: swap`
+- **CDN URLs:**
+  - `https://api.fontshare.com/v2/css?f[]=clash-display@variable&display=swap`
+  - `https://api.fontshare.com/v2/css?f[]=satoshi@variable&display=swap`
+  - `https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap`
+
+## Visual Language
+- **Policy rings:** Concentric SVG circles with dashed strokes representing security layers
+- **Route traces:** Curved bezier paths with animated stroke-dashoffset for signing flows
+- **Flow indicators:** Small circles with SVG `<animateMotion>` along flow paths
+- **Chain badges:** Rounded rect groups with chain abbreviations (BTC, ETH, SOL) at path endpoints
+- **Glow effects:** SVG `<filter>` with `feGaussianBlur` + `feMerge` for atmospheric depth
+- **Permission chips:** Pill-shaped indicators for policy capabilities (scoped, revocable, etc.)
 
 ## Motion Principles
 - Motion explains the product, not decorates
-- GSAP + ScrollTrigger for scroll-driven reveals and pinned sections
-- Staggered reveal animations for text and cards
-- Hero entrance sequence with staggered timing
-- SVG orbit/pulse for hero policy diagram
-- Route-trace animation (animated stroke-dashoffset) for signing flows
-- Permission chip reveal animation
-- Architecture section: GSAP-pinned scrollytelling with step activation
-- Reduced motion: all animations respect prefers-reduced-motion
+- GSAP 3.12.5 + ScrollTrigger for scroll-driven reveals and pinned sections
+- Lenis smooth scroll (lerp: 0.1) connected to GSAP ticker + ScrollTrigger.update
+- Three signature moments: Hero entrance, AI Agents step reveal, Architecture scrollytelling
+- Staggered reveal animations with distinct choreography per element type
+- Hero: word-by-word reveal, mouse-tracking parallax on SVG layers, scroll-linked departure
+- Architecture: GSAP-pinned scrollytelling with edge drawing (strokeDashoffset), node activation
+- Reduced motion: all animations respect `prefers-reduced-motion` — Lenis destroyed, GSAP skipped, content shown immediately
 - No random particles, no constant spinning, no scroll-jacking
 
 ## Motion Vocabulary
-- `.reveal` — fade-up on scroll enter (IntersectionObserver)
-- `.reveal-delay-N` — staggered delays (1-4)
-- route-trace — animated dash along SVG paths
-- chip-reveal — scale + opacity entrance for permission chips
-- orbit-spin — slow continuous rotation for orbit ring
-- step-activate — highlight active architecture step
-- marquee-scroll — infinite horizontal chain name scroll
+- `.reveal` — fade-up on scroll enter via GSAP ScrollTrigger (y: 28, opacity: 0 → visible)
+- `.rd-N` — stagger delay class (N * 0.1s delay)
+- `.char-reveal` — word-level split animation with stagger 0.04s
+- Route-trace — animated dash along SVG curved paths
+- Chip-reveal — scale + opacity entrance for permission chips
+- Step-activate — progressive step highlight in AI agents and architecture sections
+- Marquee-scroll — infinite horizontal chain name scroll with edge gradient masks
+- Mouse parallax — hero SVG layers shift based on cursor position (desktop only)
+- Edge drawing — strokeDasharray/strokeDashoffset animation on architecture diagram edges
+- ZUD letters — scale entrance from `scale(3)` with expo.out easing
 
 ## Component Patterns
-- **Section structure:** .section-tag (mono, brand) → .section-headline (Inter Tight) → .section-body (Inter) → cards/content
-- **Cards:** bg-card background, border-1 border, hover brightens border + subtle lift
-- **Buttons:** .btn-primary (coral bg, glow shadow), .btn-secondary (ghost with border)
-- **Badges:** .badge (pill, mono text, dot icon, border)
-- **Proof strip:** horizontal badge rail below hero
-- **Editorial grid:** varied card sizes, featured card spans 2 columns
+- **Section structure:** `.tag` (mono, brand, uppercase) → `h2` (Clash Display) → `p` (Satoshi) → cards/content
+- **Cards:** `rgba(255,255,255,0.02)` background, 1px border at `rgba(255,255,255,0.06)`, hover brightens border + subtle translateY(-2px)
+- **Buttons:** `.btn-p` (primary — coral bg, rotating conic-gradient border via `@property --angle`, glow shadow), `.btn-s` (ghost with border)
+- **Button hover:** rotating border animation using `conic-gradient(from var(--angle), ...)` with CSS `@property` for smooth animation
+- **Badges/Tags:** `.tag` (pill, mono text, brand border, uppercase letter-spacing 0.12em)
+- **Proof strip:** horizontal stat badges below hero with value + label pairs
+- **Editorial grid:** varied card sizes, featured card spans full width or 2 columns
 
 ## Page Hierarchy
-1. Navbar (sticky, glass-dark on scroll, progress bar)
-2. Hero (positioning + SVG policy diagram)
-3. Proof badges (credibility strip)
+1. Navbar (sticky, glass-dark on scroll via backdrop-filter)
+2. Hero (positioning headline + atmospheric SVG nexus diagram with glow/parallax)
+3. Proof badges (credibility strip with stats)
 4. Problem (3 cards — tension chapter)
-5. Solution (4 numbered cards)
-6. Solana alignment (3 cards with purple tags)
-7. AI Agents (flow + guardrail grid — flagship section)
-8. ZUD (3 architectural cards, plain language first)
-9. Use cases (6-card editorial grid, featured first card)
-10. Architecture (scrollytelling with GSAP pin — signature moment)
-11. Chains marquee
-12. Research (6 cards, featured first)
-13. Backed by (logo strip)
-14. Final CTA
-15. Footer
+5. Solution (4 numbered cards with counter animation)
+6. Interlude (scroll-scrubbed cinematic breathing moment)
+7. Solana alignment (3 cards with purple tags)
+8. AI Agents (progressive step flow + guardrail grid — flagship section)
+9. ZUD (3 architectural cards with dramatic letter entrance)
+10. Use cases (6-card editorial grid, featured first card)
+11. Architecture (scrollytelling with GSAP pin, edge drawing, step rail — signature moment)
+12. Chains marquee (infinite scroll with edge gradient masks)
+13. Research (cards with type labels)
+14. Backed by (staggered logo strip)
+15. Final CTA (pulsing glow, strong word-reveal)
+16. Footer
 
 ## Technical Architecture
-- Single-file HTML with inline CSS (`<style>`) and JS (`<script>`)
+- Single-file HTML with inline CSS (`<style>`) and JS (`<script>`) for index.html
 - GSAP 3.12.5 + ScrollTrigger via CDN (deferred)
-- Fonts: Google Fonts (Inter, Inter Tight, JetBrains Mono)
+- Lenis smooth scroll via CDN (deferred): `https://unpkg.com/lenis@1.1.18/dist/lenis.min.js`
+- Fonts: Fontshare (Clash Display, Satoshi) + Google Fonts (JetBrains Mono)
 - No build step, no framework, no package.json
 - Assets in ./assets/ (logos, images)
 - Deployed on Vercel (git push to main triggers deploy)
 - Secondary pages: ai-agents.html, developers.html, use-cases.html, research.html, blog.html
-- Shared styles: styles.css (imported by secondary pages)
+- Shared styles: styles.css + main.js (imported by secondary pages)
 
 ## Color Tokens
 - `--brand: #EE2B5B` — primary accent (coral)
@@ -115,17 +134,28 @@
 - `--space-sm: 16px` — small spacing
 - `--space-xs: 8px` — extra small
 
+## Radius Tokens
+- `--r-sm: 8px` — small elements
+- `--r-md: 12px` — cards
+- `--r-lg: 16px` — large cards/containers
+- `--r-pill: 100px` — tags, badges, buttons
+
 ## Responsive Breakpoints
 - 1024px — grid adjustments, architecture diagram simplifies
-- 768px — mobile layout, hamburger nav, stacked cards, no GSAP pinning
+- 768px — mobile layout, hamburger nav, stacked cards, no GSAP pinning, Lenis still active
 - 480px — compact padding, smaller type
 
 ## Rules for Future Sessions
 - NEVER change the positioning to MPC-first or Sui-first
 - NEVER remove the AI agents section or make it secondary
 - NEVER add meaningless animation (particles, spinning, etc.)
+- NEVER revert to Inter/Inter Tight — Clash Display + Satoshi is the canonical type system
 - ALWAYS preserve the locked headlines listed above
 - ALWAYS test on mobile before shipping
 - ALWAYS respect prefers-reduced-motion
+- ALWAYS use Lenis smooth scroll on index.html
 - Keep the single-file architecture for index.html (inline CSS/JS)
-- Secondary pages use shared styles.css + page-specific inline styles
+- Secondary pages use shared styles.css + main.js + page-specific inline styles
+- Three signature moments must remain: Hero, AI Agents, Architecture scrollytelling
+- SVG diagrams must use atmospheric glow filters, not flat shapes
+- Buttons must use the rotating conic-gradient border system
