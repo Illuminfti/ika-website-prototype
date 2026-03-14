@@ -1072,7 +1072,21 @@ body::after {
   .marquee-track { animation: none !important; }
   .flow-path { animation: none !important; }
 }
+/* ── Use case icon hover animation ── */
+.uc-card:hover .uc-icon {
+  transform: rotate(6deg) scale(1.1);
+  transition: transform .4s cubic-bezier(.22,1,.36,1), border-color .3s, background .3s;
+}
+.uc-card:hover .uc-icon svg { filter: brightness(1.3); transition: filter .4s; }
+
+/* ── Research type label clip-reveal ── */
+.research-type-clip {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path .6s cubic-bezier(.22,1,.36,1);
+}
+.research-type-clip.vis { clip-path: inset(0 0% 0 0); }
 </style>
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js" defer></script>
 </head>
 <body>
 <script>
@@ -2025,7 +2039,7 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 
 
 <!-- CDN Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.1.18/dist/lenis.min.js" defer></script>
+<!-- Lenis loaded in <head> -->
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
 
@@ -2292,12 +2306,22 @@ document.addEventListener('DOMContentLoaded', function() {
       onEnter: function() { document.querySelector('.interlude-rule').classList.add('vis'); }
     });
 
-    /* ── 11. ZUD GLYPH ENTRANCE ── */
-    gsap.utils.toArray('.zud-glyph').forEach(function(glyph) {
+    /* ── 11. ZUD GLYPH ENTRANCE — dramatic scale + stagger + color shift ── */
+    gsap.utils.toArray('.zud-glyph').forEach(function(glyph, i) {
       gsap.from(glyph, {
-        scale: 2.5, opacity: 0, duration: 1.2, ease: 'power3.out',
+        scale: 3, opacity: 0, duration: 1.4, ease: 'expo.out',
+        delay: i * 0.2,
         scrollTrigger: { trigger: glyph.parentElement, start: 'top 80%', once: true }
       });
+    });
+    // Scroll-linked color shift: dim → brand as user scrolls through ZUD
+    gsap.utils.toArray('.zud-glyph').forEach(function(glyph) {
+      gsap.fromTo(glyph,
+        { color: 'rgba(255,255,255,0.07)', textShadow: '0 0 120px rgba(238,43,91,0.08), 0 0 60px rgba(238,43,91,0.04)' },
+        { color: 'rgba(238,43,91,0.18)', textShadow: '0 0 120px rgba(238,43,91,0.2), 0 0 60px rgba(238,43,91,0.12)',
+          scrollTrigger: { trigger: '.zud', start: 'top 60%', end: 'bottom 40%', scrub: 1 }
+        }
+      );
     });
 
     /* ── 11b. CTA HEADLINE WORD REVEAL ── */
@@ -2477,6 +2501,36 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
 
+    /* ── 13f2. PROBLEM CARD rotateX ENTRANCE ── */
+    gsap.utils.toArray('.problem-card').forEach(function(card, i) {
+      gsap.from(card, {
+        rotateX: 8, y: 30, opacity: 0,
+        duration: 0.7, delay: i * 0.12,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: card, start: 'top 85%', once: true }
+      });
+    });
+
+    /* ── 13f3. TRIPTYCH LABEL CLIP-REVEAL ── */
+    gsap.utils.toArray('.triptych-label').forEach(function(label, i) {
+      gsap.from(label, {
+        clipPath: 'inset(0 100% 0 0)', opacity: 0,
+        duration: 0.6, delay: i * 0.12,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: label, start: 'top 85%', once: true }
+      });
+    });
+
+    /* ── 13f4. RESEARCH TYPE LABEL CLIP-REVEAL ── */
+    gsap.utils.toArray('.research-type').forEach(function(label, i) {
+      gsap.from(label, {
+        clipPath: 'inset(0 100% 0 0)', opacity: 0,
+        duration: 0.6, delay: i * 0.08,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: label, start: 'top 88%', once: true }
+      });
+    });
+
     /* ── 13g. PROBLEM CARD SVG STROKE DRAW ── */
     document.querySelectorAll('.problem-card-svg svg').forEach(function(svg) {
       var paths = svg.querySelectorAll('path, rect');
@@ -2529,9 +2583,27 @@ document.addEventListener('DOMContentLoaded', function() {
         gsap.to(archBtc, { opacity: step >= 5 ? 0.9 : 0.15, duration: 0.5, delay: 0.1 });
         gsap.to(archEth, { opacity: step >= 5 ? 0.9 : 0.15, duration: 0.5, delay: 0.2 });
         gsap.to(archAny, { opacity: step >= 5 ? 0.7 : 0.15, duration: 0.5, delay: 0.3 });
-        // Node pulse on activation
-        if (step === 1) gsap.fromTo('#arch-ika circle:nth-child(2)', { scale: 0.8 }, { scale: 1, duration: 0.5, ease: 'elastic.out(1, 0.5)', transformOrigin: 'center' });
-        if (step === 4) gsap.fromTo(archPolicyGate, { scale: 0.95 }, { scale: 1, duration: 0.4, ease: 'back.out(2)', transformOrigin: 'center' });
+        // Node pulse on activation — elastic bounce for each newly active element
+        if (step === 1) {
+          gsap.fromTo('#arch-ika circle:nth-child(2)', { scale: 0.8 }, { scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.5)', transformOrigin: 'center' });
+          gsap.fromTo('#arch-ika circle:nth-child(3)', { scale: 0.9 }, { scale: 1, duration: 0.5, ease: 'elastic.out(1, 0.5)', transformOrigin: 'center' });
+        }
+        if (step === 2) {
+          archValidators.querySelectorAll('circle').forEach(function(c, ci) {
+            gsap.fromTo(c, { scale: 0 }, { scale: 1, duration: 0.4, delay: ci * 0.04, ease: 'back.out(2)', transformOrigin: 'center' });
+          });
+        }
+        if (step === 4) {
+          gsap.fromTo(archPolicyGate, { scale: 0.9 }, { scale: 1, duration: 0.5, ease: 'elastic.out(1, 0.5)', transformOrigin: 'center' });
+        }
+        if (step === 5) {
+          [archBtc, archEth, archAny].forEach(function(node, ni) {
+            var circles = node.querySelectorAll('circle');
+            circles.forEach(function(c) {
+              gsap.fromTo(c, { scale: 0.85 }, { scale: 1, duration: 0.5, delay: ni * 0.1, ease: 'elastic.out(1, 0.5)', transformOrigin: 'center' });
+            });
+          });
+        }
       }
 
       setArchStep(0);
