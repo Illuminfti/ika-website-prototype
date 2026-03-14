@@ -84,7 +84,7 @@ ul { list-style: none; }
 .tag--cyan { color: var(--cyan); }
 
 h1, h2, h3 { font-family: 'Inter Tight', sans-serif; font-weight: 800; color: var(--text-0); }
-h1 { font-size: clamp(3.5rem, 7vw, 6.5rem); line-height: .92; letter-spacing: -0.04em; overflow-wrap: normal; word-break: keep-all; hyphens: none; }
+h1 { font-size: clamp(4rem, 8.5vw, 7.5rem); line-height: .90; letter-spacing: -0.045em; overflow-wrap: normal; word-break: keep-all; hyphens: none; }
 h2 { font-size: clamp(2.25rem, 4.5vw, 3.75rem); line-height: .96; letter-spacing: -0.03em; }
 h3 { font-size: clamp(1.15rem, 2vw, 1.4rem); line-height: 1.2; font-weight: 700; }
 p { color: var(--text-1); }
@@ -230,7 +230,7 @@ p { color: var(--text-1); }
 
 .hero {
   min-height: 100svh;
-  display: grid; grid-template-columns: 5fr 7fr;
+  display: grid; grid-template-columns: 6fr 5fr;
   gap: clamp(24px, 3vw, 48px);
   align-items: center;
   padding-top: 72px;
@@ -268,7 +268,7 @@ p { color: var(--text-1); }
   animation: pulse-dot 2s ease-in-out infinite;
 }
 @keyframes pulse-dot { 0%,100%{ opacity:1; } 50%{ opacity:.4; } }
-.hero h1 { margin-bottom: 24px; max-width: 600px; }
+.hero h1 { margin-bottom: 28px; max-width: 720px; }
 .hero h1 em {
   font-style: italic;
   -webkit-text-fill-color: transparent;
@@ -968,7 +968,7 @@ p { color: var(--text-1); }
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
   body { font-size: 16px; }
-  .hero h1 { font-size: clamp(2.6rem, 10vw, 3.5rem); }
+  .hero h1 { font-size: clamp(2.8rem, 10vw, 4rem); }
   .perm-chips { display: none; }
   .agent-guardrails { grid-template-columns: 1fr; }
   .uc-grid { grid-template-columns: 1fr; }
@@ -1158,122 +1158,118 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 
   <div class="hero-visual">
     <div class="hero-svg-wrap">
-      <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" id="hero-svg">
+      <svg viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" id="hero-svg">
         <defs>
           <radialGradient id="core-grad" cx="50%" cy="50%">
             <stop offset="0%" stop-color="var(--brand-light)"/>
             <stop offset="100%" stop-color="var(--brand)"/>
           </radialGradient>
+          <radialGradient id="ambient-grad" cx="50%" cy="50%">
+            <stop offset="0%" stop-color="rgba(238,43,91,0.06)"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
           <filter id="glow-core">
-            <feGaussianBlur stdDeviation="12" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-          <filter id="glow-sm">
-            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feGaussianBlur stdDeviation="10" result="blur"/>
             <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
           <filter id="glow-ep">
-            <feGaussianBlur stdDeviation="6" result="blur"/>
+            <feGaussianBlur stdDeviation="5" result="blur"/>
             <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
         </defs>
 
-        <!-- Layer 1: Backdrop grid -->
-        <g class="hero-layer" data-depth="0.02" opacity="0.15">
-          <circle cx="300" cy="300" r="280" fill="none" stroke="var(--stroke-1)" stroke-width="0.5"/>
-          <circle cx="300" cy="300" r="240" fill="none" stroke="var(--stroke-1)" stroke-width="0.5"/>
-          <circle cx="300" cy="300" r="200" fill="none" stroke="var(--stroke-1)" stroke-width="0.3"/>
-          <line x1="300" y1="20" x2="300" y2="580" stroke="var(--stroke-1)" stroke-width="0.3"/>
-          <line x1="20" y1="300" x2="580" y2="300" stroke="var(--stroke-1)" stroke-width="0.3"/>
-          <line x1="100" y1="100" x2="500" y2="500" stroke="var(--stroke-1)" stroke-width="0.2"/>
-          <line x1="500" y1="100" x2="100" y2="500" stroke="var(--stroke-1)" stroke-width="0.2"/>
+        <!-- Ambient glow -->
+        <circle cx="260" cy="260" r="240" fill="url(#ambient-grad)"/>
+
+        <!-- Orbital rings - clean, geometric -->
+        <g class="hero-layer" data-depth="0.03" opacity="0.12">
+          <circle cx="260" cy="260" r="230" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+          <circle cx="260" cy="260" r="170" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+          <circle cx="260" cy="260" r="105" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
         </g>
 
-        <!-- Layer 2: Policy rings -->
+        <!-- Slow rotating arc accents -->
         <g class="hero-layer" data-depth="0.04">
-          <circle cx="300" cy="300" r="220" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-          <circle cx="300" cy="300" r="170" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="8 6"/>
-          <circle cx="300" cy="300" r="120" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="2 5"/>
-          <!-- Rotating cyan arc -->
-          <circle cx="300" cy="300" r="170" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-dasharray="80 990" stroke-linecap="round" opacity="0.6">
-            <animateTransform attributeName="transform" type="rotate" from="0 300 300" to="360 300 300" dur="20s" repeatCount="indefinite"/>
+          <circle cx="260" cy="260" r="170" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-dasharray="60 1010" stroke-linecap="round" opacity="0.35">
+            <animateTransform attributeName="transform" type="rotate" from="0 260 260" to="360 260 260" dur="25s" repeatCount="indefinite"/>
           </circle>
-          <!-- Rotating violet arc -->
-          <circle cx="300" cy="300" r="220" fill="none" stroke="var(--violet)" stroke-width="1.5" stroke-dasharray="50 1340" stroke-linecap="round" opacity="0.3">
-            <animateTransform attributeName="transform" type="rotate" from="180 300 300" to="540 300 300" dur="35s" repeatCount="indefinite"/>
+          <circle cx="260" cy="260" r="230" fill="none" stroke="var(--violet)" stroke-width="1" stroke-dasharray="40 1410" stroke-linecap="round" opacity="0.2">
+            <animateTransform attributeName="transform" type="rotate" from="180 260 260" to="540 260 260" dur="40s" repeatCount="indefinite"/>
           </circle>
         </g>
 
-        <!-- Layer 3: Route traces -->
-        <g class="hero-layer" data-depth="0.06">
-          <!-- SOL (left) to center -->
-          <path d="M 80 300 Q 160 280 240 295" fill="none" stroke="var(--violet)" stroke-width="1.5" opacity="0.5" stroke-dasharray="4 4">
-            <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="2s" repeatCount="indefinite"/>
-          </path>
-          <!-- Center to BTC (upper right) -->
-          <path id="route-btc" d="M 360 270 Q 420 220 510 160" fill="none" stroke="#f7931a" stroke-width="1.5" opacity="0.4" stroke-dasharray="4 4">
-            <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="2s" repeatCount="indefinite"/>
-          </path>
-          <!-- Center to ETH (lower right) -->
-          <path id="route-eth" d="M 360 320 Q 430 370 520 420" fill="none" stroke="#627eea" stroke-width="1.5" opacity="0.4" stroke-dasharray="4 4">
-            <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="2s" repeatCount="indefinite"/>
-          </path>
-          <!-- Center to ANY (lower left) -->
-          <path id="route-any" d="M 260 340 Q 200 400 120 460" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" opacity="0.3" stroke-dasharray="4 4">
-            <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="2.5s" repeatCount="indefinite"/>
-          </path>
-          <!-- Flowing dots -->
-          <circle r="3" fill="var(--violet)" opacity="0.8" filter="url(#glow-sm)">
-            <animateMotion dur="3s" repeatCount="indefinite" path="M 80 300 Q 160 280 240 295"/>
+        <!-- Connection lines - clean straight lines to endpoints -->
+        <g class="hero-layer" data-depth="0.05" opacity="0.3">
+          <line x1="260" y1="260" x2="64" y2="140" stroke="var(--violet)" stroke-width="1"/>
+          <line x1="260" y1="260" x2="456" y2="100" stroke="#f7931a" stroke-width="1"/>
+          <line x1="260" y1="260" x2="460" y2="380" stroke="#627eea" stroke-width="1"/>
+          <line x1="260" y1="260" x2="90" y2="420" stroke="var(--cyan)" stroke-width="1"/>
+          <line x1="260" y1="260" x2="260" y2="30" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+          <line x1="260" y1="260" x2="260" y2="490" stroke="rgba(255,255,255,0.3)" stroke-width="0.6"/>
+        </g>
+
+        <!-- Flowing dots along connections -->
+        <g class="hero-layer" data-depth="0.05">
+          <circle r="2.5" fill="var(--violet)" opacity="0.7">
+            <animateMotion dur="3s" repeatCount="indefinite" path="M 260 260 L 64 140"/>
           </circle>
-          <circle r="2.5" fill="#f7931a" opacity="0.7" filter="url(#glow-sm)">
-            <animateMotion dur="3.5s" repeatCount="indefinite" path="M 360 270 Q 420 220 510 160"/>
+          <circle r="2.5" fill="#f7931a" opacity="0.6">
+            <animateMotion dur="3.5s" repeatCount="indefinite" path="M 260 260 L 456 100"/>
           </circle>
-          <circle r="2.5" fill="#627eea" opacity="0.7" filter="url(#glow-sm)">
-            <animateMotion dur="3.5s" repeatCount="indefinite" path="M 360 320 Q 430 370 520 420"/>
+          <circle r="2.5" fill="#627eea" opacity="0.6">
+            <animateMotion dur="3.2s" repeatCount="indefinite" path="M 260 260 L 460 380"/>
           </circle>
-          <circle r="2" fill="rgba(255,255,255,0.5)" opacity="0.5">
-            <animateMotion dur="4s" repeatCount="indefinite" path="M 260 340 Q 200 400 120 460"/>
+          <circle r="2" fill="var(--cyan)" opacity="0.5">
+            <animateMotion dur="3.8s" repeatCount="indefinite" path="M 260 260 L 90 420"/>
           </circle>
         </g>
 
-        <!-- Layer 4: Control core -->
+        <!-- Core node -->
+        <g class="hero-layer" data-depth="0.07">
+          <circle cx="260" cy="260" r="38" fill="rgba(238,43,91,0.06)" filter="url(#glow-core)"/>
+          <circle cx="260" cy="260" r="32" fill="url(#core-grad)" opacity="0.9" filter="url(#glow-core)">
+            <animate attributeName="r" values="32;34;32" dur="4s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="260" cy="260" r="26" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+          <text x="260" y="264" text-anchor="middle" font-family="Inter Tight, sans-serif" font-weight="800" font-size="13" fill="white" opacity="0.9" letter-spacing="0.05em">ika</text>
+        </g>
+
+        <!-- Validator ring - subtle dots on the 105 orbit -->
+        <g class="hero-layer" data-depth="0.06" opacity="0.5">
+          <circle cx="365" cy="260" r="2.5" fill="var(--cyan)"><animate attributeName="opacity" values="0.4;0.9;0.4" dur="2.2s" repeatCount="indefinite"/></circle>
+          <circle cx="334" cy="169" r="2" fill="var(--mint)"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="2.6s" begin="0.3s" repeatCount="indefinite"/></circle>
+          <circle cx="260" cy="155" r="2.5" fill="var(--cyan)"><animate attributeName="opacity" values="0.4;0.9;0.4" dur="2s" begin="0.6s" repeatCount="indefinite"/></circle>
+          <circle cx="186" cy="169" r="2" fill="var(--violet)"><animate attributeName="opacity" values="0.3;0.7;0.3" dur="2.8s" begin="0.2s" repeatCount="indefinite"/></circle>
+          <circle cx="155" cy="260" r="2.5" fill="var(--cyan)"><animate attributeName="opacity" values="0.4;0.9;0.4" dur="2.1s" begin="0.8s" repeatCount="indefinite"/></circle>
+          <circle cx="186" cy="351" r="2" fill="var(--mint)"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="2.4s" begin="0.5s" repeatCount="indefinite"/></circle>
+          <circle cx="260" cy="365" r="2.5" fill="var(--cyan)"><animate attributeName="opacity" values="0.4;0.9;0.4" dur="2.3s" begin="0.1s" repeatCount="indefinite"/></circle>
+          <circle cx="334" cy="351" r="2" fill="var(--cyan)"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="2.5s" begin="0.7s" repeatCount="indefinite"/></circle>
+        </g>
+
+        <!-- Chain endpoints - clean labeled nodes -->
         <g class="hero-layer" data-depth="0.08">
-          <circle cx="300" cy="300" r="50" fill="rgba(238,43,91,0.08)" filter="url(#glow-core)"/>
-          <circle cx="300" cy="300" r="45" fill="url(#core-grad)" opacity="0.9" filter="url(#glow-core)">
-            <animate attributeName="r" values="45;47;45" dur="3s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="300" cy="300" r="36" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-          <text x="300" y="305" text-anchor="middle" font-family="Inter Tight, sans-serif" font-weight="800" font-size="14" fill="white" opacity="0.9">ika</text>
-          <!-- Validator dots at r=65 -->
-          <circle cx="365" cy="300" r="3" fill="var(--cyan)" opacity="0.6"><animate attributeName="opacity" values="0.6;1;0.6" dur="2s" begin="0s" repeatCount="indefinite"/></circle>
-          <circle cx="352" cy="267" r="2.5" fill="var(--cyan)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.2s" begin="0.3s" repeatCount="indefinite"/></circle>
-          <circle cx="325" cy="242" r="2.5" fill="var(--mint)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.4s" begin="0.6s" repeatCount="indefinite"/></circle>
-          <circle cx="300" cy="235" r="3" fill="var(--cyan)" opacity="0.6"><animate attributeName="opacity" values="0.6;1;0.6" dur="2s" begin="0.9s" repeatCount="indefinite"/></circle>
-          <circle cx="275" cy="242" r="2" fill="var(--violet)" opacity="0.4"><animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.6s" begin="0.2s" repeatCount="indefinite"/></circle>
-          <circle cx="248" cy="267" r="2.5" fill="var(--cyan)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.1s" begin="0.5s" repeatCount="indefinite"/></circle>
-          <circle cx="235" cy="300" r="3" fill="var(--mint)" opacity="0.6"><animate attributeName="opacity" values="0.6;1;0.6" dur="2.3s" begin="0.8s" repeatCount="indefinite"/></circle>
-          <circle cx="248" cy="333" r="2" fill="var(--cyan)" opacity="0.4"><animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.5s" begin="0.1s" repeatCount="indefinite"/></circle>
-          <circle cx="275" cy="358" r="2.5" fill="var(--violet)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.2s" begin="0.4s" repeatCount="indefinite"/></circle>
-          <circle cx="300" cy="365" r="3" fill="var(--cyan)" opacity="0.6"><animate attributeName="opacity" values="0.6;1;0.6" dur="2s" begin="0.7s" repeatCount="indefinite"/></circle>
-          <circle cx="325" cy="358" r="2.5" fill="var(--mint)" opacity="0.5"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.4s" begin="0.2s" repeatCount="indefinite"/></circle>
-          <circle cx="352" cy="333" r="2" fill="var(--cyan)" opacity="0.4"><animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.1s" begin="0.6s" repeatCount="indefinite"/></circle>
-        </g>
-
-        <!-- Layer 5: Chain endpoints -->
-        <g class="hero-layer" data-depth="0.1">
-          <!-- SOL (violet) -->
-          <circle cx="80" cy="300" r="18" fill="none" stroke="var(--violet)" stroke-width="1" opacity="0.5"/>
-          <circle cx="80" cy="300" r="8" fill="var(--violet)" opacity="0.8" filter="url(#glow-ep)"/>
-          <!-- BTC (orange) -->
-          <circle cx="510" cy="160" r="16" fill="none" stroke="#f7931a" stroke-width="1" opacity="0.5"/>
-          <circle cx="510" cy="160" r="7" fill="#f7931a" opacity="0.8" filter="url(#glow-ep)"/>
-          <!-- ETH (blue) -->
-          <circle cx="520" cy="420" r="16" fill="none" stroke="#627eea" stroke-width="1" opacity="0.5"/>
-          <circle cx="520" cy="420" r="7" fill="#627eea" opacity="0.8" filter="url(#glow-ep)"/>
-          <!-- ANY (white) -->
-          <circle cx="120" cy="460" r="14" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1" opacity="0.4"/>
-          <circle cx="120" cy="460" r="5" fill="rgba(255,255,255,0.5)" opacity="0.5"/>
+          <!-- SOL -->
+          <circle cx="64" cy="140" r="14" fill="none" stroke="var(--violet)" stroke-width="0.8" opacity="0.5"/>
+          <circle cx="64" cy="140" r="6" fill="var(--violet)" opacity="0.7" filter="url(#glow-ep)"/>
+          <text x="64" y="170" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--violet)" opacity="0.6" letter-spacing="0.08em">SOL</text>
+          <!-- BTC -->
+          <circle cx="456" cy="100" r="14" fill="none" stroke="#f7931a" stroke-width="0.8" opacity="0.5"/>
+          <circle cx="456" cy="100" r="6" fill="#f7931a" opacity="0.7" filter="url(#glow-ep)"/>
+          <text x="456" y="130" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#f7931a" opacity="0.6" letter-spacing="0.08em">BTC</text>
+          <!-- ETH -->
+          <circle cx="460" cy="380" r="14" fill="none" stroke="#627eea" stroke-width="0.8" opacity="0.5"/>
+          <circle cx="460" cy="380" r="6" fill="#627eea" opacity="0.7" filter="url(#glow-ep)"/>
+          <text x="460" y="410" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#627eea" opacity="0.6" letter-spacing="0.08em">ETH</text>
+          <!-- SUI -->
+          <circle cx="90" cy="420" r="12" fill="none" stroke="var(--cyan)" stroke-width="0.8" opacity="0.4"/>
+          <circle cx="90" cy="420" r="5" fill="var(--cyan)" opacity="0.6" filter="url(#glow-ep)"/>
+          <text x="90" y="448" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--cyan)" opacity="0.5" letter-spacing="0.08em">SUI</text>
+          <!-- Top node (unlabeled) -->
+          <circle cx="260" cy="30" r="10" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+          <circle cx="260" cy="30" r="4" fill="rgba(255,255,255,0.4)"/>
+          <!-- Bottom node (unlabeled) -->
+          <circle cx="260" cy="490" r="10" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+          <circle cx="260" cy="490" r="4" fill="rgba(255,255,255,0.3)"/>
         </g>
       </svg>
 
